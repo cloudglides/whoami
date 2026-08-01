@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import AmbientAudio from "./AmbientAudio";
+import NotificationCard from "./NotificationCard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,13 +45,16 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <script
+        <Script
+          id="whoami-theme-paint"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("whoami-theme");var l=t?t==="light":window.matchMedia("(prefers-color-scheme: light)").matches;if(l)document.documentElement.classList.add("light");}catch(e){}})();`,
           }}
         />
         {children}
         <AmbientAudio />
+        <NotificationCard />
       </body>
     </html>
   );
