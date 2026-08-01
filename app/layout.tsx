@@ -25,11 +25,11 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "whoami · Ship 5 hours, get your ID",
   description:
-    "A Hack Club YSWS. Build identity-related software for 5 hours and earn a real Hack Club ID card. a souvenir of the ysws you were part of.",
+    "A Hack Club YSWS. Build identity-related software for 5 hours and earn a real Hack Club ID card.",
   openGraph: {
     title: "whoami · Ship 5 hours, get your ID",
     description:
-      "A Hack Club YSWS. Build identity-related software for 5 hours and earn a real Hack Club ID card. a souvenir of the ysws you were part of.",
+      "A Hack Club YSWS. Build identity-related software for 5 hours and earn a real Hack Club ID card.",
     type: "website",
   },
 };
