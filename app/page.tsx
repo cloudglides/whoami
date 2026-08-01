@@ -1,57 +1,44 @@
-"use client";
-
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-
-type Stroke = { x: number; y: number };
-
-type Card = {
-  name: string;
-  number: string;
-};
-
-const DEFAULT_CARD: Card = {
-  name: "CloudGlides",
-  number: "000001",
-};
+import Reveal from "./Reveal";
+import Scramble from "./Scramble";
+import ThemeToggle from "./ThemeToggle";
+import Tilt from "./Tilt";
 
 function Logo() {
   return (
-    <a href="#top" className="flex items-center gap-2">
+    <a href="#top" className="flex items-baseline gap-2">
       <span className="font-mono text-sm font-bold text-hc-red">~$</span>
-      <span className="font-mono text-sm font-bold uppercase tracking-tight text-white">
-        whoami
-      </span>
+      <span className="font-display text-xl text-ink">whoami</span>
     </a>
   );
 }
 
 function Nav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-surface/85 backdrop-blur-md">
       <nav className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6">
         <Logo />
-        <div className="hidden items-center gap-8 font-mono text-base uppercase tracking-wide text-zinc-400 sm:flex">
-          <a href="#how" className="transition-colors hover:text-white">
+        <div className="hidden items-center gap-8 font-mono text-base uppercase tracking-wide text-muted sm:flex">
+          <a href="#how" className="transition-colors hover:text-ink">
             How it works
           </a>
-          <a href="#sign" className="transition-colors hover:text-white">
-            Sign yours
-          </a>
-          <a href="#passport" className="transition-colors hover:text-white">
+          <a href="#passport" className="transition-colors hover:text-ink">
             The passport
           </a>
-          <a href="#faq" className="transition-colors hover:text-white">
+          <a href="#faq" className="transition-colors hover:text-ink">
             FAQ
           </a>
         </div>
-        <a
-          href="https://hackclub.com/slack"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-hc-red px-4 py-2 font-mono text-sm font-bold uppercase tracking-wide text-white shadow-[3px_3px_0_#fff] transition hover:-translate-y-0.5"
-        >
-          Join the Slack
-        </a>
+        <div className="flex items-center gap-4">
+          <ThemeToggle className="border border-line-strong px-2.5 py-1.5 text-muted transition-colors hover:text-ink" />
+          <a
+            href="https://hackclub.com/slack"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-hc-red px-4 py-2 font-mono text-sm font-bold uppercase tracking-wide text-white shadow-[0_4px_14px_-6px_rgba(228,45,64,0.6)] transition hover:-translate-y-0.5 hover:shadow-[0_6px_20px_-6px_rgba(228,45,64,0.7)] active:translate-y-0 active:shadow-none"
+          >
+            Join the Slack
+          </a>
+        </div>
       </nav>
     </header>
   );
@@ -126,20 +113,10 @@ function Scribble({ className }: { className?: string }) {
   );
 }
 
-function IDCard({
-  className = "",
-  name = DEFAULT_CARD.name,
-  number = DEFAULT_CARD.number,
-  signature,
-}: {
-  className?: string;
-  name?: string;
-  number?: string;
-  signature?: Stroke[][];
-}) {
+function IDCard({ className = "" }: { className?: string }) {
   return (
     <div className={`relative w-full max-w-md ${className}`}>
-      <div className="flex aspect-[1.586/1] w-full flex-col overflow-hidden rounded-xl border-2 border-black bg-white shadow-[10px_10px_0_#e42d40]">
+      <div className="card-sheen card-texture relative flex aspect-[1.586/1] w-full flex-col overflow-hidden rounded-xl border-2 border-black bg-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.55)]">
         <div className="flex items-center justify-between bg-hc-red px-5 py-2.5 text-white">
           <div className="flex items-center gap-2.5">
             <FlagIcon className="h-4 w-6 rounded-[2px] shadow-[0_0_0_1px_rgba(0,0,0,0.25)]" />
@@ -157,7 +134,7 @@ function IDCard({
           </span>
         </div>
 
-        <div className="flex flex-1 flex-col justify-between gap-3 p-5 sm:p-6">
+        <div className="relative flex flex-1 flex-col justify-between gap-3 p-5 sm:p-6">
           <div className="flex gap-4">
             <div className="flex flex-col gap-3">
               <div className="relative h-20 w-16 overflow-hidden rounded-sm border border-zinc-300">
@@ -177,7 +154,7 @@ function IDCard({
                 Cardholder
               </p>
               <p className="truncate font-mono text-lg font-bold uppercase text-black sm:text-xl">
-                {name}
+                CloudGlides
               </p>
 
               <div className="mt-3 grid grid-cols-2 gap-1.5">
@@ -186,7 +163,7 @@ function IDCard({
                     Member #
                   </p>
                   <p className="font-mono text-xs font-bold text-black">
-                    {number}
+                    000001
                   </p>
                 </div>
                 <div className="bg-hc-red px-1.5 py-1">
@@ -206,11 +183,7 @@ function IDCard({
               <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-500">
                 Authorized signature
               </p>
-              {signature && signature.length > 0 ? (
-                <SignatureStamp signature={signature} />
-              ) : (
-                <Scribble className="h-6 w-24 text-zinc-800" />
-              )}
+              <Scribble className="h-6 w-24 text-zinc-800" />
               <p className="font-mono text-[7px] uppercase tracking-widest text-zinc-400">
                 Cardholder
               </p>
@@ -223,219 +196,17 @@ function IDCard({
             </div>
           </div>
         </div>
+
+        <div className="card-holo" />
+        <p className="absolute inset-x-0 bottom-1 text-center font-mono text-[5px] uppercase tracking-[0.35em] text-zinc-300">
+          hack club · identity division · vermont
+        </p>
       </div>
 
-      <div className="absolute -bottom-3 -right-3 rotate-[-8deg] border-2 border-hc-red bg-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-hc-red shadow-[2px_2px_0_#0a0a0a]">
+      <div className="sticker-gloss absolute -bottom-3 -right-3 rotate-[-8deg] border-2 border-hc-red bg-white px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-hc-red shadow-[0_6px_16px_-8px_rgba(0,0,0,0.45)]">
         valid forever
       </div>
     </div>
-  );
-}
-
-function SignatureStamp({ signature }: { signature: Stroke[][] }) {
-  const pts = signature.flat();
-  let minX = 400;
-  let minY = 200;
-  let maxX = 0;
-  let maxY = 0;
-  for (const p of pts) {
-    if (p.x < minX) minX = p.x;
-    if (p.x > maxX) maxX = p.x;
-    if (p.y < minY) minY = p.y;
-    if (p.y > maxY) maxY = p.y;
-  }
-  const pad = 12;
-  const vx = Math.max(0, minX - pad);
-  const vy = Math.max(0, minY - pad);
-  const vw = Math.max(4, Math.min(400, maxX + pad) - vx);
-  const vh = Math.max(4, Math.min(200, maxY + pad) - vy);
-  return (
-    <svg viewBox={`${vx} ${vy} ${vw} ${vh}`} className="h-8 w-28" aria-hidden>
-      {signature.map((s, i) => (
-        <polyline
-          key={i}
-          fill="none"
-          stroke="#0a0a0a"
-          strokeWidth={5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-          points={s.map((p) => `${p.x},${p.y}`).join(" ")}
-        />
-      ))}
-    </svg>
-  );
-}
-
-function SignPad({
-  strokes,
-  onChange,
-}: {
-  strokes: Stroke[][];
-  onChange: (next: Stroke[][]) => void;
-}) {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const drawingRef = useRef(false);
-
-  const toPoint = (e: ReactPointerEvent<SVGSVGElement>): Stroke => {
-    const rect = svgRef.current!.getBoundingClientRect();
-    return {
-      x: ((e.clientX - rect.left) / rect.width) * 400,
-      y: ((e.clientY - rect.top) / rect.height) * 200,
-    };
-  };
-
-  function down(e: ReactPointerEvent<SVGSVGElement>) {
-    e.currentTarget.setPointerCapture(e.pointerId);
-    drawingRef.current = true;
-    onChange([...strokes, [toPoint(e)]]);
-  }
-
-  function move(e: ReactPointerEvent<SVGSVGElement>) {
-    if (!drawingRef.current) return;
-    const next = [...strokes];
-    next[next.length - 1] = [...next[next.length - 1], toPoint(e)];
-    onChange(next);
-  }
-
-  function up() {
-    if (!drawingRef.current) return;
-    drawingRef.current = false;
-    const last = strokes[strokes.length - 1];
-    if (last && last.length < 2) onChange(strokes.slice(0, -1));
-  }
-
-  return (
-    <div className="relative aspect-[2/1] w-full overflow-hidden rounded-xl border-2 border-black bg-white shadow-[8px_8px_0_#e42d40]">
-      <div className="pointer-events-none absolute inset-x-6 bottom-4 font-mono text-sm uppercase tracking-[0.25em] text-zinc-400">
-        sign here
-      </div>
-      <div className="pointer-events-none absolute inset-x-6 bottom-8 border-b-2 border-dashed border-zinc-300" />
-      <svg
-        ref={svgRef}
-        viewBox="0 0 400 200"
-        role="img"
-        aria-label="signature pad"
-        className="absolute inset-0 h-full w-full cursor-crosshair touch-none select-none"
-        onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={up}
-        onPointerCancel={up}
-      >
-        {strokes.map((s, i) => (
-          <polyline
-            key={i}
-            fill="none"
-            stroke="#0a0a0a"
-            strokeWidth={5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-            points={s.map((p) => `${p.x},${p.y}`).join(" ")}
-          />
-        ))}
-      </svg>
-    </div>
-  );
-}
-
-function SignSection({
-  card,
-  onCardChange,
-  signature,
-  onSign,
-  onClear,
-}: {
-  card: Card;
-  onCardChange: (patch: Partial<Card>) => void;
-  signature: Stroke[][];
-  onSign: (next: Stroke[][]) => void;
-  onClear: () => void;
-}) {
-  return (
-    <section
-      id="sign"
-      className="relative overflow-hidden border-y border-white/10 bg-black px-6 py-28 text-white"
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:3rem_3rem]"
-      />
-      <div className="relative mx-auto grid w-full max-w-5xl items-center gap-20 lg:grid-cols-2">
-        <div className="order-2 lg:order-1">
-          <p className="font-mono text-base font-bold uppercase tracking-widest text-hc-red">
-            [03] make it yours
-          </p>
-          <h2 className="mt-4 font-mono text-4xl font-bold uppercase tracking-tight sm:text-6xl">
-            Make your ID
-          </h2>
-          <p className="mt-6 max-w-md text-xl leading-relaxed text-zinc-400">
-            go ahead, it&apos;s yours. the card up top updates as you type.
-          </p>
-
-          <div className="mt-10 space-y-5">
-            <div>
-              <label
-                htmlFor="whoami-name"
-                className="font-mono text-sm uppercase tracking-widest text-zinc-500"
-              >
-                name
-              </label>
-              <input
-                id="whoami-name"
-                type="text"
-                value={card.name}
-                maxLength={18}
-                onChange={(e) => onCardChange({ name: e.target.value })}
-                className="mt-2 w-full border-2 border-black bg-white px-3 py-2.5 font-mono text-base font-bold uppercase tracking-wide text-black focus:shadow-[4px_4px_0_#e42d40] focus:outline-none"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="whoami-number"
-                className="font-mono text-sm uppercase tracking-widest text-zinc-500"
-              >
-                member #
-              </label>
-              <input
-                id="whoami-number"
-                type="text"
-                value={card.number}
-                maxLength={8}
-                onChange={(e) => onCardChange({ number: e.target.value })}
-                className="mt-2 w-full border-2 border-black bg-white px-3 py-2.5 font-mono text-base font-bold uppercase tracking-wide text-black focus:shadow-[4px_4px_0_#e42d40] focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="mt-8 flex flex-wrap items-center gap-5">
-            <button
-              type="button"
-              onClick={onClear}
-              disabled={signature.length === 0}
-              className="border-2 border-white bg-transparent px-5 py-2.5 font-mono text-base font-bold uppercase tracking-wide text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              clear
-            </button>
-            {signature.length > 0 ? (
-              <a
-                href="#top"
-                className="bg-hc-red px-5 py-2.5 font-mono text-base font-bold uppercase tracking-wide text-white shadow-[3px_3px_0_#fff] transition hover:-translate-y-0.5"
-              >
-                see it on your card ↑
-              </a>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="order-1 lg:order-2">
-          <SignPad strokes={signature} onChange={onSign} />
-          <p className="mt-6 font-mono text-base uppercase tracking-widest text-zinc-500">
-            a mouse or your finger works fine
-          </p>
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -448,123 +219,150 @@ const stickerSlots = [
   { name: "???", earned: false },
 ];
 
-function PassportMock({
-  className = "",
-  name = DEFAULT_CARD.name,
-  number = DEFAULT_CARD.number,
-}: {
-  className?: string;
-  name?: string;
-  number?: string;
-}) {
+function PassportMock({ className = "" }: { className?: string }) {
   return (
     <div className={`relative w-full max-w-md ${className}`}>
-      <div className="flex aspect-[1.586/1] w-full overflow-hidden rounded-xl border-2 border-black bg-white shadow-[10px_10px_0_#e42d40]">
-        <div className="flex w-1/2 flex-col justify-between border-r-2 border-black bg-black p-5 text-white">
-          <div className="flex items-center gap-2">
-            <FlagIcon className="h-4 w-6 rounded-[2px]" />
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
-              Hack Club
-            </span>
-          </div>
-          <div>
-            <p className="font-mono text-[8px] uppercase tracking-[0.3em] text-zinc-400">
-              Passport of
-            </p>
-            <p className="truncate font-mono text-lg font-bold uppercase text-white">
-              {name}
-            </p>
-            <div className="mt-3 space-y-1 font-mono text-[8px] uppercase tracking-widest text-zinc-400">
-              <p>No: HC-{number}</p>
-              <p>Issued: tbd</p>
-              <p>Valid: forever</p>
-            </div>
-          </div>
-          <p className="font-mono text-[7px] uppercase tracking-[0.25em] text-hc-red">
-            ysws sticker collector
-          </p>
-        </div>
-
-        <div className="flex w-1/2 flex-col p-4">
-          <div className="flex items-center justify-between">
-            <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-zinc-500">
-              Stickers
-            </p>
-            <p className="font-mono text-[8px] uppercase tracking-widest text-hc-red">
-              1/6
-            </p>
-          </div>
-          <div className="mt-3 grid flex-1 grid-cols-3 gap-1.5">
-            {stickerSlots.map((s) =>
-              s.earned ? (
-                <div
-                  key={s.name}
-                  className="flex items-center justify-center border-2 border-hc-red bg-hc-red/5"
-                >
-                  <div className="flex aspect-square w-4/5 items-center justify-center rounded-full border-[3px] border-hc-red text-center">
-                    <span className="font-mono text-[8px] font-bold uppercase leading-tight text-hc-red">
-                      whoami
-                      <br />
-                      5h
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  key={s.name}
-                  className="flex items-center justify-center border-2 border-dashed border-zinc-300 text-center"
-                >
-                  <span className="px-0.5 font-mono text-[7px] uppercase tracking-widest text-zinc-400">
-                    {s.name}
+      <div className="book relative">
+        <div className="flex aspect-[1.586/1] w-full overflow-hidden rounded-xl border-2 border-black bg-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.55)]">
+          <div className="book-left relative flex w-1/2 flex-col justify-between border-r-2 border-black bg-black p-5 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <FlagIcon className="h-4 w-6 rounded-[2px]" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
+                    Hack Club
                   </span>
                 </div>
-              )
-            )}
+                <p className="mt-1 font-mono text-[7px] uppercase tracking-[0.3em] text-zinc-400">
+                  official ysws passport
+                </p>
+              </div>
+              <div className="relative h-10 w-10 rounded-full p-[2px] shadow-[0_0_0_2px_rgba(250,250,250,0.3)]">
+                <div className="holo-foil h-full w-full rounded-full" />
+                <div className="absolute inset-[2px] flex items-center justify-center rounded-full bg-black">
+                  <FlagIcon className="h-3 w-4.5" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="font-mono text-[8px] uppercase tracking-[0.3em] text-zinc-400">
+                Passport of
+              </p>
+              <p className="truncate font-mono text-lg font-bold uppercase text-white">
+                CloudGlides
+              </p>
+              <div className="mt-3 space-y-1 font-mono text-[8px] uppercase tracking-widest text-zinc-400">
+                <p>No: HC-000001</p>
+                <p>Issued: tbd</p>
+                <p>Valid: forever</p>
+              </div>
+            </div>
+
+            <p className="font-mono text-[7px] uppercase tracking-[0.25em] text-hc-red">
+              ysws sticker collector
+            </p>
+            <div className="absolute -left-[5px] bottom-1 top-1 w-[7px] rounded-l-[3px] bg-[repeating-linear-gradient(to_bottom,#1c1c1c_0_1px,#0a0a0a_1px_2px)]" />
           </div>
-          <p className="mt-3 font-mono text-[7px] uppercase tracking-widest text-zinc-400">
-            one sticker per ysws shipped
-          </p>
+
+          <div className="book-right relative flex w-1/2 flex-col p-4">
+            <div className="flex items-center justify-between">
+              <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-zinc-500">
+                Stickers
+              </p>
+              <p className="font-mono text-[8px] uppercase tracking-widest text-hc-red">
+                1/6
+              </p>
+            </div>
+            <div className="mt-3 grid flex-1 grid-cols-3 gap-1.5">
+              {stickerSlots.map((s) =>
+                s.earned ? (
+                  <div
+                    key={s.name}
+                    className="flex items-center justify-center border-2 border-hc-red bg-hc-red/5"
+                  >
+                    <div className="sticker-gloss relative flex aspect-square w-4/5 items-center justify-center rounded-full border-[3px] border-hc-red text-center">
+                      <span className="font-mono text-[8px] font-bold uppercase leading-tight text-hc-red">
+                        whoami
+                        <br />
+                        5h
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    key={s.name}
+                    className="flex items-center justify-center border-2 border-dashed border-zinc-300 text-center"
+                  >
+                    <span className="px-0.5 font-mono text-[7px] uppercase tracking-widest text-zinc-400">
+                      {s.name}
+                    </span>
+                  </div>
+                )
+              )}
+            </div>
+            <div className="flex items-end justify-between">
+              <p className="font-mono text-[7px] uppercase tracking-widest text-zinc-400">
+                one sticker per ysws shipped
+              </p>
+              <p className="font-mono text-[7px] uppercase tracking-widest text-zinc-400">
+                p.01
+              </p>
+            </div>
+            <div className="page-edge-right" />
+          </div>
+
+          <div className="passport-gutter" />
         </div>
       </div>
 
-      <div className="absolute -right-3 -top-4 rotate-6 border-2 border-black bg-white px-3 py-1 font-mono text-xs font-bold uppercase text-black shadow-[3px_3px_0_#e42d40]">
-        stamp: collected
+      <div className="stamp-ink absolute -right-3 -top-4 rotate-6 border-[3px] border-double border-hc-red/70 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wide text-hc-red/80">
+        sticker: collected
       </div>
     </div>
   );
 }
 
-function Hero({ card, signature }: { card: Card; signature: Stroke[][] }) {
+function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden bg-black px-6 pb-28 pt-36 text-white sm:pt-44"
+      className="relative overflow-hidden bg-surface px-6 pb-28 pt-36 text-ink sm:pt-44"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:3rem_3rem]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px)] bg-[size:3rem_3rem]"
       />
 
       <div className="relative mx-auto grid w-full max-w-5xl items-center gap-20 lg:grid-cols-2">
         <div>
-          <p className="inline-flex items-center gap-2 border-2 border-white px-3 py-1 font-mono text-sm font-bold uppercase tracking-widest text-white">
+          <p className="inline-flex items-center gap-2 border border-line-strong px-3 py-1 font-mono text-sm font-bold uppercase tracking-widest text-ink">
             <span className="h-2 w-2 bg-hc-red" />
             [01] a hack club ysws
           </p>
 
-          <h1 className="mt-8 font-mono text-[2.75rem] font-bold uppercase leading-[0.95] tracking-tight sm:text-7xl lg:text-6xl">
-            Ship 5
+          <h1 className="mt-8 font-display text-[3.2rem] uppercase leading-[0.95] tracking-tight sm:text-7xl lg:text-6xl">
+            <Scramble text="Ship 5" delay={0} />
             <br />
-            hours.
+            <Scramble
+              text="hours."
+              delay={150}
+              className="text-transparent [-webkit-text-stroke:2px_var(--ink)]"
+            />
             <br />
-            <span className="text-hc-red">Get your ID.</span>
+            <Scramble
+              text="Get your own Hack Club ID."
+              delay={300}
+              className="text-hc-red"
+            />
           </h1>
 
-          <p className="mt-6 max-w-md text-xl leading-relaxed text-zinc-400">
+          <p className="mt-6 max-w-md text-xl leading-relaxed text-muted">
             whoami is a ysws i run with friends from the hack club slack. build
-            identity-related software for 5 hours and we&apos;ll print you a
-            hack club ID card and put it in the mail. that&apos;s it, that&apos;s
-            the whole program.
+            identity-related software for 5 hours. once the ysws ends, we get
+            the cards fabricated and mail them out. it&apos;s just a little
+            memory of the ysws you were part of. that&apos;s it, that&apos;s the
+            whole program.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-5">
@@ -572,36 +370,29 @@ function Hero({ card, signature }: { card: Card; signature: Stroke[][] }) {
               href="https://hackclub.com/slack"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-hc-red px-7 py-3 font-mono text-lg font-bold uppercase tracking-wide text-white shadow-[5px_5px_0_#fff] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_#fff]"
+              className="bg-hc-red px-7 py-3 font-mono text-lg font-bold uppercase tracking-wide text-white shadow-[0_10px_30px_-10px_rgba(228,45,64,0.7)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-10px_rgba(228,45,64,0.8)] active:translate-y-[2px] active:shadow-[0_4px_12px_-6px_rgba(228,45,64,0.5)]"
             >
               Start shipping
             </a>
             <a
               href="#how"
-              className="border-2 border-white px-7 py-3 font-mono text-lg font-bold uppercase tracking-wide text-white transition hover:bg-white hover:text-black"
+              className="border border-line-strong px-7 py-3 font-mono text-lg font-bold uppercase tracking-wide text-ink transition hover:border-ink hover:bg-ink/[0.06] active:translate-y-[2px]"
             >
               How it works
             </a>
           </div>
 
-          <p className="mt-8 font-mono text-sm uppercase tracking-widest text-zinc-500">
-            we pay shipping everywhere, you pay nothing
+          <p className="mt-8 font-mono text-sm uppercase tracking-widest text-faint">
+            get your own hackclub ID
           </p>
         </div>
 
-        <div className="relative">
-          <IDCard
-            className="rotate-2 transition-transform duration-300 hover:rotate-0"
-            name={card.name}
-            number={card.number}
-            signature={signature}
-          />
-          <p className="absolute -right-3 -top-4 rotate-6 border-2 border-black bg-white px-3 py-1 font-mono text-xs font-bold uppercase text-black shadow-[3px_3px_0_#e42d40]">
-            you_are_here
-          </p>
-          <p className="absolute -bottom-2 -left-3 -rotate-3 border-2 border-black bg-white px-3 py-1 font-mono text-xs font-bold uppercase text-black shadow-[3px_3px_0_#e42d40]">
-            proof_of_ship
-          </p>
+        <div className="animate-float">
+          <Tilt>
+            <div className="relative">
+              <IDCard className="rotate-2" />
+            </div>
+          </Tilt>
         </div>
       </div>
     </section>
@@ -629,51 +420,60 @@ const steps = [
 
 function HowItWorks() {
   return (
-    <section id="how" className="bg-zinc-50 px-6 py-28 text-black">
+    <section
+      id="how"
+      className="border-t border-line bg-surface px-6 py-28 text-ink sm:py-32"
+    >
       <div className="mx-auto w-full max-w-5xl">
-        <p className="font-mono text-base font-bold uppercase tracking-widest text-hc-red">
-          [02] How it works
-        </p>
-        <h2 className="mt-4 font-mono text-4xl font-bold uppercase tracking-tight sm:text-6xl">
-          Three steps to an ID
-        </h2>
+        <Reveal>
+          <p className="font-mono text-base font-bold uppercase tracking-widest text-hc-red">
+            [02] How it works
+          </p>
+          <h2 className="mt-4 font-display text-5xl uppercase tracking-tight sm:text-6xl">
+            Three steps to an ID
+          </h2>
+        </Reveal>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-3">
-          {steps.map((s) => {
-            const cls =
-              "block border-2 border-black bg-white p-6 shadow-[6px_6px_0_#e42d40] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_#e42d40]";
-            const inner = (
-              <>
-                <span className="inline-block bg-hc-red px-2.5 py-1 font-mono text-sm font-bold text-white">
+        <div className="mt-14 divide-y divide-line border-y border-line">
+          {steps.map((s, i) => {
+            const row = (
+              <div className="flex flex-col gap-4 py-8 sm:flex-row sm:items-baseline sm:gap-12">
+                <span className="font-display text-5xl leading-none text-hc-red sm:w-24">
                   {s.num}
                 </span>
-                <h3 className="mt-5 font-mono text-xl font-bold uppercase tracking-wide">
-                  {s.title}
-                  {s.href ? (
-                    <span className="ml-2 text-hc-red" aria-hidden>
-                      →
-                    </span>
-                  ) : null}
-                </h3>
-                <p className="mt-2 text-base leading-relaxed text-zinc-600">
-                  {s.body}
-                </p>
-              </>
-            );
-            return s.href ? (
-              <a
-                key={s.num}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cls}
-              >
-                {inner}
-              </a>
-            ) : (
-              <div key={s.num} className={cls}>
-                {inner}
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-display text-2xl uppercase tracking-tight sm:text-3xl">
+                    {s.title}
+                    {s.href ? (
+                      <span
+                        className="ml-3 inline-block text-hc-red transition-transform group-hover:translate-x-1"
+                        aria-hidden
+                      >
+                        →
+                      </span>
+                    ) : null}
+                  </h3>
+                  <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">
+                    {s.body}
+                  </p>
+                </div>
               </div>
+            );
+            return (
+              <Reveal key={s.num} delay={i * 120}>
+                {s.href ? (
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block transition-colors hover:bg-ink/[0.04]"
+                  >
+                    {row}
+                  </a>
+                ) : (
+                  <div>{row}</div>
+                )}
+              </Reveal>
             );
           })}
         </div>
@@ -688,49 +488,47 @@ const passportSteps = [
   { num: "3", label: "Stick it in the passport" },
 ];
 
-function PassportSection({ name, number }: { name: string; number: string }) {
+function PassportSection() {
   return (
-    <section id="passport" className="bg-zinc-50 px-6 py-28 text-black">
+    <section
+      id="passport"
+      className="border-t border-line bg-surface px-6 py-28 text-ink sm:py-32"
+    >
       <div className="mx-auto grid w-full max-w-5xl items-center gap-20 lg:grid-cols-2">
         <div>
           <p className="font-mono text-base font-bold uppercase tracking-widest text-hc-red">
-            [04] the passport
+            [03] the passport
           </p>
-          <h2 className="mt-4 font-mono text-4xl font-bold uppercase tracking-tight sm:text-6xl">
+          <h2 className="mt-4 font-display text-5xl uppercase tracking-tight sm:text-6xl">
             One passport, every YSWS
           </h2>
-          <p className="mt-6 max-w-md text-xl leading-relaxed text-zinc-600">
-            whoami is your first stamp. after that, every ysws you finish adds
-            another one. the fine print is still being written.
+          <p className="mt-6 max-w-md text-xl leading-relaxed text-muted">
+            whoami gets you your first sticker. every ysws you finish earns
+            another one, and you stick them in the passport yourself. so you
+            remember them all. the design is still a draft, the community votes
+            on the final.
           </p>
 
-          <div className="mt-10 space-y-5">
+          <div className="mt-10 divide-y divide-line border-y border-line">
             {passportSteps.map((s) => (
-              <div
-                key={s.num}
-                className="flex items-center gap-4 border-2 border-black bg-white px-5 py-4 shadow-[4px_4px_0_#e42d40]"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-hc-red font-mono text-sm font-bold text-white">
+              <div key={s.num} className="flex items-center gap-5 py-4">
+                <span className="font-display text-2xl leading-none text-hc-red">
                   {s.num}
                 </span>
-                <p className="font-mono text-base font-bold uppercase tracking-wide">
+                <p className="font-mono text-base uppercase tracking-wide text-ink/80">
                   {s.label}
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="mt-8 font-mono text-base uppercase tracking-widest text-zinc-500">
+          <p className="mt-8 font-mono text-base uppercase tracking-widest text-faint">
             the stickers are real, you actually stick them in
           </p>
         </div>
 
         <div className="relative">
-          <PassportMock
-            name={name}
-            number={number}
-            className="rotate-2 transition-transform duration-300 hover:rotate-0"
-          />
+          <PassportMock className="rotate-2 transition-transform duration-300 hover:rotate-0" />
         </div>
       </div>
     </section>
@@ -751,8 +549,12 @@ const faqs = [
     a: "no. if you can type whoami in a terminal you qualify. if you can't, we'll show you.",
   },
   {
-    q: "How much does this cost?",
-    a: "zero. the card, the passport, the stickers, the shipping. we pay for all of it, you just put in the hours.",
+    q: "Why should I do this?",
+    a: "because when it's over you've got something real to keep. a card with your name on it, a passport that fills up with every ysws you finish. it's a memory you can hold, of all the things you built with the club.",
+  },
+  {
+    q: "Is the card design final?",
+    a: "no. the card and passport you see are still a draft. we'll put the final design to a community vote once the ysws is going.",
   },
   {
     q: "How long does shipping take?",
@@ -768,35 +570,34 @@ function FAQ() {
   return (
     <section
       id="faq"
-      className="relative overflow-hidden border-y border-white/10 bg-black px-6 py-28 text-white"
+      className="relative overflow-hidden border-t border-line bg-surface px-6 py-28 text-ink sm:py-32"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:3rem_3rem]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px)] bg-[size:3rem_3rem]"
       />
       <div className="relative mx-auto w-full max-w-3xl">
         <p className="font-mono text-base font-bold uppercase tracking-widest text-hc-red">
-          [05] faq
+          [04] faq
         </p>
-        <h2 className="mt-4 font-mono text-4xl font-bold uppercase tracking-tight sm:text-6xl">
+        <h2 className="mt-4 font-display text-5xl uppercase tracking-tight sm:text-6xl">
           Questions? ok.
         </h2>
 
-        <div className="mt-14 space-y-4">
+        <div className="mt-14 divide-y divide-line border-y border-line">
           {faqs.map((f) => (
-            <details
-              key={f.q}
-              className="group border-2 border-white/20 bg-white/[0.03] px-6 py-5 transition-colors open:border-hc-red open:shadow-[4px_4px_0_#e42d40]"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-mono text-lg font-bold uppercase tracking-wide [&::-webkit-details-marker]:hidden">
-                {f.q}
+            <details key={f.q} className="group py-6">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                <span className="font-display text-2xl uppercase tracking-tight text-ink transition-colors group-open:text-hc-red">
+                  {f.q}
+                </span>
                 <span className="shrink-0 text-hc-red transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
               <div className="grid transition-[grid-template-rows] duration-300 ease-out [grid-template-rows:0fr] group-open:[grid-template-rows:1fr]">
                 <div className="overflow-hidden">
-                  <p className="mt-3 text-base leading-relaxed text-zinc-400">
+                  <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">
                     {f.a}
                   </p>
                 </div>
@@ -811,17 +612,17 @@ function FAQ() {
 
 function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-black px-6 py-12 text-white">
+    <footer className="border-t border-line bg-surface px-6 py-12 text-ink">
       <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-6 sm:flex-row">
         <Logo />
-        <p className="font-mono text-base uppercase tracking-wide text-zinc-500">
+        <p className="font-mono text-base uppercase tracking-wide text-faint">
           made with <span className="text-hc-red">♥</span> by hackers
         </p>
         <a
           href="https://hackclub.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-base font-bold uppercase tracking-wide text-hc-red transition-colors hover:text-white"
+          className="font-mono text-base font-bold uppercase tracking-wide text-hc-red transition-colors hover:text-ink"
         >
           hackclub.com →
         </a>
@@ -831,24 +632,33 @@ function Footer() {
 }
 
 export default function Home() {
-  const [card, setCard] = useState<Card>(DEFAULT_CARD);
-  const [signature, setSignature] = useState<Stroke[][]>([]);
-
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-hc-red selection:text-white">
+    <div className="min-h-screen bg-surface text-ink selection:bg-hc-red selection:text-white">
+      <svg width="0" height="0" className="absolute" aria-hidden focusable="false">
+        <defs>
+          <filter id="stamp-rough">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.05"
+              numOctaves="3"
+              result="noise"
+            />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" />
+          </filter>
+        </defs>
+      </svg>
       <Nav />
       <main>
-        <Hero card={card} signature={signature} />
+        <Reveal>
+          <Hero />
+        </Reveal>
         <HowItWorks />
-        <SignSection
-          card={card}
-          onCardChange={(patch) => setCard((prev) => ({ ...prev, ...patch }))}
-          signature={signature}
-          onSign={setSignature}
-          onClear={() => setSignature([])}
-        />
-        <PassportSection name={card.name} number={card.number} />
-        <FAQ />
+        <Reveal>
+          <PassportSection />
+        </Reveal>
+        <Reveal>
+          <FAQ />
+        </Reveal>
       </main>
       <Footer />
     </div>
