@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  useRef,
-  useState,
-  type PointerEvent as ReactPointerEvent,
-  type ReactNode,
-} from "react";
+import { useRef, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 
 export default function Tilt({
   children,
-  max = 12,
+  max = 10,
   className = "",
 }: {
   children: ReactNode;
@@ -17,21 +12,20 @@ export default function Tilt({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [rot, setRot] = useState({ x: 0, y: 0, active: false });
 
   function move(e: ReactPointerEvent<HTMLDivElement>) {
     const el = ref.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
+    if (!el) return;
     const rect = el.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setRot({ x: -py * max, y: px * max, active: true });
+    el.style.transform = `perspective(900px) rotateX(${-py * max}deg) rotateY(${px * max}deg)`;
   }
 
   function leave() {
-    setRot({ x: 0, y: 0, active: false });
+    const el = ref.current;
+    if (!el) return;
+    el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
   }
 
   return (
@@ -39,21 +33,10 @@ export default function Tilt({
       ref={ref}
       onPointerMove={move}
       onPointerLeave={leave}
-      className={className}
-      style={{ perspective: "1000px" }}
+      className={`transition-transform duration-150 ease-out will-change-transform ${className}`}
+      style={{ transform: "perspective(900px) rotateX(0deg) rotateY(0deg)" }}
     >
-      <div
-        style={{
-          transform: `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`,
-          transition: rot.active
-            ? "transform 0.12s ease-out"
-            : "transform 0.5s ease-out",
-          transformStyle: "preserve-3d",
-          willChange: "transform",
-        }}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

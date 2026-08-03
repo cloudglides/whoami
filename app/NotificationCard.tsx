@@ -9,26 +9,21 @@ export default function NotificationCard() {
 
   if (hidden) return null;
 
-  const dismiss = () => setHidden(true);
-
   return (
-    <div
-      className="notify-in fixed right-5 top-20 z-40 w-[320px] max-w-[calc(100vw-2.5rem)] border-2 border-hc-red bg-surface p-5 text-ink shadow-[0_24px_60px_-24px_rgba(0,0,0,0.6)]"
-    >
-      <button
-        onClick={dismiss}
-        aria-label="Dismiss notification"
-        className="absolute right-3 top-3 font-mono text-lg leading-none text-muted transition-colors hover:text-ink"
-      >
-        ×
-      </button>
-      <p className="font-mono text-xs font-bold uppercase tracking-widest text-hc-red">
-        rsvp
-      </p>
-      <h3 className="mt-2 font-display text-2xl uppercase tracking-tight">
-        make this draft real
-      </h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted">
+    <div className="notify-in fixed bottom-5 right-5 z-40 flex w-[320px] max-w-[calc(100vw-2.5rem)] flex-col gap-3 rounded-xl border border-white/20 bg-white/10 p-5 text-foreground shadow-[0_8px_30px_-8px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+      <div className="flex items-start justify-between gap-4">
+        <p className="font-mono text-xs font-bold uppercase tracking-widest text-hc-red">
+          rsvp
+        </p>
+        <button
+          onClick={() => setHidden(true)}
+          aria-label="Dismiss notification"
+          className="font-mono text-lg leading-none text-muted transition-colors hover:text-foreground"
+        >
+          ×
+        </button>
+      </div>
+      <p className="text-sm font-medium">
         the card and passport are still drafts. rsvp and we&apos;ll turn them
         into something real.
       </p>
@@ -36,7 +31,7 @@ export default function NotificationCard() {
         href={FORM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 inline-block bg-hc-red px-4 py-2 font-mono text-sm font-bold uppercase tracking-wide text-white transition hover:-translate-y-0.5"
+        className="inline-block w-fit border border-hc-red px-4 py-1.5 font-mono text-sm font-bold uppercase tracking-wide text-hc-red transition-colors hover:bg-hc-red hover:text-white"
       >
         rsvp →
       </a>
