@@ -10,20 +10,24 @@ export default function NotificationCard() {
   if (hidden) return null;
 
   return (
-    <div className="notify-in fixed bottom-5 right-5 z-40 flex w-[320px] max-w-[calc(100vw-2.5rem)] flex-col gap-3 rounded-xl border border-white/20 bg-white/10 p-5 text-foreground shadow-[0_8px_30px_-8px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+    <div
+      className="notify-in fixed bottom-5 right-5 z-50 flex w-[300px] max-w-[calc(100vw-2.5rem)] flex-col gap-3 border border-paper/25 bg-ink-deep/95 p-5 backdrop-blur-sm"
+      role="status"
+      aria-live="polite"
+    >
       <div className="flex items-start justify-between gap-4">
-        <p className="font-mono text-xs font-bold uppercase tracking-widest text-hc-red">
+        <p className="font-body text-sm font-semibold uppercase tracking-[0.14em] text-lavender">
           rsvp
         </p>
         <button
           onClick={() => setHidden(true)}
           aria-label="Dismiss notification"
-          className="font-mono text-lg leading-none text-muted transition-colors hover:text-foreground"
+          className="grid h-7 w-7 place-items-center border-0 bg-transparent p-0 font-serif text-xl text-paper-dim transition-colors hover:text-lavender"
         >
           ×
         </button>
       </div>
-      <p className="text-sm font-medium">
+      <p className="font-body text-[0.95rem] leading-relaxed text-paper">
         the card and passport are still drafts. rsvp and we&apos;ll turn them
         into something real.
       </p>
@@ -31,9 +35,9 @@ export default function NotificationCard() {
         href={FORM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block w-fit border border-hc-red px-4 py-1.5 font-mono text-sm font-bold uppercase tracking-wide text-hc-red transition-colors hover:bg-hc-red hover:text-white"
+        className="inline-block w-fit border-0 bg-transparent p-0 font-serif text-lg text-lavender no-underline transition-colors hover:text-lavender-dim"
       >
-        rsvp →
+        [ rsvp ]
       </a>
     </div>
   );

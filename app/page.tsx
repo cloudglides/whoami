@@ -1,21 +1,30 @@
-import Image from "next/image";
-import Tilt from "./Tilt";
+import Reveal from "./Reveal";
+import Scramble from "./Scramble";
+
+const SLACK_URL = "https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19";
 
 const steps = [
   {
-    num: "01",
+    no: "01",
+    tag: "say hi",
     title: "Join the Slack",
-    href: "https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19",
+    href: SLACK_URL,
+    cta: "say hi",
+    note: "channel #whoami",
     body: "find #whoami in the hack club slack and say hi. the rules fit on one page and they're mostly common sense.",
   },
   {
-    num: "02",
+    no: "02",
+    tag: "build · track it",
     title: "Build for 5 hours",
-    body: "identity-related software. a login system, an auth tool, a name generator, whatever fits. track 5 real hours in hackatime, or a notes app if you'd rather. we're not picky.",
+    note: "tracked in hackatime",
+    body: "identity-related software. a login system, an auth tool, a name generator, or something that only makes sense to you. track 5 real hours in hackatime, or a notes app if you'd rather. we're not picky.",
   },
   {
-    num: "03",
+    no: "03",
+    tag: "exit · shipped",
     title: "Ship it, get your ID",
+    note: "status · mailed",
     body: "ship your project. your card goes in the mail. that part we're sure about.",
   },
 ];
@@ -35,7 +44,7 @@ const faqs = [
   },
   {
     q: "Why should I do this?",
-    a: "because when it's over you've got something real to keep. a card with your name on it, a passport that fills up with every ysws you finish. it's a memory you can hold, of all the things you built with the club.",
+    a: "because when it's over you've got something real to keep. a card with your name on it, a passport that fills up with every ysws you finish. you can hold it, and it's proof the hours actually happened.",
   },
   {
     q: "How long does shipping take?",
@@ -49,164 +58,185 @@ const faqs = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-hc-red selection:text-white">
-      <main>
-        <section id="top" className="relative pt-20">
-          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-10 px-6 xl:grid-cols-[200px_minmax(0,1fr)_200px]">
-            <div aria-hidden className="hidden xl:block">
-              <div className="sticky -top-4 space-y-6">
-                {[
-  { name: "backImg1", rot: -4 },
-  { name: "backImg7", rot: 3 },
-  { name: "backImg9", rot: -2 },
-].map((s) => (
-                  <div key={s.name} style={{ transform: `rotate(${s.rot}deg)` }}>
-                    <div className="peep-mask">
-                      <Image
-                        src={`/assets/peeps/${s.name}.webp`}
-                        alt=""
-                        width={450}
-                        height={450}
-                        className="w-full object-cover"
-                      />
+    <div className="relative min-h-screen overflow-x-clip bg-ink text-paper">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-paper focus:px-4 focus:py-2 focus:text-base focus:font-semibold focus:text-ink"
+      >
+        skip to content
+      </a>
+
+      {/* grain */}
+      <div className="grain-overlay" aria-hidden />
+
+      <div className="mx-auto max-w-[68rem] px-[clamp(1rem,4vw,2rem)]">
+        <main id="main" className="scroll-mt-14">
+        {/* HERO */}
+        <section id="top" className="pt-[clamp(3rem,7vh,4.5rem)] text-center">
+          <Reveal>
+            <p className="font-body text-sm uppercase tracking-[0.2em] text-paper-dim">
+              <Scramble text="a hack club · ysws" />
+            </p>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h1 className="mt-6 font-display text-[clamp(3rem,9vw,6.5rem)] leading-[0.9]">
+              <Scramble text="ship 5 hours." />
+              <br />
+              <span className="text-lavender">
+                <Scramble text="get the ID." />
+              </span>
+            </h1>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mx-auto mt-8 max-w-md font-body text-[clamp(1.05rem,2vw,1.3rem)] leading-relaxed text-paper-dim">
+              <Scramble text="build identity-related software for 5 hours and get a real hack club ID in the mail. that's it." />
+            </p>
+          </Reveal>
+          <Reveal delay={0.15}>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+              <a
+                href={SLACK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-serif text-[clamp(1.6rem,3.4vw,2.2rem)] text-lavender no-underline transition-colors hover:text-lavender-dim"
+              >
+                [ start shipping ]
+              </a>
+              <a
+                href="#how"
+                className="font-body text-[clamp(1.05rem,2vw,1.2rem)] text-paper transition-colors hover:text-lavender"
+              >
+                or see how it works ↓
+              </a>
+</div>
+              </Reveal>
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section id="how" className="mt-[clamp(3.5rem,9vw,6.5rem)]">
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[0.95]">
+                <Scramble text="how it works" />
+                <span className="text-lavender">.</span>
+              </h2>
+              <p className="mb-2 max-w-xs font-body text-[clamp(0.95rem,1.5vw,1.05rem)] text-paper-dim">
+                <Scramble text="we don't do applications. if you're between 13 and 19 and you're in the slack, consider yourself in." />
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-3">
+            {steps.map((s, i) => (
+              <Reveal key={s.no} delay={i * 0.06}>
+                <div className="border-t border-paper/25 pt-5">
+                  <p className="font-display text-4xl leading-none text-lavender">
+                    <Scramble text={s.no} />
+                  </p>
+                  <h3 className="mt-4 font-serif text-[clamp(1.4rem,2.2vw,1.7rem)] leading-tight text-paper">
+                    <Scramble text={s.title} />
+                  </h3>
+                  <p className="mt-3 font-body text-[0.95rem] leading-relaxed text-paper-dim">
+                    <Scramble text={s.body} />
+                  </p>
+                  {s.href ? (
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-block font-serif text-[clamp(1.2rem,2vw,1.4rem)] text-lavender no-underline transition-colors hover:text-lavender-dim"
+                    >
+                      [ {s.cta} ]
+                    </a>
+                  ) : (
+                    <p className="mt-4 font-body text-sm italic text-paper-dim/80">
+                      <Scramble text={s.note} />
+                    </p>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section id="faq" className="mt-[clamp(3.5rem,9vw,6.5rem)]">
+          <Reveal>
+            <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[0.95]">
+              <Scramble text="faq" />
+              <span className="text-lavender">.</span>
+            </h2>
+          </Reveal>
+          <div className="mt-4 max-w-2xl">
+            {faqs.map((f, i) => (
+              <Reveal key={f.q} delay={i * 0.02}>
+                <details className="group border-t border-paper/25 py-5 last:border-b">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                    <span className="font-serif text-[clamp(1.3rem,2.2vw,1.6rem)] leading-tight text-paper transition-colors group-open:text-lavender">
+                      <Scramble text={f.q} />
+                    </span>
+                    <span
+                      aria-hidden
+                      className="shrink-0 font-serif text-2xl text-lavender transition-transform duration-300 group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <div className="grid transition-[grid-template-rows] duration-300 ease-out [grid-template-rows:0fr] group-open:[grid-template-rows:1fr]">
+                    <div className="overflow-hidden">
+                      <p className="max-w-xl pt-2 font-body text-[0.95rem] leading-relaxed text-paper-dim">
+                        <Scramble text={f.a} />
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                </details>
+              </Reveal>
+            ))}
+          </div>
+        </section>
 
-            <div className="mx-auto w-full max-w-2xl min-w-0 text-center sm:text-left">
-              <h1 className="text-3xl font-medium tracking-tight sm:text-5xl">
-            Ship 5 hours.
-            <br />
-            <span className="text-hc-red">Get your own Hack Club ID.</span>
-          </h1>
-
-          <p className="mt-6 max-w-xl leading-relaxed text-muted sm:mx-0 mx-auto">
-            Build identity-related software for 5 hours, get a Hack Club ID in
-            the mail. It&apos;s a little memory of the YSWS you were part of.
-            That&apos;s it, that&apos;s the whole program.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:justify-start">
-            <span className="inline-block cursor-not-allowed bg-hc-red px-5 py-3 font-mono text-sm font-bold text-white opacity-70">
-              Start shipping
-            </span>
+        {/* CTA */}
+        <section className="mt-[clamp(3.5rem,9vw,6.5rem)] pb-[clamp(1rem,3vw,2rem)] text-center">
+          <Reveal>
+            <h2 className="font-display text-[clamp(2.5rem,7vw,4.5rem)] leading-[0.9]">
+              <Scramble text="your ID is" />{" "}
+              <span className="text-lavender">
+                <Scramble text="waiting." />
+              </span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.05}>
             <a
-              href="https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19"
+              href={SLACK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-line px-5 py-3 font-mono text-sm text-foreground transition-colors duration-200 hover:border-hc-red hover:bg-hc-red/5 hover:text-hc-red"
+              className="mt-6 inline-block font-serif text-[clamp(1.7rem,4vw,2.4rem)] text-lavender no-underline transition-colors hover:text-lavender-dim"
             >
-              join the slack
+              [ join the slack ]
             </a>
-          </div>
-
-          <Tilt className="mx-auto mt-14 max-w-2xl">
-            <Image
-              src="/assets/hc-id.png"
-              alt="Hack Club ID card"
-              width={666}
-              height={375}
-              priority
-              className="h-auto w-full drop-shadow-xl"
-            />
-          </Tilt>
-            </div>
-
-            <div aria-hidden className="hidden xl:block">
-              <div className="sticky -top-4 space-y-8">
-                {[
-                  { img: "backImg8", rot: 5 },
-                  { img: "backImg2", rot: -3 },
-                  { img: "backImg6", rot: 4 },
-                ].map(({ img, rot }) => (
-                  <div key={img} style={{ transform: `rotate(${rot}deg)` }}>
-                    <div className="peep-mask">
-                      <Image
-                        src={`/assets/peeps/${img}.webp`}
-                        alt=""
-                        width={450}
-                        height={450}
-                        className="w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          </Reveal>
         </section>
 
-        <section id="how" className="border-t border-line py-10">
-          <div className="mx-auto w-full max-w-2xl px-6">
-          <h2 className="font-mono text-sm font-bold uppercase tracking-widest text-muted">
-            How it works
-          </h2>
-          <ol className="mt-6 divide-y divide-line border-y border-line">
-            {steps.map((s) => (
-              <li key={s.num} className="py-4">
-                <span className="font-mono text-xs font-bold tracking-widest text-hc-red">
-                  {s.num}
-                </span>
-                <h3 className="mt-1 font-semibold">{s.title}</h3>
-                <p className="mt-2 leading-relaxed text-muted">{s.body}</p>
-              </li>
-            ))}
-          </ol>
-          </div>
-        </section>
+        </main>
 
-        <section id="faq" className="border-t border-line py-10">
-          <div className="mx-auto w-full max-w-2xl px-6">
-          <h2 className="font-mono text-sm font-bold uppercase tracking-widest text-muted">
-            FAQ
-          </h2>
-          <div className="mt-6 divide-y divide-line border-y border-line">
-            {faqs.map((f) => (
-              <details key={f.q} className="group py-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
-                  <span className="font-medium transition-colors duration-200 group-open:text-hc-red">
-                    {f.q}
-                  </span>
-                  <span className="relative flex h-5 w-5 shrink-0 items-center justify-center text-hc-red">
-                    <span className="absolute h-0.5 w-3.5 bg-current transition-transform duration-200" />
-                    <span className="absolute h-3.5 w-0.5 bg-current transition-transform duration-200 group-open:rotate-90 group-open:opacity-0" />
-                  </span>
-                </summary>
-                <div className="grid transition-[grid-template-rows] duration-300 ease-out [grid-template-rows:0fr] group-open:[grid-template-rows:1fr]">
-                  <div className="overflow-hidden">
-                    <p className="pt-3 leading-relaxed text-muted">{f.a}</p>
-                  </div>
-                </div>
-              </details>
-            ))}
-          </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="relative mt-32 border-t border-line">
-        <div className="mx-auto flex w-full max-w-2xl items-center justify-between px-6 py-6 font-mono text-sm text-muted">
-          <span>whoami</span>
+        {/* FOOTER */}
+        <footer className="flex flex-col items-center justify-between gap-3 border-t border-paper/25 py-6 font-body text-sm text-paper-dim sm:flex-row">
+          <span className="font-display text-lg leading-none text-lavender">
+            whoami
+          </span>
+          <span>
+            <Scramble text="ship 5 hours, get the ID." />
+          </span>
           <a
             href="https://hackclub.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors duration-200 hover:text-hc-red"
+            className="transition-colors hover:text-lavender"
           >
             hackclub.com
           </a>
-        </div>
-        <div className="absolute -top-[9.25rem] right-0 w-full max-w-md">
-          <Image
-            src="/assets/footer.webp"
-            alt="hack club"
-            width={2048}
-            height={1680}
-            className="w-full"
-          />
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }

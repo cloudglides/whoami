@@ -1,34 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
-  --background: #ffffff;
-  --foreground: #111111;
-  --muted: #52525b;
-  --faint: #9ca3af;
-  --line: rgba(0, 0, 0, 0.12);
+  color-scheme: dark;
+  --ink: #1e1a1a;
+  --ink-deep: #161313;
+  --paper: #f5efd6;
+  --paper-dim: #cfc8ae;
+  --lavender: #b98af3;
+  --lavender-dim: #cdabf8;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-hc-red: #e42d40;
-  --color-muted: var(--muted);
-  --color-faint: var(--faint);
-  --color-line: var(--line);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-lavender: var(--lavender);
+  --color-lavender-dim: var(--lavender-dim);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-display);
+  --font-display: var(--font-display);
+  --font-body: var(--font-sans-italic);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 2rem;
   overflow-x: clip;
 }
 
@@ -39,27 +43,38 @@ html {
 }
 
 section[id] {
-  scroll-margin-top: 4.5rem;
+  scroll-margin-top: 3.5rem;
 }
 
-.peep-mask {
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.35);
-  filter: saturate(0.85);
-  transition: transform 0.3s ease, filter 0.3s ease;
+::selection {
+  background: var(--lavender);
+  color: var(--ink);
 }
 
-.peep-mask img {
-  height: 100%;
+/* ---- scramble ---- */
+.noise {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  letter-spacing: 0.02em;
+  user-select: none;
 }
 
-.peep-mask:hover {
-  transform: translateY(-4px);
-  filter: saturate(1);
+/* ---- paper grain overlay ---- */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: cover, cover;
+  background-position: top;
+  background-repeat: no-repeat;
 }
 
+/* ---- notify card ---- */
 @keyframes notify-in {
   from {
     transform: translateY(16px);
@@ -72,27 +87,33 @@ section[id] {
 }
 
 .notify-in {
-  animation: notify-in 0.5s ease-out 0.6s both;
+  animation: notify-in 0.5s ease-out 0.8s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notify-in {
+    animation: none;
+  }
 }
 
 a:focus-visible,
 button:focus-visible,
-summary:focus-visible {
-  outline: 3px solid #e42d40;
+summary:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--lavender);
   outline-offset: 3px;
 }
 
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+a,
+button,
+summary,
+input {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.fade-up {
-  animation: fade-up 0.4s ease-out both;
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }

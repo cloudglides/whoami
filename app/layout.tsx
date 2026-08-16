@@ -1,16 +1,26 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Hanken_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import NotificationCard from "./NotificationCard";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const zarathustra = localFont({
+  variable: "--font-display",
+  src: "./fonts/zarathustra.otf",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const hanken = Hanken_Grotesk({
+  variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const hankenItalic = Hanken_Grotesk({
+  variable: "--font-sans-italic",
+  subsets: ["latin"],
+  style: "italic",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,6 +35,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#1e1a1a",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,9 +47,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${zarathustra.variable} ${hanken.variable} ${hankenItalic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-ink text-paper">
         {children}
         <NotificationCard />
       </body>
