@@ -15,16 +15,16 @@ const steps = [
   },
   {
     no: "02",
-    tag: "build · track it",
+    tag: "build + track it",
     title: "Build for 5 hours",
     note: "tracked in hackatime",
-    body: "identity-related software. a login system, an auth tool, a name generator, or something that only makes sense to you. track 5 real hours in hackatime, or a notes app if you'd rather. we're not picky.",
+    body: "identity-related software. a login system, an auth tool, a name generator, or something that only makes sense to you. track 5 real hours in hackatime, or a notes app if you'd rather.",
   },
   {
     no: "03",
-    tag: "exit · shipped",
+    tag: "exit: shipped",
     title: "Ship it, get your ID",
-    note: "status · mailed",
+    note: "status: mailed",
     body: "ship your project. your card goes in the mail. that part we're sure about.",
   },
 ];
@@ -52,7 +52,7 @@ const faqs = [
   },
   {
     q: "Am I eligible?",
-    a: "if you're in the hack club slack and between 13 and 19, yes. that's the whole requirement.",
+    a: "if you're in the hack club slack and between 13 and 19, yes.",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function Home() {
         <section id="top" className="pt-[clamp(3rem,7vh,4.5rem)] text-center">
           <Reveal>
             <p className="font-body text-sm uppercase tracking-[0.2em] text-paper-dim">
-              <Scramble text="a hack club · ysws" />
+              <Scramble text="a hack club ysws" />
             </p>
           </Reveal>
           <Reveal delay={0.05}>
@@ -89,7 +89,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.1}>
             <p className="mx-auto mt-8 max-w-md font-body text-[clamp(1.05rem,2vw,1.3rem)] leading-relaxed text-paper-dim">
-              <Scramble text="build identity-related software for 5 hours and get a real hack club ID in the mail. that's it." />
+                <Scramble text="build identity-related software for 5 hours and get a real hack club ID in the mail." />
             </p>
           </Reveal>
           <Reveal delay={0.15}>
