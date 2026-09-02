@@ -14,7 +14,7 @@ export default function Home() {
       <FadeIn className="mx-auto max-w-5xl px-5 pt-14">
         <section>
           <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-            Apply for your <span className="font-hc text-hc">hackclub</span> ID
+            Apply for your <span className="font-hc text-hc">Hack Club</span> ID
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
@@ -50,7 +50,9 @@ export default function Home() {
                   >
                     {item.q}
                   </Link>
-                  <p className="mt-1 text-sm text-govuk-text-muted">{item.desc}</p>
+                  <p className="mt-1 text-sm text-govuk-text-muted">
+                    {item.desc}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -87,27 +89,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        <hr className="section-rule" />
-
-        <section className="govuk-panel">
-          <h2 className="text-3xl font-bold">
-            {page.ctaTitle} <span className="font-hc text-white">waiting</span>.
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-base text-white/80">
-            {page.ctaText}
-          </p>
-          <div className="mt-6">
-            <Link
-              href={SLACK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="start-now start-now--on-dark no-underline"
-            >
-              Start now
-            </Link>
           </div>
         </section>
 

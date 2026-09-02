@@ -22,7 +22,7 @@ const navItems: {
     ],
   },
   {
-    href: "mailto:cloudglides@proton.me",
+    href: "mailto:passports@hackclub.com",
     label: "For organizers",
     mailto: true,
     cardTitle: "For organizers",
@@ -46,7 +46,7 @@ export default function NavHoverCard() {
 
   async function copyEmail() {
     try {
-      await navigator.clipboard.writeText("cloudglides@proton.me");
+      await navigator.clipboard.writeText("passports@hackclub.com");
       setCopied(true);
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopied(false), 1500);
@@ -169,10 +169,10 @@ export default function NavHoverCard() {
           {active !== null && navItems[active].mailto ? (
             <div className="mt-4 flex items-center gap-2 border-t border-govuk-grey-2 pt-3">
               <a
-                href="mailto:cloudglides@proton.me"
+                href="mailto:passports@hackclub.com"
                 className="text-sm font-semibold text-govuk-blue underline underline-offset-2 transition-colors hover:text-govuk-blue-hover"
               >
-                cloudglides@proton.me
+                passports@hackclub.com
               </a>
               <button
                 type="button"

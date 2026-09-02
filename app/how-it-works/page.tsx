@@ -12,15 +12,11 @@ export default function HowItWorksPage() {
     <div className="pb-12">
       <FadeIn className="mx-auto max-w-5xl px-5 pt-10">
         <Breadcrumb
-          items={[
-            { label: "whoami", href: "/" },
-            { label: "How it works" },
-          ]}
+          items={[{ label: "whoami", href: "/" }, { label: "How it works" }]}
         />
 
         <h1 className="mb-6 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          How to get your{" "}
-          <span className="font-hc text-hc">hackclub</span> ID
+          How to get your <span className="font-hc text-hc">hack club</span> ID
         </h1>
         <p className="mb-4 max-w-2xl text-lg leading-relaxed text-govuk-grey-4">
           {page.heroIntro}
@@ -53,25 +49,6 @@ export default function HowItWorksPage() {
             </div>
           ))}
         </div>
-
-        <hr className="section-rule" />
-
-        <section className="govuk-panel">
-          <h2 className="text-2xl font-bold">{page.ctaTitle}</h2>
-          <p className="mx-auto mt-3 max-w-md text-base text-white/80">
-            {page.ctaText}
-          </p>
-          <div className="mt-6">
-            <Link
-              href={SLACK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="start-now start-now--on-dark no-underline"
-            >
-              Join the Slack
-            </Link>
-          </div>
-        </section>
 
         <Feedback />
       </FadeIn>
