@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import home from "../content/home.json";
 
 const zarathustra = localFont({
   variable: "--font-zarathustra",
@@ -18,13 +19,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "whoami - Apply for your Hackclub ID",
-  description:
-    "A Hackclub YSWS. Build identity-related software for 5 hours and earn a real Hackclub ID card.",
+  title: home.metaTitle,
+  description: home.heroIntro,
   openGraph: {
-    title: "whoami - Apply for your Hackclub ID",
-    description:
-      "A Hackclub YSWS. Build identity-related software for 5 hours and earn a real Hackclub ID card.",
+    title: home.metaTitle,
+    description: home.heroIntro,
     type: "website",
   },
 };
