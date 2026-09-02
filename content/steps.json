@@ -1,0 +1,26 @@
+[
+  {
+    "no": 1,
+    "heading": "Join the Hack Club Slack",
+    "body": "Hop into the Hack Club Slack and say hi in the channel. This is where you'll hang out, ask questions, and get support from others working on the project.",
+    "detail": "Make sure you've joined the #whoami channel so you don't miss announcements, deadlines, or fun updates from the people organising it."
+  },
+  {
+    "no": 2,
+    "heading": "Build something identity-related",
+    "body": "Spend 7 hours building a project related to identity to earn the Passport or ID, or 14 hours for both. It can be anything you can dream up.",
+    "detail": "Some ideas: a passport-style generator, a face detection tool, a username finder, a digital signature app, or anything else that feels like it's about who you are."
+  },
+  {
+    "no": 3,
+    "heading": "Ship it",
+    "body": "Finish your project, make sure it actually works, and submit it. Give it your best, ship something you're proud of, and you're golden!",
+    "detail": "Double Dip is not allowed (yet), but you're always welcome to submit a brand new project. Keep it polished and make sure it's something you'd be proud to show off."
+  },
+  {
+    "no": 4,
+    "heading": "Get your ID in the mail",
+    "body": "Once your project is reviewed, your very own Hack Club ID will be shipped to your doorstep. A nice little memory of Hack Club that doesn't hurt to keep :D",
+    "detail": "Reviews can take a little while. The organiser is often working alone and juggling exams, so please be patient! Reach out on Slack if you have any concerns."
+  }
+]

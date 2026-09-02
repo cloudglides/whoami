@@ -1,0 +1,26 @@
+[
+  {
+    "q": "How many hours do I need?",
+    "desc": "You need 7 hours for the Passport or ID, or 14 hours if you want both!"
+  },
+  {
+    "q": "What should I build?",
+    "desc": "Anything identity-related! Build something around IDs, authentication, NFC, digital identity, or whatever else you can come up with."
+  },
+  {
+    "q": "Do I need to be good at coding?",
+    "desc": "Nope! Just give it your best and ship a quality project you're proud of."
+  },
+  {
+    "q": "Why should I do this?",
+    "desc": "Your ID works with Attend, so you can use it to check in at Hack Club events without your phone. BUT BUT BUT it's also a pretty cool keepsake of your time at Hack Club. Doesn't hurt to keep it :D"
+  },
+  {
+    "q": "How long do reviews take?",
+    "desc": "I'm working on this mostly by myself, and I've got exams too :( Please be patient! Getting the logistics of physical IDs sorted out takes a while."
+  },
+  {
+    "q": "Can I submit twice?",
+    "desc": "Double-dipping isn't allowed (yet), but feel free to submit a new project!"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "q": "How many hours do I need?",
+    "a": "You need 7 hours for the Passport or ID, or 14 hours for both!"
+  },
+  {
+    "q": "What should I build?",
+    "a": "Anything as long as it's identity-related! Build something that you'd be proud to show off to the Hack Club community."
+  },
+  {
+    "q": "Do I need to be good at coding?",
+    "a": "As long as you give it your best and ship a quality project. Effort beats raw skill! Just make sure what you ship actually works."
+  },
+  {
+    "q": "Why should I do this?",
+    "a": "It works with Attend, which makes checking in offline easier. BUT BUT BUT IT'S ALSO A NICE MEMORY OF HACK CLUB! DOESN'T HURT TO KEEP IT :D"
+  },
+  {
+    "q": "How long does shipping take?",
+    "a": "I'm working on this alone, and I've got exams too :( Please try to be patient, IT'S REALLY HARD TO MANAGE THE LOGISTICS OF THIS. Thanks for understanding!"
+  },
+  {
+    "q": "Am I eligible?",
+    "a": "Anyone who ships a quality, identity-related project on time is eligible. Just make sure to submit a new project once we're accepting entries."
+  },
+  {
+    "q": "Can I apply more than once?",
+    "a": "Double Dip is not allowed (yet), but feel free to submit a new project anytime."
+  },
+  {
+    "q": "What if I don't finish in time?",
+    "a": "Life happens! If you don't finish in time, reach out on Slack and we'll figure something out. The deadline is flexible if you ask nicely."
+  }
+]

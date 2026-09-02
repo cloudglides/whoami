@@ -1,42 +1,36 @@
 import type { Metadata, Viewport } from "next";
-import { Hanken_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import NotificationCard from "./NotificationCard";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const zarathustra = localFont({
-  variable: "--font-display",
+  variable: "--font-zarathustra",
   src: "./fonts/zarathustra.otf",
   display: "swap",
 });
 
-const hanken = Hanken_Grotesk({
-  variable: "--font-sans",
+const inter = Inter({
+  variable: "--font-gds",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const hankenItalic = Hanken_Grotesk({
-  variable: "--font-sans-italic",
-  subsets: ["latin"],
-  style: "italic",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "whoami · Ship 5 hours, get your ID",
+  title: "whoami - Apply for your Hackclub ID",
   description:
-    "A Hack Club YSWS. Build identity-related software for 5 hours and earn a real Hack Club ID card.",
+    "A Hackclub YSWS. Build identity-related software for 5 hours and earn a real Hackclub ID card.",
   openGraph: {
-    title: "whoami · Ship 5 hours, get your ID",
+    title: "whoami - Apply for your Hackclub ID",
     description:
-      "A Hack Club YSWS. Build identity-related software for 5 hours and earn a real Hack Club ID card.",
+      "A Hackclub YSWS. Build identity-related software for 5 hours and earn a real Hackclub ID card.",
     type: "website",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1e1a1a",
+  themeColor: "#0b0c0c",
 };
 
 export default function RootLayout({
@@ -45,13 +39,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${zarathustra.variable} ${hanken.variable} ${hankenItalic.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-ink text-paper">
-        {children}
-        <NotificationCard />
+    <html lang="en" className={`${inter.variable} ${zarathustra.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-govuk-white text-govuk-text">
+        <a
+          href="#main-content"
+          className="govuk-skip-link bg-govuk-black px-4 py-2 text-sm font-bold text-govuk-white no-underline focus:static focus:w-auto focus:h-auto focus:overflow-visible"
+        >
+          Skip to main content
+        </a>
+        <Header />
+        <main id="main-content" className="flex-1 scroll-mt-14">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

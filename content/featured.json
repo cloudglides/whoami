@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Your Hackclub ID",
+    "desc": "As the name suggests, your own ID for hackclub that works with attend.",
+    "img": "/featured-national-insurance.png",
+    "href": "/how-it-works"
+  },
+  {
+    "title": "How it works",
+    "desc": "Quite simple, Ship a identity related software and we ship you ID & Passport in back.",
+    "img": "/featured-find-a-job.png",
+    "href": "/how-it-works"
+  },
+  {
+    "title": "SLACK!",
+    "desc": "JOIN US!! WE LOVE TO SEE YOU ON HACKCLUB SLACK (I RESPOND FAST THERE)",
+    "img": "/featured-cost-of-living.png",
+    "href": "/faq"
+  }
+]

@@ -1,119 +1,461 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
-  --ink: #1e1a1a;
-  --ink-deep: #161313;
-  --paper: #f5efd6;
-  --paper-dim: #cfc8ae;
-  --lavender: #b98af3;
-  --lavender-dim: #cdabf8;
+  color-scheme: light;
+
+  /* GOV.UK */
+  --govuk-black: #0b0c0c;
+  --govuk-white: #ffffff;
+  --govuk-blue: #1d70b8;
+  --govuk-blue-hover: #0f385c;
+  --govuk-yellow: #ffdd00;
+  --govuk-green: #0f7a52;
+  --govuk-grey-1: #f3f2f1;
+  --govuk-grey-2: #cecece;
+  --govuk-grey-4: #484949;
+  --govuk-border: #cecece;
+  --govuk-focus: #ffdd00;
+
+  /* Hack Club */
+  --hc-red: #e33f54;
+  --hc-blue: #01bbff;
 }
 
 @theme inline {
-  --color-ink: var(--ink);
-  --color-ink-deep: var(--ink-deep);
-  --color-paper: var(--paper);
-  --color-paper-dim: var(--paper-dim);
-  --color-lavender: var(--lavender);
-  --color-lavender-dim: var(--lavender-dim);
-  --font-sans: var(--font-sans);
-  --font-serif: var(--font-display);
-  --font-display: var(--font-display);
-  --font-body: var(--font-sans-italic);
-}
+  --color-govuk-black: var(--govuk-black);
+  --color-govuk-white: var(--govuk-white);
+  --color-govuk-blue: var(--govuk-blue);
+  --color-govuk-blue-hover: var(--govuk-blue-hover);
+  --color-govuk-yellow: var(--govuk-yellow);
+  --color-govuk-green: var(--govuk-green);
+  --color-govuk-grey-1: var(--govuk-grey-1);
+  --color-govuk-grey-2: var(--govuk-grey-2);
+  --color-govuk-grey-4: var(--govuk-grey-4);
+  --color-govuk-border: var(--govuk-border);
 
-body {
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  --color-hc-red: var(--hc-red);
+  --color-hc-blue: var(--hc-blue);
+
+  --color-govuk-text: var(--govuk-black);
+  --color-govuk-text-muted: var(--govuk-grey-4);
+
+  --font-gds: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
-  overflow-x: clip;
 }
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 }
 
-section[id] {
-  scroll-margin-top: 3.5rem;
+body {
+  background: var(--govuk-white);
+  color: var(--govuk-black);
+  font-family: var(--font-gds);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--lavender);
-  color: var(--ink);
+  background: var(--govuk-yellow);
+  color: var(--govuk-black);
 }
 
-/* ---- scramble ---- */
-.noise {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.92em;
-  letter-spacing: 0.02em;
-  user-select: none;
+/* ---- Zarathustra ---- */
+.font-hc {
+  font-family: var(--font-zarathustra), "Georgia", serif;
+}
+.text-hc {
+  color: var(--hc-red);
 }
 
-/* ---- paper grain overlay ---- */
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: multiply;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: cover, cover;
-  background-position: top;
-  background-repeat: no-repeat;
+/* ---- Diagonal stripe pattern for header ---- */
+.header-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.08) 10px,
+    rgba(255, 255, 255, 0.08) 12px
+  );
 }
 
-/* ---- notify card ---- */
-@keyframes notify-in {
-  from {
-    transform: translateY(16px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+/* ---- Nav hover card stripes ---- */
+.nav-card-stripes .bg-white {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.03) 8px,
+    rgba(0, 0, 0, 0.03) 10px
+  );
 }
 
-.notify-in {
-  animation: notify-in 0.5s ease-out 0.8s both;
+/* ---- GOV.UK Start now button (flat, sharp, hard shadow) ---- */
+.start-now {
+  display: inline-block;
+  background: var(--govuk-yellow);
+  color: #0b0c0c;
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding: 0.6rem 1.5rem 0.4rem;
+  box-shadow: 0 4px 0 var(--govuk-black);
+  transition: background 0.15s ease;
+}
+.start-now:hover {
+  background: #ffeb33;
+}
+.start-now:active {
+  box-shadow: 0 4px 0 var(--govuk-black);
+  transform: translateY(4px);
+}
+.start-now--on-dark {
+  box-shadow: 0 4px 0 rgba(255, 255, 255, 0.85);
+}
+.start-now--on-dark:active {
+  box-shadow: 0 4px 0 rgba(255, 255, 255, 0.85);
+  transform: translateY(4px);
+}
+.start-now--on-dark:focus-visible {
+  box-shadow: 0 4px 0 var(--govuk-black);
+}
+.start-now:focus-visible {
+  outline: 3px solid var(--govuk-focus);
+  outline-offset: 0;
+  background: var(--govuk-focus);
+  box-shadow: 0 4px 0 var(--govuk-black);
+  color: var(--govuk-black);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .notify-in {
-    animation: none;
-  }
+/* ---- GOV.UK panel (for CTA boxes) ---- */
+.govuk-panel {
+  background: var(--govuk-black);
+  color: var(--govuk-white);
+  padding: 2rem;
+  text-align: center;
+}
+
+/* ---- GOV.UK inset card ---- */
+.govuk-inset {
+  border-left: 5px solid var(--govuk-grey-2);
+  padding: 0.75rem 0 0.75rem 1rem;
+}
+
+/* ---- GOV.UK task list ---- */
+.govuk-task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.govuk-task-list__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--govuk-grey-2);
+}
+.govuk-task-list__item:last-child {
+  border-bottom: 1px solid var(--govuk-grey-2);
+}
+.govuk-task-list__name-and-hint {
+  min-width: 0;
+}
+.govuk-task-list__link {
+  color: var(--govuk-blue);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.govuk-task-list__link:hover {
+  color: var(--govuk-blue-hover);
+}
+.govuk-task-list__hint {
+  margin-top: 0.25rem;
+  color: var(--govuk-grey-4);
+  font-size: 0.95rem;
+}
+.govuk-task-list__status {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  color: var(--govuk-grey-4);
+}
+
+/* ---- GOV.UK tag ---- */
+.govuk-tag {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  background: var(--govuk-blue);
+  color: var(--govuk-white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.govuk-tag--grey {
+  background: var(--govuk-grey-1);
+  color: var(--govuk-grey-4);
+}
+
+/* ---- GOV.UK step timeline ---- */
+.tl {
+  position: relative;
+  margin-left: 1.5rem;
+}
+.tl::before {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 2px;
+  background: var(--govuk-grey-2);
+}
+.tl-step {
+  position: relative;
+  padding-bottom: 2rem;
+}
+.tl-step:last-child {
+  padding-bottom: 0;
+}
+.tl-dot {
+  position: absolute;
+  left: calc(-1rem - 8px);
+  top: 0.25rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid var(--govuk-white);
+  outline: 2px solid var(--hc-red);
+  background: var(--hc-red);
+}
+
+details summary {
+  cursor: pointer;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::marker {
+  display: none;
+  content: "";
+}
+
+.govuk-skip-link {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.govuk-skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
 }
 
 a:focus-visible,
 button:focus-visible,
-summary:focus-visible,
-input:focus-visible {
-  outline: 2px solid var(--lavender);
-  outline-offset: 3px;
+summary:focus-visible {
+  outline: 3px solid var(--govuk-focus);
+  outline-offset: 2px;
 }
 
-a,
-button,
-summary,
-input {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+/* ---- Hero red accent ---- */
+.hero-accent {
+  border-left: 4px solid var(--hc-red);
+  padding-left: 1rem;
 }
 
-h1,
-h2,
-h3 {
-  text-wrap: balance;
+/* ---- Page fade-in ---- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+/* ---- Section divider ---- */
+.section-rule {
+  border: none;
+  border-top: 1px solid var(--govuk-grey-2);
+  margin: 3rem 0;
+}
+
+/* ---- FAQ hover + indicator ---- */
+.faq-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  margin: 0 -1rem;
+  border-radius: 0;
+  transition: background 0.15s ease;
+  cursor: pointer;
+  list-style: none;
+}
+.faq-summary:hover {
+  background: var(--govuk-grey-1);
+}
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+.faq-summary::marker {
+  display: none;
+  content: "";
+}
+
+.faq-indicator {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--govuk-blue);
+  transition: transform 0.2s ease;
+}
+details[open] > summary .faq-indicator {
+  transform: rotate(45deg);
+}
+
+/* Smooth open for FAQ answer (fade + slide, reduced-motion aware) */
+@keyframes faqReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+details[open] .faq-answer {
+  animation: faqReveal 0.25s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  details[open] .faq-answer {
+    animation: none;
+  }
+}
+
+/* ---- Footer red accent ---- */
+.footer-accent {
+  height: 4px;
+  background: var(--hc-red);
+}
+
+/* ---- GOV.UK Button ---- */
+.govuk-button {
+  display: inline-block;
+  background: var(--govuk-green);
+  color: var(--govuk-white);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.5rem 1rem 0.4rem;
+  border: none;
+  box-shadow: 0 2px 0 #002d18;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.govuk-button:hover {
+  background: #0c6a46;
+}
+.govuk-button:active {
+  top: 2px;
+  box-shadow: 0 0 0 #002d18;
+}
+.govuk-button:focus-visible {
+  outline: 3px solid var(--govuk-focus);
+  outline-offset: 0;
+  background: var(--govuk-focus);
+  color: var(--govuk-black);
+  box-shadow: 0 2px 0 var(--govuk-black);
+}
+.govuk-button--secondary {
+  background: var(--govuk-white);
+  color: var(--govuk-black);
+  border: 2px solid var(--govuk-black);
+  box-shadow: none;
+}
+.govuk-button--secondary:hover {
+  background: var(--govuk-grey-1);
+}
+.govuk-button--secondary:active {
+  top: 2px;
+  box-shadow: 0 0 0 var(--govuk-black);
+}
+.govuk-button--secondary:focus-visible {
+  outline: 3px solid var(--govuk-focus);
+  outline-offset: 0;
+  background: var(--govuk-focus);
+  color: var(--govuk-black);
+  border-color: var(--govuk-black);
+  box-shadow: none;
+}
+.govuk-button--small {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem 0.25rem;
+}
+
+/* ---- GOV.UK Cookie banner ---- */
+.govuk-cookie-banner {
+  background: var(--govuk-grey-1);
+  border-bottom: 1px solid var(--govuk-border);
+}
+
+/* ---- GOV.UK Feedback ---- */
+.govuk-feedback {
+  border-top: 1px solid var(--govuk-grey-2);
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* ---- GOV.UK Featured image cards ---- */
+.gem-c-image-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--govuk-grey-2);
+}
+.gem-c-image-card:last-child {
+  border-bottom: 1px solid var(--govuk-grey-2);
+}
+.gem-c-image-card__text-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+.gem-c-image-card__title {
+  margin: 0;
+}
+.gem-c-image-card__description {
+  margin-top: 0.25rem;
+  color: var(--govuk-grey-4);
+  font-size: 0.95rem;
+}
+.gem-c-image-card__image-wrapper {
+  flex-shrink: 0;
+}
+.gem-c-image-card__image {
+  display: block;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 0;
 }
