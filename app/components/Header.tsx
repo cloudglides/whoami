@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import NavHoverCard from "./NavHoverCard";
 
@@ -13,14 +12,9 @@ export default function Header() {
       />
       <div className="relative mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 text-white">
         <Link href="/" className="flex items-center no-underline">
-          <Image
-            src="/whoami-logo.png"
-            alt="whoami"
-            width={1849}
-            height={634}
-            priority
-            className="h-9 w-auto sm:h-14"
-          />
+          <span className="font-hc text-2xl leading-none text-white sm:text-3xl">
+            whoami
+          </span>
         </Link>
 
         <NavHoverCard />
