@@ -1,9 +1,14 @@
 import Link from "next/link";
 import NavHoverCard from "./NavHoverCard";
+import { getCurrentUserWithRole, hasRole } from "@/lib/org";
 
 const SLACK_CHANNEL = "https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19";
 
-export default function Header() {
+export default async function Header() {
+  const user = await getCurrentUserWithRole();
+  const isAdmin = user ? hasRole(user.role, "ADMIN") : false;
+  const canUseDashboard = user ? hasRole(user.role, "ORGANIZER") : false;
+
   return (
     <header className="relative z-10 py-4 overflow-x-clip">
       <div
@@ -17,7 +22,25 @@ export default function Header() {
           </span>
         </Link>
 
-        <NavHoverCard />
+        <div className="flex items-center gap-1">
+          {canUseDashboard && (
+            <Link
+              href="/dashboard"
+              className="rounded-full px-2.5 py-1.5 text-sm font-semibold no-underline text-white transition-colors hover:bg-white/25 sm:px-3"
+            >
+              Dashboard
+            </Link>
+          )}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="rounded-full px-2.5 py-1.5 text-sm font-semibold no-underline text-white transition-colors hover:bg-white/25 sm:px-3"
+            >
+              Admin
+            </Link>
+          )}
+          <NavHoverCard />
+        </div>
       </div>
 
       {/* Beta banner — inside the same tilted strip */}

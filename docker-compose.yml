@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: whoami-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: whoami
+      POSTGRES_PASSWORD: whoami
+      POSTGRES_DB: whoami
+    ports:
+      - "5432:5432"
+    volumes:
+      - whoami_pgdata:/var/lib/postgresql/data
+
+volumes:
+  whoami_pgdata:

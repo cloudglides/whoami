@@ -412,6 +412,11 @@ details[open] .faq-answer {
   font-size: 0.875rem;
   padding: 0.375rem 0.75rem 0.25rem;
 }
+.govuk-button--inactive {
+  background: var(--govuk-grey-1);
+  color: var(--govuk-grey-4);
+  border-color: var(--govuk-grey-2);
+}
 
 /* ---- GOV.UK Cookie banner ---- */
 .govuk-cookie-banner {
