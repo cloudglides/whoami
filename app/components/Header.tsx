@@ -8,7 +8,7 @@ export default function Header() {
     <header
       className="relative w-full py-5 bg-gradient-to-br from-hc-blue to-[#01bbff] rounded-t-2xl shadow-lg"
       style={{
-        height: "120px",
+        minHeight: "70px",
         borderTopLeftRadius: "0.75rem",
         borderTopRightRadius: "0.75rem",
       }}
@@ -46,24 +46,21 @@ export default function Header() {
         </div>
 
         {/* Beta banner */}
-        <div className="relative mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-5 pt-2 pb-1 text-white/80 text-xs sm:text-sm">
+        <div className="relative mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-5 pt-4 pb-3 text-white/80 text-xs sm:text-sm mt-2">
           <img
             src="/passport.png"
             alt=""
-            className="absolute object-contain pointer-events-none hidden xl:block -mt-20"
+            className="absolute object-contain pointer-events-none hidden xl:block"
             style={{
               left: "-180px",
-              top: "-20px",
+              top: "-80px",
               width: "240px",
               height: "auto",
               zIndex: 30,
               transform: "rotate(-15deg)",
             }}
           />
-          <span className="inline-block rounded-md bg-white/25 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
-            beta
-          </span>
-          <span>
+          <span className="hidden sm:inline">
             This is a new service, your{" "}
             <a
               href={SLACK_CHANNEL}
@@ -75,6 +72,11 @@ export default function Header() {
             </a>{" "}
             will help us improve it.
           </span>
+          <div className="flex-1 sm:hidden flex justify-end">
+            <span className="inline-block rounded-md bg-white/25 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+              beta
+            </span>
+          </div>
         </div>
       </div>
     </header>
