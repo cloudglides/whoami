@@ -13,7 +13,7 @@ export default function Home() {
     <div className="pb-12">
       <FadeIn className="mx-auto max-w-5xl px-5 pt-14">
         <section>
-          <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className=" text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
             Apply for your <span className="font-hc text-hc">Hack Club</span> ID
           </h1>
 

@@ -45,7 +45,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="mt-4 border-t border-govuk-border pt-3">
-            <p className="text-xs text-govuk-text-muted">
+            <p className="text-xs text-govuk-text-muted mb-0">
               Made by Hack Club.{" "}
               <Link href="/how-it-works" className="text-govuk-blue underline">
                 How it works
