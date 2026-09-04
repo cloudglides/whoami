@@ -173,7 +173,7 @@ export type YSWSGroupByOutputType = {
   isActive: boolean
   createdAt: Date
   updatedAt: Date
-  orgId: string | null
+  orgId: string
   _count: YSWSCountAggregateOutputType | null
   _min: YSWSMinAggregateOutputType | null
   _max: YSWSMaxAggregateOutputType | null
@@ -205,8 +205,8 @@ export type YSWSWhereInput = {
   isActive?: Prisma.BoolFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
-  orgId?: Prisma.StringNullableFilter<"YSWS"> | string | null
-  org?: Prisma.XOR<Prisma.OrgNullableScalarRelationFilter, Prisma.OrgWhereInput> | null
+  orgId?: Prisma.StringFilter<"YSWS"> | string
+  org?: Prisma.XOR<Prisma.OrgScalarRelationFilter, Prisma.OrgWhereInput>
   organizerMemberships?: Prisma.OrganizerYSWSMembershipListRelationFilter
   orders?: Prisma.PassportOrderListRelationFilter
 }
@@ -219,7 +219,7 @@ export type YSWSOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  orgId?: Prisma.SortOrderInput | Prisma.SortOrder
+  orgId?: Prisma.SortOrder
   org?: Prisma.OrgOrderByWithRelationInput
   organizerMemberships?: Prisma.OrganizerYSWSMembershipOrderByRelationAggregateInput
   orders?: Prisma.PassportOrderOrderByRelationAggregateInput
@@ -236,8 +236,8 @@ export type YSWSWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
-  orgId?: Prisma.StringNullableFilter<"YSWS"> | string | null
-  org?: Prisma.XOR<Prisma.OrgNullableScalarRelationFilter, Prisma.OrgWhereInput> | null
+  orgId?: Prisma.StringFilter<"YSWS"> | string
+  org?: Prisma.XOR<Prisma.OrgScalarRelationFilter, Prisma.OrgWhereInput>
   organizerMemberships?: Prisma.OrganizerYSWSMembershipListRelationFilter
   orders?: Prisma.PassportOrderListRelationFilter
 }, "id" | "slug" | "apiKey">
@@ -250,7 +250,7 @@ export type YSWSOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  orgId?: Prisma.SortOrderInput | Prisma.SortOrder
+  orgId?: Prisma.SortOrder
   _count?: Prisma.YSWSCountOrderByAggregateInput
   _max?: Prisma.YSWSMaxOrderByAggregateInput
   _min?: Prisma.YSWSMinOrderByAggregateInput
@@ -267,7 +267,7 @@ export type YSWSScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"YSWS"> | Date | string
-  orgId?: Prisma.StringNullableWithAggregatesFilter<"YSWS"> | string | null
+  orgId?: Prisma.StringWithAggregatesFilter<"YSWS"> | string
 }
 
 export type YSWSCreateInput = {
@@ -278,7 +278,7 @@ export type YSWSCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  org?: Prisma.OrgCreateNestedOneWithoutYswsInput
+  org: Prisma.OrgCreateNestedOneWithoutYswsInput
   organizerMemberships?: Prisma.OrganizerYSWSMembershipCreateNestedManyWithoutYswsInput
   orders?: Prisma.PassportOrderCreateNestedManyWithoutYswsInput
 }
@@ -291,7 +291,7 @@ export type YSWSUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  orgId?: string | null
+  orgId: string
   organizerMemberships?: Prisma.OrganizerYSWSMembershipUncheckedCreateNestedManyWithoutYswsInput
   orders?: Prisma.PassportOrderUncheckedCreateNestedManyWithoutYswsInput
 }
@@ -304,7 +304,7 @@ export type YSWSUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  org?: Prisma.OrgUpdateOneWithoutYswsNestedInput
+  org?: Prisma.OrgUpdateOneRequiredWithoutYswsNestedInput
   organizerMemberships?: Prisma.OrganizerYSWSMembershipUpdateManyWithoutYswsNestedInput
   orders?: Prisma.PassportOrderUpdateManyWithoutYswsNestedInput
 }
@@ -317,7 +317,7 @@ export type YSWSUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  orgId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
   organizerMemberships?: Prisma.OrganizerYSWSMembershipUncheckedUpdateManyWithoutYswsNestedInput
   orders?: Prisma.PassportOrderUncheckedUpdateManyWithoutYswsNestedInput
 }
@@ -330,7 +330,7 @@ export type YSWSCreateManyInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  orgId?: string | null
+  orgId: string
 }
 
 export type YSWSUpdateManyMutationInput = {
@@ -351,7 +351,7 @@ export type YSWSUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  orgId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type YSWSListRelationFilter = {
@@ -400,11 +400,6 @@ export type YSWSMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
-}
-
-export type YSWSNullableScalarRelationFilter = {
-  is?: Prisma.YSWSWhereInput | null
-  isNot?: Prisma.YSWSWhereInput | null
 }
 
 export type YSWSCreateNestedManyWithoutOrgInput = {
@@ -473,12 +468,10 @@ export type YSWSCreateNestedOneWithoutOrdersInput = {
   connect?: Prisma.YSWSWhereUniqueInput
 }
 
-export type YSWSUpdateOneWithoutOrdersNestedInput = {
+export type YSWSUpdateOneRequiredWithoutOrdersNestedInput = {
   create?: Prisma.XOR<Prisma.YSWSCreateWithoutOrdersInput, Prisma.YSWSUncheckedCreateWithoutOrdersInput>
   connectOrCreate?: Prisma.YSWSCreateOrConnectWithoutOrdersInput
   upsert?: Prisma.YSWSUpsertWithoutOrdersInput
-  disconnect?: Prisma.YSWSWhereInput | boolean
-  delete?: Prisma.YSWSWhereInput | boolean
   connect?: Prisma.YSWSWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.YSWSUpdateToOneWithWhereWithoutOrdersInput, Prisma.YSWSUpdateWithoutOrdersInput>, Prisma.YSWSUncheckedUpdateWithoutOrdersInput>
 }
@@ -544,7 +537,7 @@ export type YSWSScalarWhereInput = {
   isActive?: Prisma.BoolFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
-  orgId?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  orgId?: Prisma.StringFilter<"YSWS"> | string
 }
 
 export type YSWSCreateWithoutOrganizerMembershipsInput = {
@@ -555,7 +548,7 @@ export type YSWSCreateWithoutOrganizerMembershipsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  org?: Prisma.OrgCreateNestedOneWithoutYswsInput
+  org: Prisma.OrgCreateNestedOneWithoutYswsInput
   orders?: Prisma.PassportOrderCreateNestedManyWithoutYswsInput
 }
 
@@ -567,7 +560,7 @@ export type YSWSUncheckedCreateWithoutOrganizerMembershipsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  orgId?: string | null
+  orgId: string
   orders?: Prisma.PassportOrderUncheckedCreateNestedManyWithoutYswsInput
 }
 
@@ -595,7 +588,7 @@ export type YSWSUpdateWithoutOrganizerMembershipsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  org?: Prisma.OrgUpdateOneWithoutYswsNestedInput
+  org?: Prisma.OrgUpdateOneRequiredWithoutYswsNestedInput
   orders?: Prisma.PassportOrderUpdateManyWithoutYswsNestedInput
 }
 
@@ -607,7 +600,7 @@ export type YSWSUncheckedUpdateWithoutOrganizerMembershipsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  orgId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
   orders?: Prisma.PassportOrderUncheckedUpdateManyWithoutYswsNestedInput
 }
 
@@ -619,7 +612,7 @@ export type YSWSCreateWithoutOrdersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  org?: Prisma.OrgCreateNestedOneWithoutYswsInput
+  org: Prisma.OrgCreateNestedOneWithoutYswsInput
   organizerMemberships?: Prisma.OrganizerYSWSMembershipCreateNestedManyWithoutYswsInput
 }
 
@@ -631,7 +624,7 @@ export type YSWSUncheckedCreateWithoutOrdersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  orgId?: string | null
+  orgId: string
   organizerMemberships?: Prisma.OrganizerYSWSMembershipUncheckedCreateNestedManyWithoutYswsInput
 }
 
@@ -659,7 +652,7 @@ export type YSWSUpdateWithoutOrdersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  org?: Prisma.OrgUpdateOneWithoutYswsNestedInput
+  org?: Prisma.OrgUpdateOneRequiredWithoutYswsNestedInput
   organizerMemberships?: Prisma.OrganizerYSWSMembershipUpdateManyWithoutYswsNestedInput
 }
 
@@ -671,7 +664,7 @@ export type YSWSUncheckedUpdateWithoutOrdersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  orgId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
   organizerMemberships?: Prisma.OrganizerYSWSMembershipUncheckedUpdateManyWithoutYswsNestedInput
 }
 
@@ -768,7 +761,7 @@ export type YSWSSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   orgId?: boolean
-  org?: boolean | Prisma.YSWS$orgArgs<ExtArgs>
+  org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
   organizerMemberships?: boolean | Prisma.YSWS$organizerMembershipsArgs<ExtArgs>
   orders?: boolean | Prisma.YSWS$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.YSWSCountOutputTypeDefaultArgs<ExtArgs>
@@ -783,7 +776,7 @@ export type YSWSSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   orgId?: boolean
-  org?: boolean | Prisma.YSWS$orgArgs<ExtArgs>
+  org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ySWS"]>
 
 export type YSWSSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -795,7 +788,7 @@ export type YSWSSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   orgId?: boolean
-  org?: boolean | Prisma.YSWS$orgArgs<ExtArgs>
+  org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ySWS"]>
 
 export type YSWSSelectScalar = {
@@ -811,22 +804,22 @@ export type YSWSSelectScalar = {
 
 export type YSWSOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "apiKey" | "isActive" | "createdAt" | "updatedAt" | "orgId", ExtArgs["result"]["ySWS"]>
 export type YSWSInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  org?: boolean | Prisma.YSWS$orgArgs<ExtArgs>
+  org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
   organizerMemberships?: boolean | Prisma.YSWS$organizerMembershipsArgs<ExtArgs>
   orders?: boolean | Prisma.YSWS$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.YSWSCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type YSWSIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  org?: boolean | Prisma.YSWS$orgArgs<ExtArgs>
+  org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
 }
 export type YSWSIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  org?: boolean | Prisma.YSWS$orgArgs<ExtArgs>
+  org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
 }
 
 export type $YSWSPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "YSWS"
   objects: {
-    org: Prisma.$OrgPayload<ExtArgs> | null
+    org: Prisma.$OrgPayload<ExtArgs>
     organizerMemberships: Prisma.$OrganizerYSWSMembershipPayload<ExtArgs>[]
     orders: Prisma.$PassportOrderPayload<ExtArgs>[]
   }
@@ -838,7 +831,7 @@ export type $YSWSPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isActive: boolean
     createdAt: Date
     updatedAt: Date
-    orgId: string | null
+    orgId: string
   }, ExtArgs["result"]["ySWS"]>
   composites: {}
 }
@@ -1233,7 +1226,7 @@ readonly fields: YSWSFieldRefs;
  */
 export interface Prisma__YSWSClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  org<T extends Prisma.YSWS$orgArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.YSWS$orgArgs<ExtArgs>>): Prisma.Prisma__OrgClient<runtime.Types.Result.GetResult<Prisma.$OrgPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  org<T extends Prisma.OrgDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrgDefaultArgs<ExtArgs>>): Prisma.Prisma__OrgClient<runtime.Types.Result.GetResult<Prisma.$OrgPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   organizerMemberships<T extends Prisma.YSWS$organizerMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.YSWS$organizerMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizerYSWSMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.YSWS$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.YSWS$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PassportOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1671,25 +1664,6 @@ export type YSWSDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many YSWS to delete.
    */
   limit?: number
-}
-
-/**
- * YSWS.org
- */
-export type YSWS$orgArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Org
-   */
-  select?: Prisma.OrgSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Org
-   */
-  omit?: Prisma.OrgOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OrgInclude<ExtArgs> | null
-  where?: Prisma.OrgWhereInput
 }
 
 /**

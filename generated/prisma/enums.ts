@@ -63,6 +63,17 @@ export const EventType = {
 export type EventType = (typeof EventType)[keyof typeof EventType]
 
 
+export const ActorType = {
+  ORGANIZER: 'ORGANIZER',
+  ADMIN: 'ADMIN',
+  SYSTEM: 'SYSTEM',
+  RECIPIENT: 'RECIPIENT',
+  API: 'API'
+} as const
+
+export type ActorType = (typeof ActorType)[keyof typeof ActorType]
+
+
 export const SubmissionStatus = {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',

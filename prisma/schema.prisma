@@ -50,6 +50,14 @@ enum EventType {
   ORDER_CANCELLED
 }
 
+enum ActorType {
+  ORGANIZER
+  ADMIN
+  SYSTEM
+  RECIPIENT
+  API
+}
+
 enum SubmissionStatus {
   DRAFT
   SUBMITTED
@@ -157,8 +165,8 @@ model YSWS {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  org                  Org? @relation("OrgYSWS", fields: [orgId], references: [id], onDelete: SetNull)
-  orgId                String?
+  org                  Org  @relation("OrgYSWS", fields: [orgId], references: [id], onDelete: Cascade)
+  orgId                String
   organizerMemberships OrganizerYSWSMembership[]
   orders               PassportOrder[]
 }
@@ -184,12 +192,11 @@ model OrgMember {
 model PassportOrder {
   id                      String      @id @default(cuid())
   orgId                   String
-  yswsId                  String?
+  yswsId                  String
   totalQuantity           Int
   currentState            OrderTransition @default(AWAITING_RECIPIENT_DETAILS)
   status                  OrderStatus     @default(PENDING)
   note                    String?
-  createdBy               String
   createdByUserId         String?
   recipientUserId         String?
   createdFrom             String
@@ -197,9 +204,10 @@ model PassportOrder {
   recipientName           String?
   recipientEmail          String?
   recipientToken          String?   @unique
+  archivedAt              DateTime?
 
   org           Org                @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  ysws          YSWS?              @relation(fields: [yswsId], references: [id], onDelete: SetNull)
+  ysws          YSWS               @relation(fields: [yswsId], references: [id], onDelete: Cascade)
   user          User?              @relation("CreatedOrders", fields: [createdByUserId], references: [id], onDelete: SetNull)
   recipient     User?              @relation("RecipientOrders", fields: [recipientUserId], references: [id], onDelete: SetNull)
   recipients    PassportRecipient[]
@@ -216,14 +224,24 @@ model PassportOrder {
   @@index([recipientUserId])
   @@index([recipientEmail])
   @@index([recipientToken])
+  @@index([archivedAt])
 }
 
 model PassportRecipient {
-  id      String  @id @default(cuid())
-  orderId String
-  email   String
-  name    String?
-  userId  String?
+  id              String  @id @default(cuid())
+  orderId         String
+  email           String
+  name            String?
+  userId          String?
+  addressLine1    String?
+  addressLine2    String?
+  city            String?
+  stateProvince   String?
+  postalCode      String?
+  country         String?   // ISO 3166-1 alpha-2
+  dateOfBirth     DateTime?
+  emergencyContact String?
+  photoUrl        String?
 
   order  PassportOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
@@ -232,6 +250,7 @@ model PassportRecipient {
 
   @@index([orderId])
   @@index([email])
+  @@unique([orderId, email])
 }
 
 model PassportVersion {
@@ -268,17 +287,17 @@ model Shipment {
 }
 
 model OrderEvent {
-  id              String  @id @default(cuid())
+  id              String      @id @default(cuid())
   orderId         String
   eventType       EventType
   status          OrderStatus?
   previousState   OrderTransition?
   newState        OrderTransition
   actor           String
-  actorType       String?   // "organizer" | "admin" | "system" | "recipient"
+  actorType       ActorType
   description     String?
   metadata        Json?
-  createdAt       DateTime @default(now())
+  createdAt       DateTime   @default(now())
 
   order PassportOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
@@ -287,17 +306,18 @@ model OrderEvent {
 }
 
 model AuditLog {
-  id              String  @id @default(cuid())
+  id              String   @id @default(cuid())
   entityType      String
   entityId        String
   action          String
   actor           String
-  actorType       String?   // "organizer" | "admin" | "system" | "recipient"
+  actorType       ActorType
   beforeValue     Json?
   afterValue      Json?
   ipAddress       String?
   userAgent       String?
   requestId       String?
+  description     String?
   createdAt       DateTime @default(now())
 
   @@index([entityType, entityId, createdAt])
@@ -318,6 +338,7 @@ model EmailDelivery {
   @@index([recipientEmail])
   @@index([eventType])
   @@index([createdAt])
+  @@index([status, createdAt])
 }
 
 model Submission {

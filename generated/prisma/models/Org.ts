@@ -414,12 +414,10 @@ export type OrgCreateNestedOneWithoutYswsInput = {
   connect?: Prisma.OrgWhereUniqueInput
 }
 
-export type OrgUpdateOneWithoutYswsNestedInput = {
+export type OrgUpdateOneRequiredWithoutYswsNestedInput = {
   create?: Prisma.XOR<Prisma.OrgCreateWithoutYswsInput, Prisma.OrgUncheckedCreateWithoutYswsInput>
   connectOrCreate?: Prisma.OrgCreateOrConnectWithoutYswsInput
   upsert?: Prisma.OrgUpsertWithoutYswsInput
-  disconnect?: Prisma.OrgWhereInput | boolean
-  delete?: Prisma.OrgWhereInput | boolean
   connect?: Prisma.OrgWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrgUpdateToOneWithWhereWithoutYswsInput, Prisma.OrgUpdateWithoutYswsInput>, Prisma.OrgUncheckedUpdateWithoutYswsInput>
 }

@@ -42,13 +42,13 @@ export type PassportOrderMinAggregateOutputType = {
   currentState: $Enums.OrderTransition | null
   status: $Enums.OrderStatus | null
   note: string | null
-  createdBy: string | null
   createdByUserId: string | null
   recipientUserId: string | null
   createdFrom: string | null
   recipientName: string | null
   recipientEmail: string | null
   recipientToken: string | null
+  archivedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -61,13 +61,13 @@ export type PassportOrderMaxAggregateOutputType = {
   currentState: $Enums.OrderTransition | null
   status: $Enums.OrderStatus | null
   note: string | null
-  createdBy: string | null
   createdByUserId: string | null
   recipientUserId: string | null
   createdFrom: string | null
   recipientName: string | null
   recipientEmail: string | null
   recipientToken: string | null
+  archivedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,13 +80,13 @@ export type PassportOrderCountAggregateOutputType = {
   currentState: number
   status: number
   note: number
-  createdBy: number
   createdByUserId: number
   recipientUserId: number
   createdFrom: number
   recipientName: number
   recipientEmail: number
   recipientToken: number
+  archivedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -109,13 +109,13 @@ export type PassportOrderMinAggregateInputType = {
   currentState?: true
   status?: true
   note?: true
-  createdBy?: true
   createdByUserId?: true
   recipientUserId?: true
   createdFrom?: true
   recipientName?: true
   recipientEmail?: true
   recipientToken?: true
+  archivedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -128,13 +128,13 @@ export type PassportOrderMaxAggregateInputType = {
   currentState?: true
   status?: true
   note?: true
-  createdBy?: true
   createdByUserId?: true
   recipientUserId?: true
   createdFrom?: true
   recipientName?: true
   recipientEmail?: true
   recipientToken?: true
+  archivedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -147,13 +147,13 @@ export type PassportOrderCountAggregateInputType = {
   currentState?: true
   status?: true
   note?: true
-  createdBy?: true
   createdByUserId?: true
   recipientUserId?: true
   createdFrom?: true
   recipientName?: true
   recipientEmail?: true
   recipientToken?: true
+  archivedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -248,18 +248,18 @@ export type PassportOrderGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type PassportOrderGroupByOutputType = {
   id: string
   orgId: string
-  yswsId: string | null
+  yswsId: string
   totalQuantity: number
   currentState: $Enums.OrderTransition
   status: $Enums.OrderStatus
   note: string | null
-  createdBy: string
   createdByUserId: string | null
   recipientUserId: string | null
   createdFrom: string
   recipientName: string | null
   recipientEmail: string | null
   recipientToken: string | null
+  archivedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: PassportOrderCountAggregateOutputType | null
@@ -290,22 +290,22 @@ export type PassportOrderWhereInput = {
   NOT?: Prisma.PassportOrderWhereInput | Prisma.PassportOrderWhereInput[]
   id?: Prisma.StringFilter<"PassportOrder"> | string
   orgId?: Prisma.StringFilter<"PassportOrder"> | string
-  yswsId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
+  yswsId?: Prisma.StringFilter<"PassportOrder"> | string
   totalQuantity?: Prisma.IntFilter<"PassportOrder"> | number
   currentState?: Prisma.EnumOrderTransitionFilter<"PassportOrder"> | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFilter<"PassportOrder"> | $Enums.OrderStatus
   note?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
-  createdBy?: Prisma.StringFilter<"PassportOrder"> | string
   createdByUserId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientUserId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   createdFrom?: Prisma.StringFilter<"PassportOrder"> | string
   recipientName?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientEmail?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientToken?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"PassportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PassportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PassportOrder"> | Date | string
   org?: Prisma.XOR<Prisma.OrgScalarRelationFilter, Prisma.OrgWhereInput>
-  ysws?: Prisma.XOR<Prisma.YSWSNullableScalarRelationFilter, Prisma.YSWSWhereInput> | null
+  ysws?: Prisma.XOR<Prisma.YSWSScalarRelationFilter, Prisma.YSWSWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   recipient?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   recipients?: Prisma.PassportRecipientListRelationFilter
@@ -317,18 +317,18 @@ export type PassportOrderWhereInput = {
 export type PassportOrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
-  yswsId?: Prisma.SortOrderInput | Prisma.SortOrder
+  yswsId?: Prisma.SortOrder
   totalQuantity?: Prisma.SortOrder
   currentState?: Prisma.SortOrder
   status?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdFrom?: Prisma.SortOrder
   recipientName?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   org?: Prisma.OrgOrderByWithRelationInput
@@ -348,21 +348,21 @@ export type PassportOrderWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PassportOrderWhereInput[]
   NOT?: Prisma.PassportOrderWhereInput | Prisma.PassportOrderWhereInput[]
   orgId?: Prisma.StringFilter<"PassportOrder"> | string
-  yswsId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
+  yswsId?: Prisma.StringFilter<"PassportOrder"> | string
   totalQuantity?: Prisma.IntFilter<"PassportOrder"> | number
   currentState?: Prisma.EnumOrderTransitionFilter<"PassportOrder"> | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFilter<"PassportOrder"> | $Enums.OrderStatus
   note?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
-  createdBy?: Prisma.StringFilter<"PassportOrder"> | string
   createdByUserId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientUserId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   createdFrom?: Prisma.StringFilter<"PassportOrder"> | string
   recipientName?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientEmail?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"PassportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PassportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PassportOrder"> | Date | string
   org?: Prisma.XOR<Prisma.OrgScalarRelationFilter, Prisma.OrgWhereInput>
-  ysws?: Prisma.XOR<Prisma.YSWSNullableScalarRelationFilter, Prisma.YSWSWhereInput> | null
+  ysws?: Prisma.XOR<Prisma.YSWSScalarRelationFilter, Prisma.YSWSWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   recipient?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   recipients?: Prisma.PassportRecipientListRelationFilter
@@ -374,18 +374,18 @@ export type PassportOrderWhereUniqueInput = Prisma.AtLeast<{
 export type PassportOrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
-  yswsId?: Prisma.SortOrderInput | Prisma.SortOrder
+  yswsId?: Prisma.SortOrder
   totalQuantity?: Prisma.SortOrder
   currentState?: Prisma.SortOrder
   status?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdFrom?: Prisma.SortOrder
   recipientName?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PassportOrderCountOrderByAggregateInput
@@ -401,18 +401,18 @@ export type PassportOrderScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PassportOrderScalarWhereWithAggregatesInput | Prisma.PassportOrderScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"PassportOrder"> | string
   orgId?: Prisma.StringWithAggregatesFilter<"PassportOrder"> | string
-  yswsId?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
+  yswsId?: Prisma.StringWithAggregatesFilter<"PassportOrder"> | string
   totalQuantity?: Prisma.IntWithAggregatesFilter<"PassportOrder"> | number
   currentState?: Prisma.EnumOrderTransitionWithAggregatesFilter<"PassportOrder"> | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusWithAggregatesFilter<"PassportOrder"> | $Enums.OrderStatus
   note?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
-  createdBy?: Prisma.StringWithAggregatesFilter<"PassportOrder"> | string
   createdByUserId?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
   recipientUserId?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
   createdFrom?: Prisma.StringWithAggregatesFilter<"PassportOrder"> | string
   recipientName?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
   recipientEmail?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
   recipientToken?: Prisma.StringNullableWithAggregatesFilter<"PassportOrder"> | string | null
+  archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PassportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PassportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PassportOrder"> | Date | string
 }
@@ -423,15 +423,15 @@ export type PassportOrderCreateInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
@@ -443,18 +443,18 @@ export type PassportOrderCreateInput = {
 export type PassportOrderUncheckedCreateInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -469,15 +469,15 @@ export type PassportOrderUpdateInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
@@ -489,18 +489,18 @@ export type PassportOrderUpdateInput = {
 export type PassportOrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -512,18 +512,18 @@ export type PassportOrderUncheckedUpdateInput = {
 export type PassportOrderCreateManyInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -534,11 +534,11 @@ export type PassportOrderUpdateManyMutationInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -546,18 +546,18 @@ export type PassportOrderUpdateManyMutationInput = {
 export type PassportOrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -580,13 +580,13 @@ export type PassportOrderCountOrderByAggregateInput = {
   currentState?: Prisma.SortOrder
   status?: Prisma.SortOrder
   note?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
   recipientUserId?: Prisma.SortOrder
   createdFrom?: Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   recipientEmail?: Prisma.SortOrder
   recipientToken?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -603,13 +603,13 @@ export type PassportOrderMaxOrderByAggregateInput = {
   currentState?: Prisma.SortOrder
   status?: Prisma.SortOrder
   note?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
   recipientUserId?: Prisma.SortOrder
   createdFrom?: Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   recipientEmail?: Prisma.SortOrder
   recipientToken?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -622,13 +622,13 @@ export type PassportOrderMinOrderByAggregateInput = {
   currentState?: Prisma.SortOrder
   status?: Prisma.SortOrder
   note?: Prisma.SortOrder
-  createdBy?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
   recipientUserId?: Prisma.SortOrder
   createdFrom?: Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   recipientEmail?: Prisma.SortOrder
   recipientToken?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -888,15 +888,15 @@ export type PassportOrderCreateWithoutUserInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
   versions?: Prisma.PassportVersionCreateNestedManyWithoutOrderInput
@@ -907,17 +907,17 @@ export type PassportOrderCreateWithoutUserInput = {
 export type PassportOrderUncheckedCreateWithoutUserInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -942,15 +942,15 @@ export type PassportOrderCreateWithoutRecipientInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
   versions?: Prisma.PassportVersionCreateNestedManyWithoutOrderInput
@@ -961,17 +961,17 @@ export type PassportOrderCreateWithoutRecipientInput = {
 export type PassportOrderUncheckedCreateWithoutRecipientInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -1012,18 +1012,18 @@ export type PassportOrderScalarWhereInput = {
   NOT?: Prisma.PassportOrderScalarWhereInput | Prisma.PassportOrderScalarWhereInput[]
   id?: Prisma.StringFilter<"PassportOrder"> | string
   orgId?: Prisma.StringFilter<"PassportOrder"> | string
-  yswsId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
+  yswsId?: Prisma.StringFilter<"PassportOrder"> | string
   totalQuantity?: Prisma.IntFilter<"PassportOrder"> | number
   currentState?: Prisma.EnumOrderTransitionFilter<"PassportOrder"> | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFilter<"PassportOrder"> | $Enums.OrderStatus
   note?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
-  createdBy?: Prisma.StringFilter<"PassportOrder"> | string
   createdByUserId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientUserId?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   createdFrom?: Prisma.StringFilter<"PassportOrder"> | string
   recipientName?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientEmail?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
   recipientToken?: Prisma.StringNullableFilter<"PassportOrder"> | string | null
+  archivedAt?: Prisma.DateTimeNullableFilter<"PassportOrder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PassportOrder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PassportOrder"> | Date | string
 }
@@ -1050,14 +1050,14 @@ export type PassportOrderCreateWithoutOrgInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
@@ -1068,18 +1068,18 @@ export type PassportOrderCreateWithoutOrgInput = {
 
 export type PassportOrderUncheckedCreateWithoutOrgInput = {
   id?: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -1120,11 +1120,11 @@ export type PassportOrderCreateWithoutYswsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
@@ -1143,13 +1143,13 @@ export type PassportOrderUncheckedCreateWithoutYswsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -1190,15 +1190,15 @@ export type PassportOrderCreateWithoutRecipientsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   versions?: Prisma.PassportVersionCreateNestedManyWithoutOrderInput
@@ -1209,18 +1209,18 @@ export type PassportOrderCreateWithoutRecipientsInput = {
 export type PassportOrderUncheckedCreateWithoutRecipientsInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.PassportVersionUncheckedCreateNestedManyWithoutOrderInput
@@ -1250,15 +1250,15 @@ export type PassportOrderUpdateWithoutRecipientsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   versions?: Prisma.PassportVersionUpdateManyWithoutOrderNestedInput
@@ -1269,18 +1269,18 @@ export type PassportOrderUpdateWithoutRecipientsInput = {
 export type PassportOrderUncheckedUpdateWithoutRecipientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.PassportVersionUncheckedUpdateManyWithoutOrderNestedInput
@@ -1294,15 +1294,15 @@ export type PassportOrderCreateWithoutVersionsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
@@ -1313,18 +1313,18 @@ export type PassportOrderCreateWithoutVersionsInput = {
 export type PassportOrderUncheckedCreateWithoutVersionsInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -1354,15 +1354,15 @@ export type PassportOrderUpdateWithoutVersionsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
@@ -1373,18 +1373,18 @@ export type PassportOrderUpdateWithoutVersionsInput = {
 export type PassportOrderUncheckedUpdateWithoutVersionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1398,15 +1398,15 @@ export type PassportOrderCreateWithoutShipmentsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
@@ -1417,18 +1417,18 @@ export type PassportOrderCreateWithoutShipmentsInput = {
 export type PassportOrderUncheckedCreateWithoutShipmentsInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -1458,15 +1458,15 @@ export type PassportOrderUpdateWithoutShipmentsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
@@ -1477,18 +1477,18 @@ export type PassportOrderUpdateWithoutShipmentsInput = {
 export type PassportOrderUncheckedUpdateWithoutShipmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1502,15 +1502,15 @@ export type PassportOrderCreateWithoutEventsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   org: Prisma.OrgCreateNestedOneWithoutOrdersInput
-  ysws?: Prisma.YSWSCreateNestedOneWithoutOrdersInput
+  ysws: Prisma.YSWSCreateNestedOneWithoutOrdersInput
   user?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   recipient?: Prisma.UserCreateNestedOneWithoutReceivedOrdersInput
   recipients?: Prisma.PassportRecipientCreateNestedManyWithoutOrderInput
@@ -1521,18 +1521,18 @@ export type PassportOrderCreateWithoutEventsInput = {
 export type PassportOrderUncheckedCreateWithoutEventsInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.PassportRecipientUncheckedCreateNestedManyWithoutOrderInput
@@ -1562,15 +1562,15 @@ export type PassportOrderUpdateWithoutEventsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
@@ -1581,18 +1581,18 @@ export type PassportOrderUpdateWithoutEventsInput = {
 export type PassportOrderUncheckedUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1603,17 +1603,17 @@ export type PassportOrderUncheckedUpdateWithoutEventsInput = {
 export type PassportOrderCreateManyUserInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1621,17 +1621,17 @@ export type PassportOrderCreateManyUserInput = {
 export type PassportOrderCreateManyRecipientInput = {
   id?: string
   orgId: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1642,15 +1642,15 @@ export type PassportOrderUpdateWithoutUserInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
   versions?: Prisma.PassportVersionUpdateManyWithoutOrderNestedInput
@@ -1661,17 +1661,17 @@ export type PassportOrderUpdateWithoutUserInput = {
 export type PassportOrderUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1683,17 +1683,17 @@ export type PassportOrderUncheckedUpdateWithoutUserInput = {
 export type PassportOrderUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1704,15 +1704,15 @@ export type PassportOrderUpdateWithoutRecipientInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
   versions?: Prisma.PassportVersionUpdateManyWithoutOrderNestedInput
@@ -1723,17 +1723,17 @@ export type PassportOrderUpdateWithoutRecipientInput = {
 export type PassportOrderUncheckedUpdateWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1745,35 +1745,35 @@ export type PassportOrderUncheckedUpdateWithoutRecipientInput = {
 export type PassportOrderUncheckedUpdateManyWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PassportOrderCreateManyOrgInput = {
   id?: string
-  yswsId?: string | null
+  yswsId: string
   totalQuantity: number
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1784,14 +1784,14 @@ export type PassportOrderUpdateWithoutOrgInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ysws?: Prisma.YSWSUpdateOneWithoutOrdersNestedInput
+  ysws?: Prisma.YSWSUpdateOneRequiredWithoutOrdersNestedInput
   user?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   recipient?: Prisma.UserUpdateOneWithoutReceivedOrdersNestedInput
   recipients?: Prisma.PassportRecipientUpdateManyWithoutOrderNestedInput
@@ -1802,18 +1802,18 @@ export type PassportOrderUpdateWithoutOrgInput = {
 
 export type PassportOrderUncheckedUpdateWithoutOrgInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1824,18 +1824,18 @@ export type PassportOrderUncheckedUpdateWithoutOrgInput = {
 
 export type PassportOrderUncheckedUpdateManyWithoutOrgInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  yswsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  yswsId?: Prisma.StringFieldUpdateOperationsInput | string
   totalQuantity?: Prisma.IntFieldUpdateOperationsInput | number
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1847,13 +1847,13 @@ export type PassportOrderCreateManyYswsInput = {
   currentState?: $Enums.OrderTransition
   status?: $Enums.OrderStatus
   note?: string | null
-  createdBy: string
   createdByUserId?: string | null
   recipientUserId?: string | null
   createdFrom: string
   recipientName?: string | null
   recipientEmail?: string | null
   recipientToken?: string | null
+  archivedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1864,11 +1864,11 @@ export type PassportOrderUpdateWithoutYswsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   org?: Prisma.OrgUpdateOneRequiredWithoutOrdersNestedInput
@@ -1887,13 +1887,13 @@ export type PassportOrderUncheckedUpdateWithoutYswsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.PassportRecipientUncheckedUpdateManyWithoutOrderNestedInput
@@ -1909,13 +1909,13 @@ export type PassportOrderUncheckedUpdateManyWithoutYswsInput = {
   currentState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdFrom?: Prisma.StringFieldUpdateOperationsInput | string
   recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1986,17 +1986,17 @@ export type PassportOrderSelect<ExtArgs extends runtime.Types.Extensions.Interna
   currentState?: boolean
   status?: boolean
   note?: boolean
-  createdBy?: boolean
   createdByUserId?: boolean
   recipientUserId?: boolean
   createdFrom?: boolean
   recipientName?: boolean
   recipientEmail?: boolean
   recipientToken?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
-  ysws?: boolean | Prisma.PassportOrder$yswsArgs<ExtArgs>
+  ysws?: boolean | Prisma.YSWSDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PassportOrder$userArgs<ExtArgs>
   recipient?: boolean | Prisma.PassportOrder$recipientArgs<ExtArgs>
   recipients?: boolean | Prisma.PassportOrder$recipientsArgs<ExtArgs>
@@ -2014,17 +2014,17 @@ export type PassportOrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   currentState?: boolean
   status?: boolean
   note?: boolean
-  createdBy?: boolean
   createdByUserId?: boolean
   recipientUserId?: boolean
   createdFrom?: boolean
   recipientName?: boolean
   recipientEmail?: boolean
   recipientToken?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
-  ysws?: boolean | Prisma.PassportOrder$yswsArgs<ExtArgs>
+  ysws?: boolean | Prisma.YSWSDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PassportOrder$userArgs<ExtArgs>
   recipient?: boolean | Prisma.PassportOrder$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["passportOrder"]>
@@ -2037,17 +2037,17 @@ export type PassportOrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   currentState?: boolean
   status?: boolean
   note?: boolean
-  createdBy?: boolean
   createdByUserId?: boolean
   recipientUserId?: boolean
   createdFrom?: boolean
   recipientName?: boolean
   recipientEmail?: boolean
   recipientToken?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
-  ysws?: boolean | Prisma.PassportOrder$yswsArgs<ExtArgs>
+  ysws?: boolean | Prisma.YSWSDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PassportOrder$userArgs<ExtArgs>
   recipient?: boolean | Prisma.PassportOrder$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["passportOrder"]>
@@ -2060,21 +2060,21 @@ export type PassportOrderSelectScalar = {
   currentState?: boolean
   status?: boolean
   note?: boolean
-  createdBy?: boolean
   createdByUserId?: boolean
   recipientUserId?: boolean
   createdFrom?: boolean
   recipientName?: boolean
   recipientEmail?: boolean
   recipientToken?: boolean
+  archivedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PassportOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "yswsId" | "totalQuantity" | "currentState" | "status" | "note" | "createdBy" | "createdByUserId" | "recipientUserId" | "createdFrom" | "recipientName" | "recipientEmail" | "recipientToken" | "createdAt" | "updatedAt", ExtArgs["result"]["passportOrder"]>
+export type PassportOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "yswsId" | "totalQuantity" | "currentState" | "status" | "note" | "createdByUserId" | "recipientUserId" | "createdFrom" | "recipientName" | "recipientEmail" | "recipientToken" | "archivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["passportOrder"]>
 export type PassportOrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
-  ysws?: boolean | Prisma.PassportOrder$yswsArgs<ExtArgs>
+  ysws?: boolean | Prisma.YSWSDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PassportOrder$userArgs<ExtArgs>
   recipient?: boolean | Prisma.PassportOrder$recipientArgs<ExtArgs>
   recipients?: boolean | Prisma.PassportOrder$recipientsArgs<ExtArgs>
@@ -2085,13 +2085,13 @@ export type PassportOrderInclude<ExtArgs extends runtime.Types.Extensions.Intern
 }
 export type PassportOrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
-  ysws?: boolean | Prisma.PassportOrder$yswsArgs<ExtArgs>
+  ysws?: boolean | Prisma.YSWSDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PassportOrder$userArgs<ExtArgs>
   recipient?: boolean | Prisma.PassportOrder$recipientArgs<ExtArgs>
 }
 export type PassportOrderIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
-  ysws?: boolean | Prisma.PassportOrder$yswsArgs<ExtArgs>
+  ysws?: boolean | Prisma.YSWSDefaultArgs<ExtArgs>
   user?: boolean | Prisma.PassportOrder$userArgs<ExtArgs>
   recipient?: boolean | Prisma.PassportOrder$recipientArgs<ExtArgs>
 }
@@ -2100,7 +2100,7 @@ export type $PassportOrderPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "PassportOrder"
   objects: {
     org: Prisma.$OrgPayload<ExtArgs>
-    ysws: Prisma.$YSWSPayload<ExtArgs> | null
+    ysws: Prisma.$YSWSPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs> | null
     recipient: Prisma.$UserPayload<ExtArgs> | null
     recipients: Prisma.$PassportRecipientPayload<ExtArgs>[]
@@ -2111,18 +2111,18 @@ export type $PassportOrderPayload<ExtArgs extends runtime.Types.Extensions.Inter
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orgId: string
-    yswsId: string | null
+    yswsId: string
     totalQuantity: number
     currentState: $Enums.OrderTransition
     status: $Enums.OrderStatus
     note: string | null
-    createdBy: string
     createdByUserId: string | null
     recipientUserId: string | null
     createdFrom: string
     recipientName: string | null
     recipientEmail: string | null
     recipientToken: string | null
+    archivedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["passportOrder"]>
@@ -2520,7 +2520,7 @@ readonly fields: PassportOrderFieldRefs;
 export interface Prisma__PassportOrderClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   org<T extends Prisma.OrgDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrgDefaultArgs<ExtArgs>>): Prisma.Prisma__OrgClient<runtime.Types.Result.GetResult<Prisma.$OrgPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  ysws<T extends Prisma.PassportOrder$yswsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PassportOrder$yswsArgs<ExtArgs>>): Prisma.Prisma__YSWSClient<runtime.Types.Result.GetResult<Prisma.$YSWSPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  ysws<T extends Prisma.YSWSDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.YSWSDefaultArgs<ExtArgs>>): Prisma.Prisma__YSWSClient<runtime.Types.Result.GetResult<Prisma.$YSWSPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.PassportOrder$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PassportOrder$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   recipient<T extends Prisma.PassportOrder$recipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PassportOrder$recipientArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   recipients<T extends Prisma.PassportOrder$recipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PassportOrder$recipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PassportRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2563,13 +2563,13 @@ export interface PassportOrderFieldRefs {
   readonly currentState: Prisma.FieldRef<"PassportOrder", 'OrderTransition'>
   readonly status: Prisma.FieldRef<"PassportOrder", 'OrderStatus'>
   readonly note: Prisma.FieldRef<"PassportOrder", 'String'>
-  readonly createdBy: Prisma.FieldRef<"PassportOrder", 'String'>
   readonly createdByUserId: Prisma.FieldRef<"PassportOrder", 'String'>
   readonly recipientUserId: Prisma.FieldRef<"PassportOrder", 'String'>
   readonly createdFrom: Prisma.FieldRef<"PassportOrder", 'String'>
   readonly recipientName: Prisma.FieldRef<"PassportOrder", 'String'>
   readonly recipientEmail: Prisma.FieldRef<"PassportOrder", 'String'>
   readonly recipientToken: Prisma.FieldRef<"PassportOrder", 'String'>
+  readonly archivedAt: Prisma.FieldRef<"PassportOrder", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"PassportOrder", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PassportOrder", 'DateTime'>
 }
@@ -2970,25 +2970,6 @@ export type PassportOrderDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many PassportOrders to delete.
    */
   limit?: number
-}
-
-/**
- * PassportOrder.ysws
- */
-export type PassportOrder$yswsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the YSWS
-   */
-  select?: Prisma.YSWSSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the YSWS
-   */
-  omit?: Prisma.YSWSOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.YSWSInclude<ExtArgs> | null
-  where?: Prisma.YSWSWhereInput
 }
 
 /**

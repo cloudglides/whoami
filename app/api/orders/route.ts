@@ -8,7 +8,7 @@ import { resolveAPIKeyContext, verifyYSWSAccess } from "@/lib/ysws-context";
 export const runtime = "nodejs";
 
 const createOrderSchema = z.object({
-  recipientEmail: z.string().email("Enter a valid recipient email").optional().or(z.literal("")),
+  recipientEmail: z.string().email("Enter a valid recipient email"),
   recipientName: z.string().min(2, "Enter the recipient's name").max(80, "Name is too long"),
   note: z.string().max(300).optional(),
 });
@@ -72,9 +72,12 @@ export async function POST(req: Request) {
     }
   }
 
-  const rawEmail = parsed.data.recipientEmail?.toLowerCase().trim();
-  const email = rawEmail || null;
-  const linkedUser = email ? await prisma.user.findUnique({ where: { email } }) : null;
+  const email = parsed.data.recipientEmail.toLowerCase().trim();
+  const linkedUser = await prisma.user.findUnique({ where: { email } });
+
+  const recipientToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
 
   const order = await prisma.passportOrder.create({
     data: {
@@ -84,11 +87,10 @@ export async function POST(req: Request) {
       currentState: "AWAITING_RECIPIENT_DETAILS",
       status: "PENDING",
       note: parsed.data.note ?? null,
-      createdBy: context.actorId,
       createdFrom: context.actorType === "api" ? "api" : "dashboard",
       recipientName: parsed.data.recipientName,
       recipientEmail: email,
-      recipientToken: crypto.randomUUID().substring(0, 16),
+      recipientToken,
       createdByUserId: linkedUser?.id ?? null,
       // Create the recipient record (one order = one recipient)
       recipients: email ? {

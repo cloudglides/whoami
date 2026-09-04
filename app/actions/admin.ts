@@ -192,6 +192,10 @@ export async function issuePassportAdminAction(
   });
   if (!ysws) return { error: "No YSWS found for this org." };
 
+  const recipientToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
+
   await prisma.passportOrder.create({
     data: {
       orgId: org.id,
@@ -200,12 +204,11 @@ export async function issuePassportAdminAction(
       currentState: "AWAITING_RECIPIENT_DETAILS",
       status: "PENDING",
       note: parsed.data.note ?? null,
-      createdBy: actor.id,
       createdFrom: "admin",
       createdByUserId: linkedUser?.id ?? null,
       recipientName: parsed.data.recipientName.trim(),
       recipientEmail: email,
-      recipientToken: crypto.randomUUID().substring(0, 16),
+      recipientToken,
       // Create the recipient record (one order = one recipient)
       recipients: {
         create: {

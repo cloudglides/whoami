@@ -6,9 +6,10 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { generateApiKey, getCurrentUser, getCurrentUserWithRole, hasRole } from "@/lib/org";
 import { verifyYSWSAccess } from "@/lib/ysws-context";
+import { auditLog } from "@/lib/audit";
 
 const createOrderSchema = z.object({
-  recipientEmail: z.string().email("Enter a valid email").optional().or(z.literal("")),
+  recipientEmail: z.string().email("Enter a valid email"),
   recipientName: z.string().trim().min(2, "Enter the recipient's name").max(80, "Name is too long"),
   note: z.string().trim().max(300, "Note is too long").optional(),
   yswsId: z.string().nullable().optional(),
@@ -51,31 +52,44 @@ export async function createOrderAction(
     }
   }
 
-  const email = parsed.data.recipientEmail?.toLowerCase().trim() || null;
-  const linkedUser = email ? await prisma.user.findUnique({ where: { email } }) : null;
+  const email = parsed.data.recipientEmail.toLowerCase().trim();
+  const linkedUser = await prisma.user.findUnique({ where: { email } });
+
+  const recipientToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
+
+  // Determine YSWS ID - use provided one or fall back to org's first YSWS
+  let finalYswsId = yswsId ?? undefined;
+  if (!finalYswsId) {
+    const ysws = await prisma.ySWS.findFirst({ where: { orgId: membership.orgId } });
+    finalYswsId = ysws?.id;
+  }
+  if (!finalYswsId) {
+    return { error: "No YSWS found for this organization" };
+  }
 
   const order = await prisma.passportOrder.create({
     data: {
       orgId: membership.orgId,
-      yswsId: yswsId ?? null,
+      yswsId: finalYswsId,
       totalQuantity: 1,
       currentState: "AWAITING_RECIPIENT_DETAILS",
       status: "PENDING",
       note: parsed.data.note ?? null,
-      createdBy: user.id,
       createdFrom: "dashboard",
       recipientName: parsed.data.recipientName,
       recipientEmail: email,
-      recipientToken: crypto.randomUUID().substring(0, 16),
+      recipientToken,
       createdByUserId: linkedUser?.id ?? null,
       // Create the recipient record (one order = one recipient)
-      recipients: email ? {
+      recipients: {
         create: {
           email,
           name: parsed.data.recipientName,
           userId: linkedUser?.id ?? null,
         },
-      } : undefined,
+      },
     },
   });
 
@@ -136,12 +150,7 @@ export type IssuePassportState = { error?: string; ok?: string } | undefined;
 
 const issuePassportSchema = z.object({
   recipientName: z.string().trim().min(2, "Enter the recipient's name").max(80, "Name is too long"),
-  recipientEmail: z
-    .string()
-    .trim()
-    .email("Enter a valid email")
-    .optional()
-    .or(z.literal("")),
+  recipientEmail: z.string().trim().email("Enter a valid email"),
   note: z.string().trim().max(300, "Note is too long").optional(),
 });
 
@@ -174,16 +183,18 @@ export async function issuePassportAction(
     return { error: parsed.error.issues[0]?.message ?? "Invalid details." };
   }
 
-  const email = parsed.data.recipientEmail?.toLowerCase().trim() || null;
-  const linkedUser = email
-    ? await prisma.user.findUnique({ where: { email } })
-    : null;
+  const email = parsed.data.recipientEmail.toLowerCase().trim();
+  const linkedUser = await prisma.user.findUnique({ where: { email } });
 
   // Get the YSWS for this org
   const ysws = await prisma.ySWS.findFirst({
     where: { orgId: membership.orgId },
   });
   if (!ysws) return { error: "No YSWS found for this org." };
+
+  const recipientToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
 
   // Create order in AWAITING_RECIPIENT_DETAILS state
   const order = await prisma.passportOrder.create({
@@ -194,20 +205,19 @@ export async function issuePassportAction(
       currentState: "AWAITING_RECIPIENT_DETAILS",
       status: "PENDING",
       note: parsed.data.note ?? null,
-      createdBy: user.id,
       createdByUserId: linkedUser?.id ?? null,
       createdFrom: "dashboard",
       recipientName: parsed.data.recipientName,
       recipientEmail: email,
-      recipientToken: crypto.randomUUID().substring(0, 16),
+      recipientToken,
       // Create the recipient record (one order = one recipient)
-      recipients: email ? {
+      recipients: {
         create: {
           email,
           name: parsed.data.recipientName,
           userId: linkedUser?.id ?? null,
         },
-      } : undefined,
+      },
     },
   });
 
@@ -219,7 +229,7 @@ export async function issuePassportAction(
       status: "PENDING" as const,
       newState: "AWAITING_RECIPIENT_DETAILS" as const,
       actor: user.id,
-      actorType: "organizer" as const,
+      actorType: "ORGANIZER" as const,
       description: `Passport order created for ${parsed.data.recipientName ?? email}`,
     },
   });
@@ -261,13 +271,25 @@ export async function submitRecipientDetailsAction(
   const orderId = formData.get("orderId") as string;
   if (!orderId) return { error: "Missing order ID." };
 
-  // Verify organizer owns this order
+  // Verify organizer has access to this order's YSWS
   const order = await prisma.passportOrder.findUnique({
     where: { id: orderId },
-    include: { org: true },
+    include: { org: true, ysws: true },
   });
   if (!order) return { error: "Order not found." };
-  if (order.orgId !== user.id && order.createdBy !== user.id) {
+
+  const membership = await prisma.organizerYSWSMembership.findFirst({
+    where: { userId: user.id, yswsId: order.yswsId },
+  });
+  if (!membership && !hasRole(user.role, "ADMIN")) {
+    await auditLog({
+      entityType: "PassportOrder",
+      entityId: orderId,
+      action: "UNAUTHORIZED_ACCESS_ATTEMPT",
+      actor: user.id,
+      actorType: "ORGANIZER",
+      description: `Unauthorized attempt to submit recipient details for order ${orderId}`,
+    });
     return { error: "You do not have access to this order." };
   }
 
@@ -303,7 +325,7 @@ export async function submitRecipientDetailsAction(
       previousState: "AWAITING_RECIPIENT_DETAILS" as const,
       newState: "RECIPIENT_DETAILS_RECEIVED" as const,
       actor: user.id,
-      actorType: "organizer" as const,
+      actorType: "ORGANIZER" as const,
       description: `Recipient details submitted for order ${orderId}`,
     },
   });
@@ -336,17 +358,31 @@ export async function regenerateTrackingTokenAction(
   const orderId = formData.get("orderId") as string;
   if (!orderId) return { error: "Missing order ID." };
 
-  // Verify organizer owns this order
+  // Verify organizer has access to this order's YSWS
   const order = await prisma.passportOrder.findUnique({
     where: { id: orderId },
-    include: { org: true },
+    include: { org: true, ysws: true },
   });
   if (!order) return { error: "Order not found." };
-  if (order.orgId !== user.id && order.createdBy !== user.id) {
+
+  const membership = await prisma.organizerYSWSMembership.findFirst({
+    where: { userId: user.id, yswsId: order.yswsId },
+  });
+  if (!membership && !hasRole(user.role, "ADMIN")) {
+    await auditLog({
+      entityType: "PassportOrder",
+      entityId: orderId,
+      action: "UNAUTHORIZED_ACCESS_ATTEMPT",
+      actor: user.id,
+      actorType: "ORGANIZER",
+      description: `Unauthorized attempt to regenerate tracking token for order ${orderId}`,
+    });
     return { error: "You do not have access to this order." };
   }
 
-  const newToken = crypto.randomUUID().substring(0, 16);
+  const newToken = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
 
   await prisma.passportOrder.update({
     where: { id: orderId },

@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import type { Role, OrgRole } from "../generated/prisma/client";
+import { auditLog } from "./audit";
 
 export type { Role, OrgRole };
 
@@ -39,17 +40,35 @@ export async function getCurrentUserWithRole(): Promise<
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const email = user.email?.toLowerCase().trim();
-  if (email && SUPERADMIN_EMAILS.includes(email)) {
-    return { ...user, role: "SUPERADMIN" };
-  }
-
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
     select: { role: true },
   });
   if (!dbUser) return null;
-  return { ...user, role: dbUser.role };
+
+  // DB role is the source of truth
+  let role = dbUser.role;
+
+  // Only use SUPERADMIN_EMAILS as fallback for bootstrap (when DB role is PARTICIPANT)
+  const email = user.email?.toLowerCase().trim();
+  if (email && SUPERADMIN_EMAILS.includes(email) && role === "PARTICIPANT") {
+    console.warn(
+      `[SUPERADMIN_EMAILS] Granting SUPERADMIN via env var for ${email} (DB role: ${role})`
+    );
+    await auditLog({
+      entityType: "User",
+      entityId: user.id,
+      action: "ROLE_ESCALATED_VIA_ENV",
+      actor: user.id,
+      actorType: "SYSTEM",
+      beforeValue: { role },
+      afterValue: { role: "SUPERADMIN", source: "SUPERADMIN_EMAILS" },
+      description: `SUPERADMIN granted via SUPERADMIN_EMAILS env var for ${email}`,
+    });
+    role = "SUPERADMIN";
+  }
+
+  return { ...user, role };
 }
 
 export async function getOrgForUser(userId: string) {

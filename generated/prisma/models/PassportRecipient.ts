@@ -30,6 +30,15 @@ export type PassportRecipientMinAggregateOutputType = {
   email: string | null
   name: string | null
   userId: string | null
+  addressLine1: string | null
+  addressLine2: string | null
+  city: string | null
+  stateProvince: string | null
+  postalCode: string | null
+  country: string | null
+  dateOfBirth: Date | null
+  emergencyContact: string | null
+  photoUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +49,15 @@ export type PassportRecipientMaxAggregateOutputType = {
   email: string | null
   name: string | null
   userId: string | null
+  addressLine1: string | null
+  addressLine2: string | null
+  city: string | null
+  stateProvince: string | null
+  postalCode: string | null
+  country: string | null
+  dateOfBirth: Date | null
+  emergencyContact: string | null
+  photoUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +68,15 @@ export type PassportRecipientCountAggregateOutputType = {
   email: number
   name: number
   userId: number
+  addressLine1: number
+  addressLine2: number
+  city: number
+  stateProvince: number
+  postalCode: number
+  country: number
+  dateOfBirth: number
+  emergencyContact: number
+  photoUrl: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,6 +89,15 @@ export type PassportRecipientMinAggregateInputType = {
   email?: true
   name?: true
   userId?: true
+  addressLine1?: true
+  addressLine2?: true
+  city?: true
+  stateProvince?: true
+  postalCode?: true
+  country?: true
+  dateOfBirth?: true
+  emergencyContact?: true
+  photoUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +108,15 @@ export type PassportRecipientMaxAggregateInputType = {
   email?: true
   name?: true
   userId?: true
+  addressLine1?: true
+  addressLine2?: true
+  city?: true
+  stateProvince?: true
+  postalCode?: true
+  country?: true
+  dateOfBirth?: true
+  emergencyContact?: true
+  photoUrl?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +127,15 @@ export type PassportRecipientCountAggregateInputType = {
   email?: true
   name?: true
   userId?: true
+  addressLine1?: true
+  addressLine2?: true
+  city?: true
+  stateProvince?: true
+  postalCode?: true
+  country?: true
+  dateOfBirth?: true
+  emergencyContact?: true
+  photoUrl?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -165,6 +219,15 @@ export type PassportRecipientGroupByOutputType = {
   email: string
   name: string | null
   userId: string | null
+  addressLine1: string | null
+  addressLine2: string | null
+  city: string | null
+  stateProvince: string | null
+  postalCode: string | null
+  country: string | null
+  dateOfBirth: Date | null
+  emergencyContact: string | null
+  photoUrl: string | null
   createdAt: Date
   updatedAt: Date
   _count: PassportRecipientCountAggregateOutputType | null
@@ -196,6 +259,15 @@ export type PassportRecipientWhereInput = {
   email?: Prisma.StringFilter<"PassportRecipient"> | string
   name?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
   userId?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  addressLine1?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  addressLine2?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  city?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  stateProvince?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  country?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"PassportRecipient"> | Date | string | null
+  emergencyContact?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  photoUrl?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PassportRecipient"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PassportRecipient"> | Date | string
   order?: Prisma.XOR<Prisma.PassportOrderScalarRelationFilter, Prisma.PassportOrderWhereInput>
@@ -207,6 +279,15 @@ export type PassportRecipientOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine2?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  stateProvince?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContact?: Prisma.SortOrderInput | Prisma.SortOrder
+  photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   order?: Prisma.PassportOrderOrderByWithRelationInput
@@ -214,6 +295,7 @@ export type PassportRecipientOrderByWithRelationInput = {
 
 export type PassportRecipientWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  orderId_email?: Prisma.PassportRecipientOrderIdEmailCompoundUniqueInput
   AND?: Prisma.PassportRecipientWhereInput | Prisma.PassportRecipientWhereInput[]
   OR?: Prisma.PassportRecipientWhereInput[]
   NOT?: Prisma.PassportRecipientWhereInput | Prisma.PassportRecipientWhereInput[]
@@ -221,10 +303,19 @@ export type PassportRecipientWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringFilter<"PassportRecipient"> | string
   name?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
   userId?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  addressLine1?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  addressLine2?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  city?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  stateProvince?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  country?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"PassportRecipient"> | Date | string | null
+  emergencyContact?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  photoUrl?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PassportRecipient"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PassportRecipient"> | Date | string
   order?: Prisma.XOR<Prisma.PassportOrderScalarRelationFilter, Prisma.PassportOrderWhereInput>
-}, "id">
+}, "id" | "orderId_email">
 
 export type PassportRecipientOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -232,6 +323,15 @@ export type PassportRecipientOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine2?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  stateProvince?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  emergencyContact?: Prisma.SortOrderInput | Prisma.SortOrder
+  photoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PassportRecipientCountOrderByAggregateInput
@@ -248,6 +348,15 @@ export type PassportRecipientScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"PassportRecipient"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  addressLine1?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  addressLine2?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  city?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  stateProvince?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  postalCode?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  country?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"PassportRecipient"> | Date | string | null
+  emergencyContact?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
+  photoUrl?: Prisma.StringNullableWithAggregatesFilter<"PassportRecipient"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PassportRecipient"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PassportRecipient"> | Date | string
 }
@@ -257,6 +366,15 @@ export type PassportRecipientCreateInput = {
   email: string
   name?: string | null
   userId?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  stateProvince?: string | null
+  postalCode?: string | null
+  country?: string | null
+  dateOfBirth?: Date | string | null
+  emergencyContact?: string | null
+  photoUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   order: Prisma.PassportOrderCreateNestedOneWithoutRecipientsInput
@@ -268,6 +386,15 @@ export type PassportRecipientUncheckedCreateInput = {
   email: string
   name?: string | null
   userId?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  stateProvince?: string | null
+  postalCode?: string | null
+  country?: string | null
+  dateOfBirth?: Date | string | null
+  emergencyContact?: string | null
+  photoUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -277,6 +404,15 @@ export type PassportRecipientUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.PassportOrderUpdateOneRequiredWithoutRecipientsNestedInput
@@ -288,6 +424,15 @@ export type PassportRecipientUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -298,6 +443,15 @@ export type PassportRecipientCreateManyInput = {
   email: string
   name?: string | null
   userId?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  stateProvince?: string | null
+  postalCode?: string | null
+  country?: string | null
+  dateOfBirth?: Date | string | null
+  emergencyContact?: string | null
+  photoUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -307,6 +461,15 @@ export type PassportRecipientUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +480,15 @@ export type PassportRecipientUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -331,12 +503,26 @@ export type PassportRecipientOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type PassportRecipientOrderIdEmailCompoundUniqueInput = {
+  orderId: string
+  email: string
+}
+
 export type PassportRecipientCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  addressLine1?: Prisma.SortOrder
+  addressLine2?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  stateProvince?: Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  emergencyContact?: Prisma.SortOrder
+  photoUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -347,6 +533,15 @@ export type PassportRecipientMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  addressLine1?: Prisma.SortOrder
+  addressLine2?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  stateProvince?: Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  emergencyContact?: Prisma.SortOrder
+  photoUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -357,6 +552,15 @@ export type PassportRecipientMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  addressLine1?: Prisma.SortOrder
+  addressLine2?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  stateProvince?: Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
+  emergencyContact?: Prisma.SortOrder
+  photoUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -408,6 +612,15 @@ export type PassportRecipientCreateWithoutOrderInput = {
   email: string
   name?: string | null
   userId?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  stateProvince?: string | null
+  postalCode?: string | null
+  country?: string | null
+  dateOfBirth?: Date | string | null
+  emergencyContact?: string | null
+  photoUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -417,6 +630,15 @@ export type PassportRecipientUncheckedCreateWithoutOrderInput = {
   email: string
   name?: string | null
   userId?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  stateProvince?: string | null
+  postalCode?: string | null
+  country?: string | null
+  dateOfBirth?: Date | string | null
+  emergencyContact?: string | null
+  photoUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -456,6 +678,15 @@ export type PassportRecipientScalarWhereInput = {
   email?: Prisma.StringFilter<"PassportRecipient"> | string
   name?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
   userId?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  addressLine1?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  addressLine2?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  city?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  stateProvince?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  country?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"PassportRecipient"> | Date | string | null
+  emergencyContact?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
+  photoUrl?: Prisma.StringNullableFilter<"PassportRecipient"> | string | null
   createdAt?: Prisma.DateTimeFilter<"PassportRecipient"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PassportRecipient"> | Date | string
 }
@@ -465,6 +696,15 @@ export type PassportRecipientCreateManyOrderInput = {
   email: string
   name?: string | null
   userId?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  stateProvince?: string | null
+  postalCode?: string | null
+  country?: string | null
+  dateOfBirth?: Date | string | null
+  emergencyContact?: string | null
+  photoUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -474,6 +714,15 @@ export type PassportRecipientUpdateWithoutOrderInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -483,6 +732,15 @@ export type PassportRecipientUncheckedUpdateWithoutOrderInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -492,6 +750,15 @@ export type PassportRecipientUncheckedUpdateManyWithoutOrderInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -504,6 +771,15 @@ export type PassportRecipientSelect<ExtArgs extends runtime.Types.Extensions.Int
   email?: boolean
   name?: boolean
   userId?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  city?: boolean
+  stateProvince?: boolean
+  postalCode?: boolean
+  country?: boolean
+  dateOfBirth?: boolean
+  emergencyContact?: boolean
+  photoUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   order?: boolean | Prisma.PassportOrderDefaultArgs<ExtArgs>
@@ -515,6 +791,15 @@ export type PassportRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.T
   email?: boolean
   name?: boolean
   userId?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  city?: boolean
+  stateProvince?: boolean
+  postalCode?: boolean
+  country?: boolean
+  dateOfBirth?: boolean
+  emergencyContact?: boolean
+  photoUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   order?: boolean | Prisma.PassportOrderDefaultArgs<ExtArgs>
@@ -526,6 +811,15 @@ export type PassportRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   email?: boolean
   name?: boolean
   userId?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  city?: boolean
+  stateProvince?: boolean
+  postalCode?: boolean
+  country?: boolean
+  dateOfBirth?: boolean
+  emergencyContact?: boolean
+  photoUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   order?: boolean | Prisma.PassportOrderDefaultArgs<ExtArgs>
@@ -537,11 +831,20 @@ export type PassportRecipientSelectScalar = {
   email?: boolean
   name?: boolean
   userId?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  city?: boolean
+  stateProvince?: boolean
+  postalCode?: boolean
+  country?: boolean
+  dateOfBirth?: boolean
+  emergencyContact?: boolean
+  photoUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PassportRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "email" | "name" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["passportRecipient"]>
+export type PassportRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "email" | "name" | "userId" | "addressLine1" | "addressLine2" | "city" | "stateProvince" | "postalCode" | "country" | "dateOfBirth" | "emergencyContact" | "photoUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["passportRecipient"]>
 export type PassportRecipientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.PassportOrderDefaultArgs<ExtArgs>
 }
@@ -563,6 +866,15 @@ export type $PassportRecipientPayload<ExtArgs extends runtime.Types.Extensions.I
     email: string
     name: string | null
     userId: string | null
+    addressLine1: string | null
+    addressLine2: string | null
+    city: string | null
+    stateProvince: string | null
+    postalCode: string | null
+    country: string | null
+    dateOfBirth: Date | null
+    emergencyContact: string | null
+    photoUrl: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["passportRecipient"]>
@@ -994,6 +1306,15 @@ export interface PassportRecipientFieldRefs {
   readonly email: Prisma.FieldRef<"PassportRecipient", 'String'>
   readonly name: Prisma.FieldRef<"PassportRecipient", 'String'>
   readonly userId: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly addressLine1: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly addressLine2: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly city: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly stateProvince: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly postalCode: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly country: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly dateOfBirth: Prisma.FieldRef<"PassportRecipient", 'DateTime'>
+  readonly emergencyContact: Prisma.FieldRef<"PassportRecipient", 'String'>
+  readonly photoUrl: Prisma.FieldRef<"PassportRecipient", 'String'>
   readonly createdAt: Prisma.FieldRef<"PassportRecipient", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PassportRecipient", 'DateTime'>
 }

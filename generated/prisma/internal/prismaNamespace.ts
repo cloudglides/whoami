@@ -1838,13 +1838,13 @@ export const PassportOrderScalarFieldEnum = {
   currentState: 'currentState',
   status: 'status',
   note: 'note',
-  createdBy: 'createdBy',
   createdByUserId: 'createdByUserId',
   recipientUserId: 'recipientUserId',
   createdFrom: 'createdFrom',
   recipientName: 'recipientName',
   recipientEmail: 'recipientEmail',
   recipientToken: 'recipientToken',
+  archivedAt: 'archivedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1858,6 +1858,15 @@ export const PassportRecipientScalarFieldEnum = {
   email: 'email',
   name: 'name',
   userId: 'userId',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  city: 'city',
+  stateProvince: 'stateProvince',
+  postalCode: 'postalCode',
+  country: 'country',
+  dateOfBirth: 'dateOfBirth',
+  emergencyContact: 'emergencyContact',
+  photoUrl: 'photoUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1923,6 +1932,7 @@ export const AuditLogScalarFieldEnum = {
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
   requestId: 'requestId',
+  description: 'description',
   createdAt: 'createdAt'
 } as const
 
@@ -2148,6 +2158,20 @@ export type EnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'EventType[]'
  */
 export type ListEnumEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ActorType'
+ */
+export type EnumActorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActorType'>
+    
+
+
+/**
+ * Reference to a field of type 'ActorType[]'
+ */
+export type ListEnumActorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActorType[]'>
     
 
 

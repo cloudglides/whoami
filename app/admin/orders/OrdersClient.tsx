@@ -17,7 +17,6 @@ type OrderRow = {
   currentState: string;
   status: string;
   createdAt: string;
-  createdBy: string;
 };
 
 const NEEDS_ATTENTION_STATES = [

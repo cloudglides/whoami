@@ -113,7 +113,7 @@ export default async function AdminOrderDetailPage({
                       {order.user.name ?? order.user.email}
                     </Link>
                   ) : (
-                    order.createdBy
+                    "—"
                   )}
                 </dd>
               </div>
@@ -281,9 +281,15 @@ export default async function AdminOrderDetailPage({
 
           <Section title="API key" divider={false}>
             {order.ysws?.apiKey ? (
-              <code className="block font-mono text-sm break-all border-2 border-govuk-black bg-govuk-white px-2 py-1.5">
-                {order.ysws.apiKey}
-              </code>
+              user.role === "SUPERADMIN" ? (
+                <code className="block font-mono text-sm break-all border-2 border-govuk-black bg-govuk-white px-2 py-1.5">
+                  {order.ysws.apiKey}
+                </code>
+              ) : (
+                <code className="block font-mono text-sm break-all border-2 border-govuk-black bg-govuk-white px-2 py-1.5">
+                  {"wom_" + "•".repeat(24)}
+                </code>
+              )
             ) : (
               <p className="text-govuk-grey-4 text-sm">No API key configured for this YSWS.</p>
             )}

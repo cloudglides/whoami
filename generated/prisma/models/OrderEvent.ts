@@ -32,7 +32,7 @@ export type OrderEventMinAggregateOutputType = {
   previousState: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition | null
   actor: string | null
-  actorType: string | null
+  actorType: $Enums.ActorType | null
   description: string | null
   createdAt: Date | null
 }
@@ -45,7 +45,7 @@ export type OrderEventMaxAggregateOutputType = {
   previousState: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition | null
   actor: string | null
-  actorType: string | null
+  actorType: $Enums.ActorType | null
   description: string | null
   createdAt: Date | null
 }
@@ -187,7 +187,7 @@ export type OrderEventGroupByOutputType = {
   previousState: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType: string | null
+  actorType: $Enums.ActorType
   description: string | null
   metadata: runtime.JsonValue | null
   createdAt: Date
@@ -222,7 +222,7 @@ export type OrderEventWhereInput = {
   previousState?: Prisma.EnumOrderTransitionNullableFilter<"OrderEvent"> | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFilter<"OrderEvent"> | $Enums.OrderTransition
   actor?: Prisma.StringFilter<"OrderEvent"> | string
-  actorType?: Prisma.StringNullableFilter<"OrderEvent"> | string | null
+  actorType?: Prisma.EnumActorTypeFilter<"OrderEvent"> | $Enums.ActorType
   description?: Prisma.StringNullableFilter<"OrderEvent"> | string | null
   metadata?: Prisma.JsonNullableFilter<"OrderEvent">
   createdAt?: Prisma.DateTimeFilter<"OrderEvent"> | Date | string
@@ -237,7 +237,7 @@ export type OrderEventOrderByWithRelationInput = {
   previousState?: Prisma.SortOrderInput | Prisma.SortOrder
   newState?: Prisma.SortOrder
   actor?: Prisma.SortOrder
-  actorType?: Prisma.SortOrderInput | Prisma.SortOrder
+  actorType?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -255,7 +255,7 @@ export type OrderEventWhereUniqueInput = Prisma.AtLeast<{
   previousState?: Prisma.EnumOrderTransitionNullableFilter<"OrderEvent"> | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFilter<"OrderEvent"> | $Enums.OrderTransition
   actor?: Prisma.StringFilter<"OrderEvent"> | string
-  actorType?: Prisma.StringNullableFilter<"OrderEvent"> | string | null
+  actorType?: Prisma.EnumActorTypeFilter<"OrderEvent"> | $Enums.ActorType
   description?: Prisma.StringNullableFilter<"OrderEvent"> | string | null
   metadata?: Prisma.JsonNullableFilter<"OrderEvent">
   createdAt?: Prisma.DateTimeFilter<"OrderEvent"> | Date | string
@@ -270,7 +270,7 @@ export type OrderEventOrderByWithAggregationInput = {
   previousState?: Prisma.SortOrderInput | Prisma.SortOrder
   newState?: Prisma.SortOrder
   actor?: Prisma.SortOrder
-  actorType?: Prisma.SortOrderInput | Prisma.SortOrder
+  actorType?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -290,7 +290,7 @@ export type OrderEventScalarWhereWithAggregatesInput = {
   previousState?: Prisma.EnumOrderTransitionNullableWithAggregatesFilter<"OrderEvent"> | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionWithAggregatesFilter<"OrderEvent"> | $Enums.OrderTransition
   actor?: Prisma.StringWithAggregatesFilter<"OrderEvent"> | string
-  actorType?: Prisma.StringNullableWithAggregatesFilter<"OrderEvent"> | string | null
+  actorType?: Prisma.EnumActorTypeWithAggregatesFilter<"OrderEvent"> | $Enums.ActorType
   description?: Prisma.StringNullableWithAggregatesFilter<"OrderEvent"> | string | null
   metadata?: Prisma.JsonNullableWithAggregatesFilter<"OrderEvent">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OrderEvent"> | Date | string
@@ -303,7 +303,7 @@ export type OrderEventCreateInput = {
   previousState?: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType?: string | null
+  actorType: $Enums.ActorType
   description?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -318,7 +318,7 @@ export type OrderEventUncheckedCreateInput = {
   previousState?: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType?: string | null
+  actorType: $Enums.ActorType
   description?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -331,7 +331,7 @@ export type OrderEventUpdateInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -346,7 +346,7 @@ export type OrderEventUncheckedUpdateInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,7 +360,7 @@ export type OrderEventCreateManyInput = {
   previousState?: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType?: string | null
+  actorType: $Enums.ActorType
   description?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -373,7 +373,7 @@ export type OrderEventUpdateManyMutationInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -387,7 +387,7 @@ export type OrderEventUncheckedUpdateManyInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -497,6 +497,10 @@ export type NullableEnumOrderTransitionFieldUpdateOperationsInput = {
   set?: $Enums.OrderTransition | null
 }
 
+export type EnumActorTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ActorType
+}
+
 export type OrderEventCreateWithoutOrderInput = {
   id?: string
   eventType: $Enums.EventType
@@ -504,7 +508,7 @@ export type OrderEventCreateWithoutOrderInput = {
   previousState?: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType?: string | null
+  actorType: $Enums.ActorType
   description?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -517,7 +521,7 @@ export type OrderEventUncheckedCreateWithoutOrderInput = {
   previousState?: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType?: string | null
+  actorType: $Enums.ActorType
   description?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -560,7 +564,7 @@ export type OrderEventScalarWhereInput = {
   previousState?: Prisma.EnumOrderTransitionNullableFilter<"OrderEvent"> | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFilter<"OrderEvent"> | $Enums.OrderTransition
   actor?: Prisma.StringFilter<"OrderEvent"> | string
-  actorType?: Prisma.StringNullableFilter<"OrderEvent"> | string | null
+  actorType?: Prisma.EnumActorTypeFilter<"OrderEvent"> | $Enums.ActorType
   description?: Prisma.StringNullableFilter<"OrderEvent"> | string | null
   metadata?: Prisma.JsonNullableFilter<"OrderEvent">
   createdAt?: Prisma.DateTimeFilter<"OrderEvent"> | Date | string
@@ -573,7 +577,7 @@ export type OrderEventCreateManyOrderInput = {
   previousState?: $Enums.OrderTransition | null
   newState: $Enums.OrderTransition
   actor: string
-  actorType?: string | null
+  actorType: $Enums.ActorType
   description?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -586,7 +590,7 @@ export type OrderEventUpdateWithoutOrderInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -599,7 +603,7 @@ export type OrderEventUncheckedUpdateWithoutOrderInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -612,7 +616,7 @@ export type OrderEventUncheckedUpdateManyWithoutOrderInput = {
   previousState?: Prisma.NullableEnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition | null
   newState?: Prisma.EnumOrderTransitionFieldUpdateOperationsInput | $Enums.OrderTransition
   actor?: Prisma.StringFieldUpdateOperationsInput | string
-  actorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorType?: Prisma.EnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,7 +707,7 @@ export type $OrderEventPayload<ExtArgs extends runtime.Types.Extensions.Internal
     previousState: $Enums.OrderTransition | null
     newState: $Enums.OrderTransition
     actor: string
-    actorType: string | null
+    actorType: $Enums.ActorType
     description: string | null
     metadata: runtime.JsonValue | null
     createdAt: Date
@@ -1138,7 +1142,7 @@ export interface OrderEventFieldRefs {
   readonly previousState: Prisma.FieldRef<"OrderEvent", 'OrderTransition'>
   readonly newState: Prisma.FieldRef<"OrderEvent", 'OrderTransition'>
   readonly actor: Prisma.FieldRef<"OrderEvent", 'String'>
-  readonly actorType: Prisma.FieldRef<"OrderEvent", 'String'>
+  readonly actorType: Prisma.FieldRef<"OrderEvent", 'ActorType'>
   readonly description: Prisma.FieldRef<"OrderEvent", 'String'>
   readonly metadata: Prisma.FieldRef<"OrderEvent", 'Json'>
   readonly createdAt: Prisma.FieldRef<"OrderEvent", 'DateTime'>
