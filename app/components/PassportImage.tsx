@@ -15,7 +15,7 @@ export default function PassportImage() {
       alt=""
       className="absolute object-contain pointer-events-none hidden xl:block -mt-20"
       style={{
-        left: "-170px",
+        left: "-10px",
         top: "0px",
         width: "240px",
         height: "auto",
