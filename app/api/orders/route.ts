@@ -6,19 +6,22 @@ import { prisma } from "@/lib/prisma";
 export const runtime = "nodejs";
 
 const createOrderSchema = z.object({
-  quantity: z.number().int().min(1).max(1000),
+  recipientEmail: z.string().email("Enter a valid recipient email").optional().or(z.literal("")),
+  recipientName: z.string().min(2, "Enter the recipient's name").max(80, "Name is too long"),
   note: z.string().max(300).optional(),
 });
 
 const ORDER_FIELDS = {
   id: true,
   orgId: true,
-  ysws: true,
-  quantity: true,
+  yswsId: true,
+  totalQuantity: true,
+  currentState: true,
   status: true,
   note: true,
   recipientName: true,
   recipientEmail: true,
+  recipientToken: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -36,8 +39,13 @@ function extractApiKey(req: Request): string | null {
 async function resolveOrg(req: Request) {
   const apiKey = extractApiKey(req);
   if (apiKey) {
-    const org = await prisma.org.findUnique({ where: { apiKey } });
-    if (org) return { orgId: org.id, ysws: org.name, actorId: "api" };
+    const ysws = await prisma.ySWS.findUnique({
+      where: { apiKey },
+      include: { org: true },
+    });
+    if (ysws && ysws.orgId) {
+      return { orgId: ysws.orgId, ysws: ysws.id, actorId: "api" };
+    }
     return null;
   }
 
@@ -50,7 +58,12 @@ async function resolveOrg(req: Request) {
   });
   if (!membership) return null;
 
-  return { orgId: membership.orgId, ysws: membership.org.name, actorId: session.user.id };
+  // Get the YSWS for this org
+  const ysws = await prisma.ySWS.findFirst({
+    where: { orgId: membership.orgId },
+  });
+
+  return { orgId: membership.orgId, ysws: ysws?.id, actorId: session.user.id };
 }
 
 export async function POST(req: Request) {
@@ -71,13 +84,32 @@ export async function POST(req: Request) {
     );
   }
 
+  // For API key users, the API key is scoped to a YSWS, so they implicitly have access
+  if (org.actorId === "api" && !org.ysws) {
+    return NextResponse.json(
+      { error: "No YSWS associated with this API key" },
+      { status: 400 }
+    );
+  }
+
+  const rawEmail = parsed.data.recipientEmail?.toLowerCase().trim();
+  const email = rawEmail || null;
+  const linkedUser = email ? await prisma.user.findUnique({ where: { email } }) : null;
+
   const order = await prisma.passportOrder.create({
     data: {
       orgId: org.orgId,
-      ysws: org.ysws,
-      quantity: parsed.data.quantity,
+      yswsId: org.ysws,
+      totalQuantity: 1,
+      currentState: "AWAITING_RECIPIENT_DETAILS",
+      status: "PENDING",
       note: parsed.data.note ?? null,
       createdBy: org.actorId,
+      createdFrom: "api",
+      recipientName: parsed.data.recipientName,
+      recipientEmail: email,
+      recipientToken: crypto.randomUUID().substring(0, 16),
+      createdByUserId: linkedUser?.id ?? null,
     },
     select: ORDER_FIELDS,
   });

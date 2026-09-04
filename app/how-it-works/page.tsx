@@ -1,11 +1,8 @@
-import Link from "next/link";
 import Breadcrumb from "../components/Breadcrumb";
 import FadeIn from "../components/FadeIn";
 import Feedback from "../components/Feedback";
 import steps from "../../content/steps.json";
 import page from "../../content/how-it-works-page.json";
-
-const SLACK_URL = "https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19";
 
 export default function HowItWorksPage() {
   return (

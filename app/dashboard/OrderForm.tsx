@@ -3,12 +3,13 @@
 import { useActionState } from "react";
 import { createOrderAction } from "../actions/org";
 
-export default function OrderForm({ orgId }: { orgId: string }) {
+export default function OrderForm({ orgId, yswsId }: { orgId: string; yswsId?: string | null }) {
   const [state, formAction, pending] = useActionState(createOrderAction, undefined);
 
   return (
     <form action={formAction} className="mt-6 space-y-6" noValidate>
       <input type="hidden" name="orgId" value={orgId} />
+      {yswsId && <input type="hidden" name="yswsId" value={yswsId} />}
 
       <div>
         <label htmlFor="quantity" className="mb-2 block font-bold">

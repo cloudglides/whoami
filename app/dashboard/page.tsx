@@ -1,17 +1,14 @@
 import Link from "next/link";
 import Breadcrumb from "../components/Breadcrumb";
 import FadeIn from "../components/FadeIn";
-import { getCurrentUserWithRole, getOrgForUser, hasRole, ROLE_LABEL } from "@/lib/org";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUserWithRole, getOrgForUser, getOrganizerYSWSesWithStats, hasRole, ROLE_LABEL } from "@/lib/org";
 import type { Role } from "../../generated/prisma/client";
-import OrderForm from "./OrderForm";
-import ApiKeyPanel from "./ApiKeyPanel";
-import IssuePassportForm from "./IssuePassportForm";
-
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pending",
-  CONFIRMED: "Confirmed",
-  SHIPPED: "Shipped",
-};
+import CreateOrderForm from "./CreateOrderForm";
+import ApiIntegrationPanel from "./ApiIntegrationPanel";
+import YSWSSelector from "./YSWSSelector";
+import Section from "../components/Section";
+import DataTable from "../components/DataTable";
 
 function dateLabel(d: Date) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -21,41 +18,85 @@ function dateLabel(d: Date) {
   }).format(d);
 }
 
-export default async function DashboardPage() {
+function statusColor(state: string): "govuk-tag--grey" | "govuk-tag--blue" | "govuk-tag--green" | "govuk-tag--red" | "govuk-tag--yellow" {
+  switch (state) {
+    case "AWAITING_RECIPIENT_DETAILS":
+      return "govuk-tag--yellow";
+    case "RECIPIENT_DETAILS_RECEIVED":
+    case "DRAFTING":
+    case "DRAFT_READY":
+      return "govuk-tag--blue";
+    case "SENT_TO_HQ":
+    case "RECEIVED_FROM_HQ":
+      return "govuk-tag--grey";
+    case "SHIPPING":
+      return "govuk-tag--blue";
+    case "DELIVERED":
+      return "govuk-tag--green";
+    case "CANCELLED":
+    case "ERROR":
+      return "govuk-tag--red";
+    default:
+      return "govuk-tag--grey";
+  }
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ ysws?: string }>;
+}) {
   const user = await getCurrentUserWithRole();
+  const params = await searchParams;
+  const selectedYswsId = params.ysws ?? null;
+
+  // Verify the selected YSWS is accessible by the user
+  let verifiedYswsId: string | null = null;
+  if (user && selectedYswsId) {
+    const yswsList = await getOrganizerYSWSesWithStats(user.id);
+    const hasAccess = yswsList.some((y) => y.yswsId === selectedYswsId);
+    if (hasAccess) {
+      verifiedYswsId = selectedYswsId;
+    }
+  }
 
   return (
-    <FadeIn className="mx-auto max-w-3xl px-5 pb-12 pt-10">
+    <FadeIn className="mx-auto w-full px-6 pb-12 pt-8">
       <Breadcrumb
         items={[{ label: "whoami", href: "/" }, { label: "Dashboard" }]}
       />
 
       {!user ? (
-        <>
-          <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-            Organizer dashboard
-          </h1>
-          <p className="mb-6 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-            Sign in with Hack Club to set up an org for your YSWS and order
-            passports to hand out.
-          </p>
-          <Link href="/api/auth/signin?callbackUrl=/dashboard" className="govuk-button">
-            Sign in with Hack Club
-          </Link>
-        </>
+        <UnsignedDashboard />
       ) : !hasRole(user.role, "ORGANIZER") ? (
         <NotOrganizer />
       ) : (
-        <OrgArea userId={user.id} role={user.role} />
+        <OrganizerDashboard userId={user.id} role={user.role} selectedYswsId={verifiedYswsId} />
       )}
     </FadeIn>
   );
 }
 
+function UnsignedDashboard() {
+  return (
+    <div className="max-w-2xl">
+      <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+        Organizer dashboard
+      </h1>
+      <p className="mb-6 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
+        Sign in with Hack Club to manage your YSWS and create passport orders.
+      </p>
+      <Link href="/api/auth/signin?callbackUrl=/dashboard" className="govuk-button">
+        Sign in with Hack Club
+      </Link>
+    </div>
+  );
+}
+
 function NotOrganizer() {
   return (
-    <>
-      <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+    <div className="max-w-2xl">
+      <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
         Dashboard
       </h1>
       <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
@@ -65,17 +106,26 @@ function NotOrganizer() {
       <Link href="/" className="govuk-button govuk-button--secondary">
         Back home
       </Link>
-    </>
+    </div>
   );
 }
 
-async function OrgArea({ userId, role }: { userId: string; role: Role }) {
+async function OrganizerDashboard({
+  userId,
+  role,
+  selectedYswsId,
+}: {
+  userId: string;
+  role: Role;
+  selectedYswsId?: string | null;
+}) {
   const org = await getOrgForUser(userId);
+  const yswsList = await getOrganizerYSWSesWithStats(userId);
 
   if (!org) {
     return (
-      <>
-        <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+      <div className="max-w-2xl">
+        <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
           Dashboard
         </h1>
         <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
@@ -85,79 +135,201 @@ async function OrgArea({ userId, role }: { userId: string; role: Role }) {
         <Link href="/" className="govuk-button govuk-button--secondary">
           Back home
         </Link>
-      </>
+      </div>
     );
   }
 
-  const totalOrdered = org.orders.reduce((sum, o) => sum + o.quantity, 0);
+  // Resolve current YSWS
+  const currentYsws = yswsList.find((y) => y.yswsId === selectedYswsId) ?? yswsList[0];
+  const selectedYswsIdResolved = currentYsws?.yswsId ?? null;
+
+  // Fetch orders for the selected YSWS
+  let orders: Array<{
+    id: string;
+    recipientName: string | null;
+    recipientEmail: string | null;
+    totalQuantity: number;
+    currentState: string;
+    status: string;
+    note: string | null;
+    createdAt: Date;
+    user: { name: string | null; email: string | null } | null;
+    ysws: { name: string } | null;
+  }> = [];
+  let totalOrdered = 0;
+  let apiKey: string | null = null;
+  let yswsName: string | null = null;
+
+  if (selectedYswsIdResolved) {
+    const ysws = await prisma.ySWS.findUnique({
+      where: { id: selectedYswsIdResolved },
+      include: {
+        orders: {
+          orderBy: { createdAt: "desc" },
+          include: { 
+            user: { select: { name: true, email: true } },
+            ysws: { select: { name: true } },
+          },
+        },
+        org: true,
+      },
+    });
+    
+    if (ysws) {
+      orders = ysws.orders;
+      totalOrdered = orders.reduce((sum, o) => sum + o.totalQuantity, 0);
+      apiKey = ysws.apiKey;
+      yswsName = ysws.name;
+    }
+  } else if (yswsList.length === 1 && currentYsws?.yswsId) {
+    const fullYsws = await prisma.ySWS.findUnique({
+      where: { id: currentYsws.yswsId },
+      include: {
+        orders: {
+          orderBy: { createdAt: "desc" },
+          include: { 
+            user: { select: { name: true, email: true } },
+            ysws: { select: { name: true } },
+          },
+        },
+      }
+      });
+      if (fullYsws) {
+        orders = fullYsws.orders;
+        totalOrdered = orders.reduce((sum, o) => sum + o.totalQuantity, 0);
+        apiKey = fullYsws.apiKey;
+        yswsName = fullYsws.name;
+      }
+    }
+
+  // Orders needing attention (awaiting details, pending, etc.)
+  const needsAttention = orders.filter((o) => 
+    ["AWAITING_RECIPIENT_DETAILS", "RECIPIENT_DETAILS_RECEIVED", "DRAFTING", "ERROR"].includes(o.currentState)
+  );
+
+  const recentOrders = orders.slice(0, 20);
 
   return (
-    <>
-      <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-        {org.name}
-      </h1>
-      <p className="mb-1 text-sm text-govuk-grey-4">
-        YSWS: {org.name} · You are a {ROLE_LABEL[role].toLowerCase()}
-      </p>
-      <p className="mb-4 text-sm text-govuk-grey-4">
-        Total passports ordered: {totalOrdered}
-      </p>
-      {hasRole(role, "ADMIN") && (
-        <p className="mb-4">
-          <Link href="/admin" className="govuk-link">
-            Go to the admin panel →
-          </Link>
-        </p>
-      )}
+    <div className="grid gap-8 lg:grid-cols-12">
+      <main className="lg:col-span-8 space-y-8">
+        {/* Header with YSWS switcher */}
+        <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-4 border-b border-govuk-grey-2">
+          <div>
+            <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              {org.name}
+            </h1>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-govuk-grey-4">
+              <span>YSWS: <strong>{currentYsws?.yswsName ?? org.name}</strong></span>
+              <span>·</span>
+              <span>You are a {ROLE_LABEL[role].toLowerCase()}</span>
+              {totalOrdered > 0 && (
+                <span>·</span>
+              )}
+              {totalOrdered > 0 && (
+                <span>Total orders: <strong>{totalOrdered}</strong></span>
+              )}
+            </div>
+          </div>
+          {hasRole(role, "ADMIN") && (
+            <Link href="/admin" className="govuk-button govuk-button--secondary govuk-button--small shrink-0">
+              Go to admin panel
+            </Link>
+          )}
+        </header>
 
-      <hr className="section-rule" />
+        {/* YSWS Switcher - prominent if multiple */}
+        {yswsList.length > 1 && (
+          <YSWSSelector yswsList={yswsList} currentYswsId={selectedYswsIdResolved} />
+        )}
 
-      <h2 className="mb-1 text-xl font-bold">Order passports</h2>
-      <ApiKeyPanel orgId={org.id} apiKey={org.apiKey} />
-      <OrderForm orgId={org.id} />
+        {/* Orders needing attention */}
+        {needsAttention.length > 0 && (
+          <Section
+            title={`Orders needing attention (${needsAttention.length})`}
+            description="These orders require action to move forward."
+          >
+            <DataTable
+              columns={[
+                { key: "recipient", header: "Recipient", render: (o: typeof orders[0]) => (
+                  <>
+                    <span className="font-medium">
+                      {o.recipientName ?? "—"}
+                    </span>
+                    {o.recipientEmail && (
+                      <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>
+                    )}
+                  </>
+                ) },
+                { key: "state", header: "Status", render: (o: typeof orders[0]) => (
+                  <span className={`govuk-tag ${statusColor(o.currentState)} text-xs`}>
+                    {o.currentState.replace(/_/g, " ")}
+                  </span>
+                ), className: "w-40" },
+                { key: "created", header: "Created", render: (o: typeof orders[0]) => dateLabel(o.createdAt), className: "w-32" },
+              ]}
+              data={needsAttention}
+              rowKey="id"
+              emptyMessage="No orders needing attention."
+            />
+          </Section>
+        )}
 
-      <hr className="section-rule" />
+        {/* Create order form */}
+        <Section
+          title="Create passport order"
+          description="Each order is for one participant. Enter their details and we'll handle the rest."
+        >
+          <CreateOrderForm orgId={org.id} yswsId={selectedYswsIdResolved} />
+        </Section>
 
-      <h2 className="mb-1 text-xl font-bold">Issue a passport to a participant</h2>
-      <p className="mb-3 max-w-xl text-govuk-grey-4">
-        Trigger a single PASSPORT/ID order for someone at your event, entering
-        the details to print. Link it to their account if you know their email.
-      </p>
-      <IssuePassportForm />
+        {/* Recent orders */}
+        <Section
+          title="Recent orders"
+          description={`Showing latest ${recentOrders.length} of ${orders.length} total orders for this YSWS.`}
+        >
+          {recentOrders.length === 0 ? (
+            <p className="text-govuk-grey-4">No orders yet. Create your first order above.</p>
+          ) : (
+            <DataTable
+              columns={[
+                { key: "recipient", header: "Recipient", render: (o: typeof orders[0]) => (
+                  <>
+                    <span className="font-medium">
+                      {o.recipientName ?? "—"}
+                    </span>
+                    {o.recipientEmail && (
+                      <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>
+                    )}
+                  </>
+                ) },
+                { key: "state", header: "Status", render: (o: typeof orders[0]) => (
+                  <span className={`govuk-tag ${statusColor(o.currentState)} text-xs`}>
+                    {o.currentState.replace(/_/g, " ")}
+                  </span>
+                ), className: "w-40" },
+                { key: "created", header: "Created", render: (o: typeof orders[0]) => dateLabel(o.createdAt), className: "w-32" },
+                { key: "note", header: "Note", render: (o: typeof orders[0]) => o.note ? (
+                  <span className="text-govuk-grey-4 text-sm max-w-xs block truncate">{o.note}</span>
+                ) : (
+                  <span className="text-govuk-grey-4 text-sm">—</span>
+                ) },
+              ]}
+              data={recentOrders}
+              rowKey="id"
+              emptyMessage="No orders yet."
+            />
+          )}
+        </Section>
+      </main>
 
-      <hr className="section-rule" />
-
-      <h2 className="mb-4 text-xl font-bold">Order history</h2>
-      {org.orders.length === 0 ? (
-        <p className="text-govuk-grey-4">
-          No orders yet. Place your first order above.
-        </p>
-      ) : (
-        <ul className="govuk-task-list">
-          {org.orders.map((order) => (
-            <li key={order.id} className="govuk-task-list__item">
-              <div className="govuk-task-list__name-and-hint">
-                <span className="font-semibold">
-                  {order.recipientName
-                    ? `Passport for ${order.recipientName}`
-                    : `${order.quantity} passport${order.quantity === 1 ? "" : "s"}`}
-                </span>
-                <p className="govuk-task-list__hint">
-                  {dateLabel(order.createdAt)}
-                  {order.ysws ? ` · ${order.ysws}` : ""}
-                  {order.recipientEmail ? ` · ${order.recipientEmail}` : ""}
-                  {order.note ? ` · ${order.note}` : ""}
-                </p>
-              </div>
-              <span className="govuk-task-list__status">
-                <span className="govuk-tag govuk-tag--grey">
-                  {STATUS_LABEL[order.status] ?? order.status}
-                </span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
+      <aside className="lg:col-span-4 space-y-6">
+        <ApiIntegrationPanel 
+          orgId={org.id} 
+          yswsId={selectedYswsIdResolved}
+          apiKey={apiKey} 
+          yswsName={yswsName ?? currentYsws?.yswsName ?? null}
+        />
+      </aside>
+    </div>
   );
 }

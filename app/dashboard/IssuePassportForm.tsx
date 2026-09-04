@@ -31,11 +31,12 @@ export default function IssuePassportForm() {
         </label>
         <p className="mb-2 text-sm text-govuk-grey-4">
           If they have an account here, we will link the passport to them.
+          Leave blank if they don&apos;t have an account yet.
         </p>
         <input
           id="recipientEmail"
           name="recipientEmail"
-          type="email"
+          type="text"
           className="w-full max-w-xl border-2 border-govuk-black px-3 py-2 text-base"
         />
       </div>

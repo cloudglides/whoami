@@ -7,7 +7,9 @@ import featuredItems from "../content/featured.json";
 import page from "../content/home.json";
 
 const SLACK_URL = "https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19";
-
+// TODO: CHANGE THE BUTTONS TO GREEN FOLLOWING GOVUK STYLE
+// TODO: IMPROVE THE CONTRAST
+// TODO: CHANGE THE HEADER PATTERN TO CHECKERS
 export default function Home() {
   return (
     <div className="pb-12">

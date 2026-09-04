@@ -1,16 +1,23 @@
-import Link from "next/link";
-import Breadcrumb from "../components/Breadcrumb";
-import FadeIn from "../components/FadeIn";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUserWithRole, hasRole, ROLE_LABEL } from "@/lib/org";
-import AddOrganizerForm from "./AddOrganizerForm";
-import SetRoleForm from "./SetRoleForm";
-import IssuePassportAdminForm from "./IssuePassportAdminForm";
+import { getCurrentUserWithRole } from "@/lib/org";
+import Link from "next/link";
+import Section from "../components/Section";
+import DataTable from "../components/DataTable";
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
   PENDING: "Pending",
   CONFIRMED: "Confirmed",
   SHIPPED: "Shipped",
+  AWAITING_RECIPIENT_DETAILS: "Awaiting details",
+  RECIPIENT_DETAILS_RECEIVED: "Details received",
+  DRAFTING: "Drafting",
+  DRAFT_READY: "Draft ready",
+  SENT_TO_HQ: "Sent to HQ",
+  RECEIVED_FROM_HQ: "Received from HQ",
+  SHIPPING: "Shipping",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
+  ERROR: "Error",
 };
 
 function dateLabel(d: Date) {
@@ -21,141 +28,160 @@ function dateLabel(d: Date) {
   }).format(d);
 }
 
+function statusTag(state: string) {
+  const tagClass = ["AWAITING_RECIPIENT_DETAILS"].includes(state) ? "govuk-tag--yellow"
+    : ["RECIPIENT_DETAILS_RECEIVED", "DRAFTING", "DRAFT_READY"].includes(state) ? "govuk-tag--blue"
+    : ["SENT_TO_HQ", "RECEIVED_FROM_HQ"].includes(state) ? "govuk-tag--grey"
+    : ["SHIPPING"].includes(state) ? "govuk-tag--blue"
+    : ["DELIVERED"].includes(state) ? "govuk-tag--green"
+    : ["CANCELLED", "ERROR"].includes(state) ? "govuk-tag--red"
+    : "govuk-tag--grey";
+  return <span className={`govuk-tag ${tagClass} text-xs`}>{state.replace(/_/g, " ")}</span>;
+}
+
 export default async function AdminPage() {
-  const user = await getCurrentUserWithRole();
+  await getCurrentUserWithRole(); // Verify auth via layout
 
-  if (!user) {
-    return (
-      <FadeIn className="mx-auto max-w-3xl px-5 pb-12 pt-10">
-        <Breadcrumb items={[{ label: "whoami", href: "/" }, { label: "Admin" }]} />
-        <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          Admin
-        </h1>
-        <p className="mb-6 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-          Sign in with Hack Club to manage organizers.
-        </p>
-        <Link href="/api/auth/signin?callbackUrl=/admin" className="govuk-button">
-          Sign in with Hack Club
-        </Link>
-      </FadeIn>
-    );
-  }
-
-  if (!hasRole(user.role, "ADMIN")) {
-    return (
-      <FadeIn className="mx-auto max-w-3xl px-5 pb-12 pt-10">
-        <Breadcrumb items={[{ label: "whoami", href: "/" }, { label: "Admin" }]} />
-        <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          Admin
-        </h1>
-        <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-          You need admin access to manage organizers. Contact a superadmin.
-        </p>
-        <Link href="/dashboard" className="govuk-button govuk-button--secondary">
-          Back to dashboard
-        </Link>
-      </FadeIn>
-    );
-  }
-
-  const orgs = await prisma.org.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, slug: true },
-  });
-  const recentOrders = await prisma.passportOrder.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 20,
-    include: { org: { select: { name: true } }, user: { select: { name: true } } },
-  });
+  const [orgCount, orderCount, organizerCount, ordersNeedingAttention, recentOrders, recentEvents] = await Promise.all([
+    prisma.org.count(),
+    prisma.passportOrder.count(),
+    prisma.user.count({ where: { role: { in: ["ORGANIZER", "ADMIN"] } } }),
+    prisma.passportOrder.findMany({
+      where: { currentState: { in: ["AWAITING_RECIPIENT_DETAILS", "RECIPIENT_DETAILS_RECEIVED", "DRAFTING", "ERROR"] } },
+      take: 10,
+      orderBy: { createdAt: "desc" },
+      include: { org: { select: { name: true } } },
+    }),
+    prisma.passportOrder.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: { org: { select: { name: true } } },
+    }),
+    prisma.orderEvent.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: { order: { select: { id: true, recipientName: true, org: { select: { name: true } } } } },
+    }),
+  ]);
 
   return (
-    <FadeIn className="mx-auto max-w-4xl px-5 pb-12 pt-10">
-      <Breadcrumb
-        items={[{ label: "whoami", href: "/" }, { label: "Admin" }]}
-      />
-      <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-        Admin
-      </h1>
-      <p className="mb-6 text-sm text-govuk-grey-4">
-        Signed in as a {ROLE_LABEL[user.role].toLowerCase()}
-      </p>
+    <>
+      {/* Quick actions - primary + secondary */}
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <Link href="/admin/create-order" className="govuk-button">
+          Create passport order
+        </Link>
+        <Link href="/admin/register-organizer" className="govuk-button govuk-button--secondary govuk-button--small">
+          Register organizer
+        </Link>
+        <Link href="/admin/users" className="govuk-button govuk-button--secondary govuk-button--small">
+          Manage users & roles
+        </Link>
+      </div>
 
-      <hr className="section-rule" />
+      {/* Overview stats - compact */}
+      <dl className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm divide-y divide-govuk-grey-2 border-y-2 border-govuk-black py-3">
+        <div className="py-1.5">
+          <dt className="text-govuk-grey-4">YSWS orgs</dt>
+          <dd className="font-bold text-xl">{orgCount}</dd>
+        </div>
+        <div className="py-1.5">
+          <dt className="text-govuk-grey-4">Organizers</dt>
+          <dd className="font-bold text-xl">{organizerCount}</dd>
+        </div>
+        <div className="py-1.5">
+          <dt className="text-govuk-grey-4">Total orders</dt>
+          <dd className="font-bold text-xl">{orderCount}</dd>
+        </div>
+        <div className="py-1.5">
+          <dt className="text-govuk-grey-4">Needing attention</dt>
+          <dd className="font-bold text-xl text-hc-red">{ordersNeedingAttention.length}</dd>
+        </div>
+      </dl>
 
-      <h2 className="mb-1 text-xl font-bold">Trigger a passport order</h2>
-      <p className="mb-3 max-w-2xl text-govuk-grey-4">
-        Manually request passports for an org, connecting each one to a
-        participant. Enter the email to link it to their account.
-      </p>
-      <IssuePassportAdminForm orgs={orgs} />
-
-      <hr className="section-rule" />
-
-      <h2 className="mb-3 text-xl font-bold">Recent passport orders</h2>
-      {recentOrders.length === 0 ? (
-        <p className="text-govuk-grey-4">No orders yet.</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="border-b-2 border-govuk-black">
-                <th className="py-2 pr-4 font-bold">When</th>
-                <th className="py-2 pr-4 font-bold">Org</th>
-                <th className="py-2 pr-4 font-bold">Recipient</th>
-                <th className="py-2 pr-4 font-bold">Qty</th>
-                <th className="py-2 font-bold">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentOrders.map((o) => (
-                <tr key={o.id} className="border-b border-govuk-grey-2 align-top">
-                  <td className="py-2 pr-4">{dateLabel(o.createdAt)}</td>
-                  <td className="py-2 pr-4">{o.org.name}</td>
-                  <td className="py-2 pr-4">
-                    {o.user?.name ?? o.recipientName ?? "Bulk order"}
-                    {o.recipientEmail ? (
-                      <span className="block text-sm text-govuk-grey-4">
-                        {o.recipientEmail}
-                      </span>
-                    ) : null}
-                  </td>
-                  <td className="py-2 pr-4">{o.quantity}</td>
-                  <td className="py-2">
-                    <span className="govuk-tag govuk-tag--grey">
-                      {ORDER_STATUS_LABEL[o.status] ?? o.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Orders needing attention - inline if any */}
+      {ordersNeedingAttention.length > 0 && (
+        <div className="mb-6">
+          <h2 className="mb-2 text-lg font-bold">Orders needing attention</h2>
+          <p className="mb-2 text-sm text-govuk-grey-4">
+            {ordersNeedingAttention.length} order(s) require action to move forward.
+          </p>
+          <DataTable
+            columns={[
+              { key: "id", header: "Order", render: (o: typeof ordersNeedingAttention[0]) => <span className="font-mono text-sm">{o.id.slice(0, 8)}…</span> },
+              { key: "recipient", header: "Recipient", render: (o: typeof ordersNeedingAttention[0]) => o.recipientName ?? "—" },
+              { key: "org", header: "Org", render: (o: typeof ordersNeedingAttention[0]) => o.org.name },
+              { key: "state", header: "Status", render: (o: typeof ordersNeedingAttention[0]) => statusTag(o.currentState) },
+              { key: "created", header: "Created", render: (o: typeof ordersNeedingAttention[0]) => dateLabel(o.createdAt) },
+            ]}
+            data={ordersNeedingAttention}
+            rowKey="id"
+            emptyMessage="No orders needing attention."
+          />
         </div>
       )}
 
-      <hr className="section-rule" />
+      {/* 2-column layout: Recent orders (wider) + Recent activity */}
+      <div className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-8">
+          <Section
+            title="Recent passport orders"
+            description="Latest 10 orders across all YSWSes."
+          >
+            <DataTable
+              columns={[
+                { key: "when", header: "When", render: (o: typeof recentOrders[0]) => dateLabel(o.createdAt), className: "w-28" },
+                { key: "recipient", header: "Recipient", render: (o: typeof recentOrders[0]) => (
+                  <>
+                    <span className="font-medium">{o.recipientName ?? "—"}</span>
+                    {o.recipientEmail && <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>}
+                  </>
+                ) },
+                { key: "org", header: "Org", render: (o: typeof recentOrders[0]) => o.org.name },
+                { key: "state", header: "State", render: (o: typeof recentOrders[0]) => statusTag(o.currentState), className: "w-32" },
+                { key: "status", header: "Fulfillment", render: (o: typeof recentOrders[0]) => (
+                  <span className="govuk-tag govuk-tag--grey text-xs">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
+                ), className: "w-24" },
+              ]}
+              data={recentOrders}
+              rowKey="id"
+              emptyMessage="No orders yet. Create one using the action above."
+            />
+          </Section>
+        </div>
 
-      <h2 className="mb-1 text-xl font-bold">Register an organizer</h2>
-      <p className="mb-3 max-w-xl text-govuk-grey-4">
-        Promote someone to organizer and register their YSWS org so they can
-        order passports. They must have signed in once.
-      </p>
-      <AddOrganizerForm />
-
-      <hr className="section-rule" />
-
-      {user.role === "SUPERADMIN" ? (
-        <>
-          <h2 className="mb-1 text-xl font-bold">Change roles</h2>
-          <p className="mb-3 max-w-xl text-govuk-grey-4">
-            Set any account to participant, organizer, admin or superadmin.
-          </p>
-          <SetRoleForm />
-        </>
-      ) : (
-        <p className="text-govuk-grey-4">
-          Only superadmins can change roles.
-        </p>
-      )}
-    </FadeIn>
+        <div className="lg:col-span-4">
+          <Section
+            title="Recent activity"
+            description="Latest 10 system events."
+          >
+            <DataTable
+              columns={[
+                { key: "when", header: "When", render: (e: typeof recentEvents[0]) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(e.createdAt), className: "w-36" },
+                { key: "type", header: "Event", render: (e: typeof recentEvents[0]) => (
+                  <span className="govuk-tag govuk-tag--grey text-xs">{e.eventType.replace(/_/g, " ")}</span>
+                ), className: "w-32" },
+                { key: "order", header: "Order", render: (e: typeof recentEvents[0]) => (
+                  <>
+                    <span className="font-mono text-sm">{e.orderId.slice(0, 8)}…</span>
+                    {e.order.recipientName && <span className="block text-xs text-govuk-grey-4">{e.order.recipientName}</span>}
+                  </>
+                ) },
+                { key: "ysws", header: "Org", render: (e: typeof recentEvents[0]) => e.order.org?.name ?? "—" },
+                { key: "actor", header: "Actor", render: (e: typeof recentEvents[0]) => (
+                  <>
+                    <span className="font-mono text-xs">{e.actor.slice(0, 8)}…</span>
+                    <span className="block text-xs text-govuk-grey-4">{e.actorType ?? "—"}</span>
+                  </>
+                ), className: "w-28" },
+              ]}
+              data={recentEvents}
+              rowKey="id"
+              emptyMessage="No activity recorded yet."
+            />
+          </Section>
+        </div>
+      </div>
+    </>
   );
 }

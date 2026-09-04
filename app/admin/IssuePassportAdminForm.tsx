@@ -17,7 +17,7 @@ export default function IssuePassportAdminForm({
     <form action={formAction} className="mt-4 space-y-6" noValidate>
       <div>
         <label htmlFor="orgId" className="mb-2 block font-bold">
-          Org
+          YSWS org
         </label>
         <select
           id="orgId"
@@ -34,63 +34,63 @@ export default function IssuePassportAdminForm({
       </div>
 
       <div>
-        <label htmlFor="recipientEmail" className="mb-2 block font-bold">
-          Recipient email
-        </label>
-        <p className="mb-2 text-sm text-govuk-grey-4">
-          If this matches a registered participant, the passport is connected to
-          their account.
-        </p>
-        <input
-          id="recipientEmail"
-          name="recipientEmail"
-          type="email"
-          className="w-full max-w-xl border-2 border-govuk-black px-3 py-2 text-base"
-        />
-      </div>
-
-      <div>
         <label htmlFor="recipientName" className="mb-2 block font-bold">
-          Recipient name{" "}
-          <span className="font-normal text-govuk-grey-4">(optional)</span>
+          Recipient name
         </label>
         <input
           id="recipientName"
           name="recipientName"
           type="text"
+          required
           className="w-full max-w-xl border-2 border-govuk-black px-3 py-2 text-base"
+          placeholder="Full name for the passport"
         />
       </div>
 
       <div>
-        <label htmlFor="quantity" className="mb-2 block font-bold">
-          Quantity
+        <label htmlFor="recipientEmail" className="mb-2 block font-bold">
+          Recipient email
         </label>
+        <p className="mb-2 text-sm text-govuk-grey-4">
+          Required. If this matches a registered participant, the passport is connected to their account.
+        </p>
         <input
-          id="quantity"
-          name="quantity"
-          type="number"
-          min={1}
-          max={1000}
-          defaultValue={1}
+          id="recipientEmail"
+          name="recipientEmail"
+          type="email"
           required
-          className="w-full max-w-xs border-2 border-govuk-black px-3 py-2 text-base"
+          className="w-full max-w-xl border-2 border-govuk-black px-3 py-2 text-base"
+          placeholder="participant@example.com"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="note" className="mb-2 block font-bold">
+          Note{" "}
+          <span className="font-normal text-govuk-grey-4">(optional)</span>
+        </label>
+        <textarea
+          id="note"
+          name="note"
+          rows={2}
+          placeholder="Shipping address, event dates, anything we should know"
+          className="w-full max-w-xl border-2 border-govuk-black px-3 py-2 text-base"
         />
       </div>
 
       {state?.error && (
-        <p role="alert" className="border-l-4 border-hc-red px-3 py-2 font-semibold">
+        <p role="alert" className="border-l-4 border-hc-red px-3 py-2 font-semibold bg-govuk-grey-1">
           {state.error}
         </p>
       )}
       {state?.ok && (
-        <p className="border-l-4 border-govuk-green px-3 py-2 font-semibold">
-          {state.ok}
+        <p className="border-l-4 border-govuk-green px-3 py-2 font-semibold bg-govuk-grey-1">
+          Order created. We&apos;ll be in touch with next steps.
         </p>
       )}
 
       <button type="submit" disabled={pending} className="govuk-button">
-        {pending ? "Placing..." : "Trigger passport order"}
+        {pending ? "Creating..." : "Create passport order"}
       </button>
     </form>
   );

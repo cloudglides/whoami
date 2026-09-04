@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateApiKey, getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { generateApiKey, getCurrentUserWithRole, hasRole, canAccessYSWS } from "@/lib/org";
 import type { Role } from "../../generated/prisma/client";
 
 const addOrganizerSchema = z.object({
@@ -57,19 +57,39 @@ export async function addOrganizerAction(
           name: parsed.data.orgName,
           slug,
           description: parsed.data.description ?? null,
-          apiKey: generateApiKey(),
         },
         update: {},
       });
+
+      await tx.ySWS.upsert({
+        where: { slug: org.slug },
+        create: {
+          name: org.name,
+          slug: org.slug,
+          apiKey: generateApiKey(),
+          isActive: true,
+          orgId: org.id,
+        },
+        update: {},
+      });
+
       await tx.orgMember.upsert({
         where: { orgId_userId: { orgId: org.id, userId: user.id } },
         create: { orgId: org.id, userId: user.id, role: "OWNER" },
         update: { role: "OWNER" },
       });
-      await tx.user.update({
+      // Only upgrade global role if user is currently PARTICIPANT
+      // YSWS membership and global roles are separate dimensions
+      const currentUser = await tx.user.findUnique({
         where: { id: user.id },
-        data: { role: "ORGANIZER" },
+        select: { role: true },
       });
+      if (currentUser?.role === "PARTICIPANT") {
+        await tx.user.update({
+          where: { id: user.id },
+          data: { role: "ORGANIZER" },
+        });
+      }
     });
   } catch (e) {
     if (e instanceof Error && "code" in e && (e as { code: string }).code === "P2002") {
@@ -125,14 +145,8 @@ export async function setRoleAction(
 
 const issuePassportSchema = z.object({
   orgId: z.string().min(1, "Choose an org"),
-  quantity: z.coerce.number().int().min(1, "At least one passport").max(1000, "Too many"),
-  recipientEmail: z
-    .string()
-    .trim()
-    .email("Enter a valid email")
-    .optional()
-    .or(z.literal("")),
-  recipientName: z.string().trim().max(80, "Name is too long").optional(),
+  recipientName: z.string().trim().min(2, "Enter the recipient's name").max(80, "Name is too long"),
+  recipientEmail: z.string().trim().email("Enter a valid email"),
   note: z.string().trim().max(300, "Note is too long").optional(),
 });
 
@@ -148,9 +162,8 @@ export async function issuePassportAdminAction(
 
   const parsed = issuePassportSchema.safeParse({
     orgId: formData.get("orgId"),
-    quantity: formData.get("quantity"),
-    recipientEmail: formData.get("recipientEmail") || undefined,
-    recipientName: formData.get("recipientName") || undefined,
+    recipientName: formData.get("recipientName"),
+    recipientEmail: formData.get("recipientEmail"),
     note: formData.get("note") || undefined,
   });
   if (!parsed.success) {
@@ -162,21 +175,36 @@ export async function issuePassportAdminAction(
   });
   if (!org) return { error: "That org does not exist." };
 
-  const email = parsed.data.recipientEmail?.toLowerCase().trim() || null;
-  const linkedUser = email
-    ? await prisma.user.findUnique({ where: { email } })
-    : null;
+  // Check actor has access to this org
+  const actorCanAccess = await canAccessYSWS(actor.id, org.id);
+  // Admin has broader access, but still verify
+  if (!actorCanAccess && actor.role !== "SUPERADMIN") {
+    return { error: "You do not have access to this org." };
+  }
+
+  const email = parsed.data.recipientEmail.toLowerCase().trim();
+  const linkedUser = await prisma.user.findUnique({ where: { email } });
+
+  // Get the YSWS for this org
+  const ysws = await prisma.ySWS.findFirst({
+    where: { orgId: org.id },
+  });
+  if (!ysws) return { error: "No YSWS found for this org." };
 
   await prisma.passportOrder.create({
     data: {
       orgId: org.id,
-      ysws: org.name,
-      quantity: parsed.data.quantity,
+      yswsId: ysws.id,
+      totalQuantity: 1,
+      currentState: "AWAITING_RECIPIENT_DETAILS",
+      status: "PENDING",
       note: parsed.data.note ?? null,
       createdBy: actor.id,
-      userId: linkedUser?.id ?? null,
-      recipientName: parsed.data.recipientName?.trim() || null,
+      createdFrom: "admin",
+      createdByUserId: linkedUser?.id ?? null,
+      recipientName: parsed.data.recipientName.trim(),
       recipientEmail: email,
+      recipientToken: crypto.randomUUID().substring(0, 16),
     },
   });
 
@@ -184,7 +212,7 @@ export async function issuePassportAdminAction(
   revalidatePath("/dashboard");
   return {
     ok: linkedUser
-      ? `Order placed for ${linkedUser.name ?? email} (${parsed.data.quantity} passport${parsed.data.quantity === 1 ? "" : "s"}).`
-      : `Order placed (${parsed.data.quantity} passport${parsed.data.quantity === 1 ? "" : "s"}).`,
+      ? `Order created for ${linkedUser.name ?? email}.`
+      : `Order created for ${parsed.data.recipientName} (${email}).`,
   };
 }
