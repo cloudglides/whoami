@@ -26,7 +26,7 @@ export default function Home() {
               href={SLACK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="start-now no-underline"
+              className="govuk-button no-underline"
             >
               Start now
             </Link>

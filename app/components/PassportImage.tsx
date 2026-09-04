@@ -4,8 +4,7 @@ import { usePathname } from "next/navigation";
 
 export default function PassportImage() {
   const pathname = usePathname();
-  
-  // Only render on the exact homepage
+// Only render on the exact homepage
   if (pathname !== "/") {
     return null;
   }
@@ -16,7 +15,7 @@ export default function PassportImage() {
       alt=""
       className="absolute object-contain pointer-events-none hidden xl:block -mt-20"
       style={{
-        left: "-170px",
+left: "-170px",
         top: "-3px",
         width: "240px",
         height: "auto",
