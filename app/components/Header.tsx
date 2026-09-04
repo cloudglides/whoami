@@ -10,18 +10,27 @@ export default async function Header() {
   const canUseDashboard = user ? hasRole(user.role, "ORGANIZER") : false;
 
   return (
-    <header className="relative z-10 py-4 overflow-x-clip">
+    <header
+      className="relative w-full py-5 bg-gradient-to-br from-hc-blue to-[#01bbff] rounded-t-2xl shadow-lg"
+      style={{
+        height: "120px",
+        borderTopLeftRadius: "0.75rem",
+        borderTopRightRadius: "0.75rem",
+        overflow: "hidden",
+      }}
+    >
       <div
-        className="absolute inset-x-0 -top-3 bottom-0 bg-hc-blue header-stripes"
-        aria-hidden
+        className="absolute inset-0 z-20 pointer-events-none"
+        style={{
+          inset: "-100%",
+          backgroundImage: `conic-gradient(rgba(255, 255, 255, 0.12) 0 25%, rgba(255, 255, 255, 0.28) 25% 50%, rgba(255, 255, 255, 0.12) 50% 75%, rgba(255, 255, 255, 0.28) 75% 100%)`,
+          backgroundSize: "152px 152px",
+          transform: "rotate(14.59deg)",
+          backgroundPosition: "center",
+        }}
       />
-      <div className="relative mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 text-white">
-        <Link href="/" className="flex items-center no-underline">
-          <span className="font-hc text-2xl leading-none text-white sm:text-3xl">
-            whoami
-          </span>
-        </Link>
 
+      <div className="relative mx-auto flex max-w-5xl items-center justify-end gap-3 px-5 text-white z-20">
         <div className="flex items-center gap-1">
           {canUseDashboard && (
             <Link
@@ -31,6 +40,7 @@ export default async function Header() {
               Dashboard
             </Link>
           )}
+
           {isAdmin && (
             <Link
               href="/admin"
@@ -39,15 +49,30 @@ export default async function Header() {
               Admin
             </Link>
           )}
+
           <NavHoverCard />
         </div>
       </div>
 
-      {/* Beta banner — inside the same tilted strip */}
-      <div className="relative mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-5 pt-3 pb-1 text-white/80 text-xs sm:text-sm">
+      <div className="relative mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-5 pt-3 pb-1 text-white/80 text-xs sm:text-sm z-20">
+        <img
+          src="/passport.png"
+          alt=""
+          className="absolute object-contain pointer-events-none hidden xl:block -mt-20"
+          style={{
+            left: "-170px",
+            top: "-3px",
+            width: "240px",
+            height: "auto",
+            zIndex: 30,
+            transform: "rotate(-15deg)",
+          }}
+        />
+
         <span className="inline-block rounded-md bg-white/25 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
           beta
         </span>
+
         <span>
           This is a new service, your{" "}
           <a
