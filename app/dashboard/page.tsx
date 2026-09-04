@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Breadcrumb from "../components/Breadcrumb";
 import FadeIn from "../components/FadeIn";
+import { getCurrentUserWithRole, hasRole, ROLE_LABEL, type Role } from "@/lib/org";
+import { getYSWSContext } from "@/lib/ysws-context";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUserWithRole, getOrgForUser, getOrganizerYSWSesWithStats, hasRole, ROLE_LABEL } from "@/lib/org";
-import type { Role } from "../../generated/prisma/client";
 import CreateOrderForm from "./CreateOrderForm";
 import ApiIntegrationPanel from "./ApiIntegrationPanel";
 import YSWSSelector from "./YSWSSelector";
@@ -50,15 +50,8 @@ export default async function DashboardPage({
   const params = await searchParams;
   const selectedYswsId = params.ysws ?? null;
 
-  // Verify the selected YSWS is accessible by the user
-  let verifiedYswsId: string | null = null;
-  if (user && selectedYswsId) {
-    const yswsList = await getOrganizerYSWSesWithStats(user.id);
-    const hasAccess = yswsList.some((y) => y.yswsId === selectedYswsId);
-    if (hasAccess) {
-      verifiedYswsId = selectedYswsId;
-    }
-  }
+  // Get unified YSWS context
+  const context = await getYSWSContext();
 
   return (
     <FadeIn className="mx-auto w-full px-6 pb-12 pt-8">
@@ -70,8 +63,13 @@ export default async function DashboardPage({
         <UnsignedDashboard />
       ) : !hasRole(user.role, "ORGANIZER") ? (
         <NotOrganizer />
+      ) : !context ? (
+        <NoOrgAccess />
       ) : (
-        <OrganizerDashboard userId={user.id} role={user.role} selectedYswsId={verifiedYswsId} />
+        <OrganizerDashboard 
+          context={context} 
+          selectedYswsId={selectedYswsId} 
+        />
       )}
     </FadeIn>
   );
@@ -110,104 +108,75 @@ function NotOrganizer() {
   );
 }
 
+function NoOrgAccess() {
+  return (
+    <div className="max-w-2xl">
+      <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+        Dashboard
+      </h1>
+      <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
+        You are signed in as an organizer, but you are not linked to any YSWS
+        yet. Ask an admin to register your YSWS and add you to it.
+      </p>
+      <Link href="/" className="govuk-button govuk-button--secondary">
+        Back home
+      </Link>
+    </div>
+  );
+}
+
 async function OrganizerDashboard({
-  userId,
-  role,
+  context,
   selectedYswsId,
 }: {
-  userId: string;
-  role: Role;
+  context: Awaited<ReturnType<typeof getYSWSContext>>;
   selectedYswsId?: string | null;
 }) {
-  const org = await getOrgForUser(userId);
-  const yswsList = await getOrganizerYSWSesWithStats(userId);
+  if (!context) return <NoOrgAccess />;
 
-  if (!org) {
+  // Resolve current YSWS - validate server-side
+  let activeYSWS = context.activeYSWS;
+  if (selectedYswsId) {
+    const selected = context.accessibleYSWSes.find((y) => y.yswsId === selectedYswsId);
+    if (selected) activeYSWS = selected;
+  }
+
+  if (!activeYSWS) {
     return (
       <div className="max-w-2xl">
         <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          Dashboard
+          {context.accessibleYSWSes[0]?.orgName ?? "Dashboard"}
         </h1>
         <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-          You are signed in as an organizer, but you are not linked to an org
-          yet. Ask an admin to register your YSWS and add you to it.
+          No active YSWS selected. Please choose a YSWS from the switcher below.
         </p>
-        <Link href="/" className="govuk-button govuk-button--secondary">
-          Back home
-        </Link>
       </div>
     );
   }
 
-  // Resolve current YSWS
-  const currentYsws = yswsList.find((y) => y.yswsId === selectedYswsId) ?? yswsList[0];
-  const selectedYswsIdResolved = currentYsws?.yswsId ?? null;
-
   // Fetch orders for the selected YSWS
-  let orders: Array<{
-    id: string;
-    recipientName: string | null;
-    recipientEmail: string | null;
-    totalQuantity: number;
-    currentState: string;
-    status: string;
-    note: string | null;
-    createdAt: Date;
-    user: { name: string | null; email: string | null } | null;
-    ysws: { name: string } | null;
-  }> = [];
-  let totalOrdered = 0;
-  let apiKey: string | null = null;
-  let yswsName: string | null = null;
-
-  if (selectedYswsIdResolved) {
-    const ysws = await prisma.ySWS.findUnique({
-      where: { id: selectedYswsIdResolved },
-      include: {
-        orders: {
-          orderBy: { createdAt: "desc" },
-          include: { 
-            user: { select: { name: true, email: true } },
-            ysws: { select: { name: true } },
-          },
+  const orders = await prisma.ySWS.findUnique({
+    where: { id: activeYSWS.yswsId },
+    include: {
+      orders: {
+        orderBy: { createdAt: "desc" },
+        include: { 
+          user: { select: { name: true, email: true } },
         },
-        org: true,
       },
-    });
-    
-    if (ysws) {
-      orders = ysws.orders;
-      totalOrdered = orders.reduce((sum, o) => sum + o.totalQuantity, 0);
-      apiKey = ysws.apiKey;
-      yswsName = ysws.name;
-    }
-  } else if (yswsList.length === 1 && currentYsws?.yswsId) {
-    const fullYsws = await prisma.ySWS.findUnique({
-      where: { id: currentYsws.yswsId },
-      include: {
-        orders: {
-          orderBy: { createdAt: "desc" },
-          include: { 
-            user: { select: { name: true, email: true } },
-            ysws: { select: { name: true } },
-          },
-        },
-      }
-      });
-      if (fullYsws) {
-        orders = fullYsws.orders;
-        totalOrdered = orders.reduce((sum, o) => sum + o.totalQuantity, 0);
-        apiKey = fullYsws.apiKey;
-        yswsName = fullYsws.name;
-      }
-    }
+    },
+  });
+
+  const orderList = orders?.orders ?? [];
+  const totalOrdered = orderList.reduce((sum, o) => sum + o.totalQuantity, 0);
+  const apiKey = activeYSWS.yswsApiKey;
 
   // Orders needing attention (awaiting details, pending, etc.)
-  const needsAttention = orders.filter((o) => 
+  const needsAttention = orderList.filter((o) => 
     ["AWAITING_RECIPIENT_DETAILS", "RECIPIENT_DETAILS_RECEIVED", "DRAFTING", "ERROR"].includes(o.currentState)
   );
 
-  const recentOrders = orders.slice(0, 20);
+  const recentOrders = orderList.slice(0, 20);
 
   return (
     <div className="grid gap-8 lg:grid-cols-12">
@@ -216,21 +185,21 @@ async function OrganizerDashboard({
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-4 border-b border-govuk-grey-2">
           <div>
             <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-              {org.name}
+              {activeYSWS.orgName}
             </h1>
             <div className="flex flex-wrap items-center gap-3 text-sm text-govuk-grey-4">
-              <span>YSWS: <strong>{currentYsws?.yswsName ?? org.name}</strong></span>
+              <span>YSWS: <strong>{activeYSWS.yswsName}</strong></span>
               <span>·</span>
-              <span>You are a {ROLE_LABEL[role].toLowerCase()}</span>
+              <span>You are a {ROLE_LABEL[context.role].toLowerCase()}</span>
               {totalOrdered > 0 && (
-                <span>·</span>
-              )}
-              {totalOrdered > 0 && (
-                <span>Total orders: <strong>{totalOrdered}</strong></span>
+                <>
+                  <span>·</span>
+                  <span>Total orders: <strong>{totalOrdered}</strong></span>
+                </>
               )}
             </div>
           </div>
-          {hasRole(role, "ADMIN") && (
+          {hasRole(context.role, "ADMIN") && (
             <Link href="/admin" className="govuk-button govuk-button--secondary govuk-button--small shrink-0">
               Go to admin panel
             </Link>
@@ -238,8 +207,11 @@ async function OrganizerDashboard({
         </header>
 
         {/* YSWS Switcher - prominent if multiple */}
-        {yswsList.length > 1 && (
-          <YSWSSelector yswsList={yswsList} currentYswsId={selectedYswsIdResolved} />
+        {context.accessibleYSWSes.length > 1 && (
+          <YSWSSelector 
+            yswsList={context.accessibleYSWSes} 
+            currentYswsId={activeYSWS.yswsId} 
+          />
         )}
 
         {/* Orders needing attention */}
@@ -250,7 +222,7 @@ async function OrganizerDashboard({
           >
             <DataTable
               columns={[
-                { key: "recipient", header: "Recipient", render: (o: typeof orders[0]) => (
+                { key: "recipient", header: "Recipient", render: (o: typeof orderList[0]) => (
                   <>
                     <span className="font-medium">
                       {o.recipientName ?? "—"}
@@ -260,12 +232,12 @@ async function OrganizerDashboard({
                     )}
                   </>
                 ) },
-                { key: "state", header: "Status", render: (o: typeof orders[0]) => (
+                { key: "state", header: "Status", render: (o: typeof orderList[0]) => (
                   <span className={`govuk-tag ${statusColor(o.currentState)} text-xs`}>
                     {o.currentState.replace(/_/g, " ")}
                   </span>
                 ), className: "w-40" },
-                { key: "created", header: "Created", render: (o: typeof orders[0]) => dateLabel(o.createdAt), className: "w-32" },
+                { key: "created", header: "Created", render: (o: typeof orderList[0]) => dateLabel(o.createdAt), className: "w-32" },
               ]}
               data={needsAttention}
               rowKey="id"
@@ -279,20 +251,20 @@ async function OrganizerDashboard({
           title="Create passport order"
           description="Each order is for one participant. Enter their details and we'll handle the rest."
         >
-          <CreateOrderForm orgId={org.id} yswsId={selectedYswsIdResolved} />
+          <CreateOrderForm orgId={activeYSWS.orgId} yswsId={activeYSWS.yswsId} />
         </Section>
 
         {/* Recent orders */}
         <Section
           title="Recent orders"
-          description={`Showing latest ${recentOrders.length} of ${orders.length} total orders for this YSWS.`}
+          description={`Showing latest ${recentOrders.length} of ${orderList.length} total orders for this YSWS.`}
         >
           {recentOrders.length === 0 ? (
             <p className="text-govuk-grey-4">No orders yet. Create your first order above.</p>
           ) : (
             <DataTable
               columns={[
-                { key: "recipient", header: "Recipient", render: (o: typeof orders[0]) => (
+                { key: "recipient", header: "Recipient", render: (o: typeof orderList[0]) => (
                   <>
                     <span className="font-medium">
                       {o.recipientName ?? "—"}
@@ -302,13 +274,13 @@ async function OrganizerDashboard({
                     )}
                   </>
                 ) },
-                { key: "state", header: "Status", render: (o: typeof orders[0]) => (
+                { key: "state", header: "Status", render: (o: typeof orderList[0]) => (
                   <span className={`govuk-tag ${statusColor(o.currentState)} text-xs`}>
                     {o.currentState.replace(/_/g, " ")}
                   </span>
                 ), className: "w-40" },
-                { key: "created", header: "Created", render: (o: typeof orders[0]) => dateLabel(o.createdAt), className: "w-32" },
-                { key: "note", header: "Note", render: (o: typeof orders[0]) => o.note ? (
+                { key: "created", header: "Created", render: (o: typeof orderList[0]) => dateLabel(o.createdAt), className: "w-32" },
+                { key: "note", header: "Note", render: (o: typeof orderList[0]) => o.note ? (
                   <span className="text-govuk-grey-4 text-sm max-w-xs block truncate">{o.note}</span>
                 ) : (
                   <span className="text-govuk-grey-4 text-sm">—</span>
@@ -324,10 +296,10 @@ async function OrganizerDashboard({
 
       <aside className="lg:col-span-4 space-y-6">
         <ApiIntegrationPanel 
-          orgId={org.id} 
-          yswsId={selectedYswsIdResolved}
+          orgId={activeYSWS.orgId} 
+          yswsId={activeYSWS.yswsId}
           apiKey={apiKey} 
-          yswsName={yswsName ?? currentYsws?.yswsName ?? null}
+          yswsName={activeYSWS.yswsName}
         />
       </aside>
     </div>

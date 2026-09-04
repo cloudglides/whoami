@@ -7,9 +7,11 @@ type YSWS = {
   yswsName: string;
   yswsSlug: string;
   yswsApiKey: string | null;
-  orgName: string | undefined;
+  orgName: string;
+  orgSlug: string;
   role: string;
   orderCount: number;
+  isActive: boolean;
 };
 
 export default function YSWSSelector({

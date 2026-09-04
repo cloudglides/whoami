@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateApiKey, getCurrentUser, getCurrentUserWithRole, hasRole, canAccessYSWS } from "@/lib/org";
+import { generateApiKey, getCurrentUser, getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { verifyYSWSAccess } from "@/lib/ysws-context";
 
 const createOrderSchema = z.object({
   recipientEmail: z.string().email("Enter a valid email").optional().or(z.literal("")),
@@ -44,8 +45,8 @@ export async function createOrderAction(
 
   // Verify organizer has access to this YSWS
   if (yswsId) {
-    const hasAccess = await canAccessYSWS(user.id, yswsId);
-    if (!hasAccess) {
+    const access = await verifyYSWSAccess(user.id, yswsId);
+    if (!access) {
       return { error: "You do not have access to this YSWS." };
     }
   }
@@ -53,7 +54,7 @@ export async function createOrderAction(
   const email = parsed.data.recipientEmail?.toLowerCase().trim() || null;
   const linkedUser = email ? await prisma.user.findUnique({ where: { email } }) : null;
 
-  await prisma.passportOrder.create({
+  const order = await prisma.passportOrder.create({
     data: {
       orgId: membership.orgId,
       yswsId: yswsId ?? null,
@@ -67,6 +68,14 @@ export async function createOrderAction(
       recipientEmail: email,
       recipientToken: crypto.randomUUID().substring(0, 16),
       createdByUserId: linkedUser?.id ?? null,
+      // Create the recipient record (one order = one recipient)
+      recipients: email ? {
+        create: {
+          email,
+          name: parsed.data.recipientName,
+          userId: linkedUser?.id ?? null,
+        },
+      } : undefined,
     },
   });
 
@@ -103,8 +112,10 @@ export async function regenerateApiKeyAction(
   if (!yswsIdStr) {
     return { error: "Missing YSWS." };
   }
-  const ywsAccess = await canAccessYSWS(user.id, yswsIdStr);
-  if (!ywsAccess) return { error: "You are not authorized for this YSWS." };
+  
+  // Use unified authorization context - handles admin/org access correctly
+  const access = await verifyYSWSAccess(user.id, yswsIdStr);
+  if (!access) return { error: "You are not authorized for this YSWS." };
 
   // Update the specific YSWS apiKey
   const ysws = await prisma.ySWS.findUnique({
@@ -168,11 +179,17 @@ export async function issuePassportAction(
     ? await prisma.user.findUnique({ where: { email } })
     : null;
 
+  // Get the YSWS for this org
+  const ysws = await prisma.ySWS.findFirst({
+    where: { orgId: membership.orgId },
+  });
+  if (!ysws) return { error: "No YSWS found for this org." };
+
   // Create order in AWAITING_RECIPIENT_DETAILS state
   const order = await prisma.passportOrder.create({
     data: {
       orgId: membership.orgId,
-      yswsId: org?.name ?? null,
+      yswsId: ysws.id,
       totalQuantity: 1,
       currentState: "AWAITING_RECIPIENT_DETAILS",
       status: "PENDING",
@@ -183,6 +200,14 @@ export async function issuePassportAction(
       recipientName: parsed.data.recipientName,
       recipientEmail: email,
       recipientToken: crypto.randomUUID().substring(0, 16),
+      // Create the recipient record (one order = one recipient)
+      recipients: email ? {
+        create: {
+          email,
+          name: parsed.data.recipientName,
+          userId: linkedUser?.id ?? null,
+        },
+      } : undefined,
     },
   });
 

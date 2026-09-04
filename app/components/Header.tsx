@@ -1,5 +1,6 @@
 import Link from "next/link";
 import NavHoverCard from "./NavHoverCard";
+import PassportImage from "./PassportImage";
 import { getCurrentUserWithRole, hasRole } from "@/lib/org";
 
 const SLACK_CHANNEL = "https://app.slack.com/client/E09V59WQY1E/C0BM1L56D19";
@@ -16,7 +17,6 @@ export default async function Header() {
         height: "120px",
         borderTopLeftRadius: "0.75rem",
         borderTopRightRadius: "0.75rem",
-        overflow: "hidden",
       }}
     >
       <div
@@ -30,7 +30,7 @@ export default async function Header() {
         }}
       />
 
-      <div className="relative mx-auto flex max-w-5xl items-center justify-end gap-3 px-5 text-white z-20">
+      <div className="relative mx-auto pt-1 flex max-w-5xl items-center justify-end gap-3 px-5 text-white z-20">
         <div className="flex items-center gap-1">
           {canUseDashboard && (
             <Link
@@ -55,19 +55,7 @@ export default async function Header() {
       </div>
 
       <div className="relative mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-5 pt-3 pb-1 text-white/80 text-xs sm:text-sm z-20">
-        <img
-          src="/passport.png"
-          alt=""
-          className="absolute object-contain pointer-events-none hidden xl:block -mt-20"
-          style={{
-            left: "-170px",
-            top: "-3px",
-            width: "240px",
-            height: "auto",
-            zIndex: 30,
-            transform: "rotate(-15deg)",
-          }}
-        />
+        <PassportImage />
 
         <span className="inline-block rounded-md bg-white/25 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
           beta

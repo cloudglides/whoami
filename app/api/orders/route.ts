@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { resolveAPIKeyContext, verifyYSWSAccess } from "@/lib/ysws-context";
 
 export const runtime = "nodejs";
 
@@ -26,49 +28,9 @@ const ORDER_FIELDS = {
   updatedAt: true,
 } as const;
 
-function extractApiKey(req: Request): string | null {
-  const authHeader = req.headers.get("authorization");
-  if (authHeader?.startsWith("Bearer ")) {
-    return authHeader.slice("Bearer ".length).trim();
-  }
-  const header = req.headers.get("x-api-key");
-  if (header) return header.trim();
-  return null;
-}
-
-async function resolveOrg(req: Request) {
-  const apiKey = extractApiKey(req);
-  if (apiKey) {
-    const ysws = await prisma.ySWS.findUnique({
-      where: { apiKey },
-      include: { org: true },
-    });
-    if (ysws && ysws.orgId) {
-      return { orgId: ysws.orgId, ysws: ysws.id, actorId: "api" };
-    }
-    return null;
-  }
-
-  const session = await auth();
-  if (!session?.user?.id) return null;
-
-  const membership = await prisma.orgMember.findFirst({
-    where: { userId: session.user.id },
-    include: { org: { select: { name: true } } },
-  });
-  if (!membership) return null;
-
-  // Get the YSWS for this org
-  const ysws = await prisma.ySWS.findFirst({
-    where: { orgId: membership.orgId },
-  });
-
-  return { orgId: membership.orgId, ysws: ysws?.id, actorId: session.user.id };
-}
-
 export async function POST(req: Request) {
-  const org = await resolveOrg(req);
-  if (!org) {
+  const context = await resolveAPIKeyContext(req);
+  if (!context) {
     return NextResponse.json(
       { error: "Unauthorized. Provide a valid API key or sign in as an organizer." },
       { status: 401 }
@@ -84,12 +46,30 @@ export async function POST(req: Request) {
     );
   }
 
-  // For API key users, the API key is scoped to a YSWS, so they implicitly have access
-  if (org.actorId === "api" && !org.ysws) {
-    return NextResponse.json(
-      { error: "No YSWS associated with this API key" },
-      { status: 400 }
-    );
+  // For API key users, the API key is scoped to a YSWS
+  if (context.actorType === "api") {
+    if (!context.yswsId) {
+      return NextResponse.json(
+        { error: "No YSWS associated with this API key" },
+        { status: 400 }
+      );
+    }
+    // API key already validates YSWS access in resolveAPIKeyContext
+  } else {
+    // For session users, verify they have access to the YSWS
+    if (!context.yswsId) {
+      return NextResponse.json(
+        { error: "No active YSWS found for your organization" },
+        { status: 400 }
+      );
+    }
+    const access = await verifyYSWSAccess(context.actorId, context.yswsId);
+    if (!access) {
+      return NextResponse.json(
+        { error: "You are not authorized for this YSWS" },
+        { status: 403 }
+      );
+    }
   }
 
   const rawEmail = parsed.data.recipientEmail?.toLowerCase().trim();
@@ -98,18 +78,26 @@ export async function POST(req: Request) {
 
   const order = await prisma.passportOrder.create({
     data: {
-      orgId: org.orgId,
-      yswsId: org.ysws,
+      orgId: context.orgId,
+      yswsId: context.yswsId,
       totalQuantity: 1,
       currentState: "AWAITING_RECIPIENT_DETAILS",
       status: "PENDING",
       note: parsed.data.note ?? null,
-      createdBy: org.actorId,
-      createdFrom: "api",
+      createdBy: context.actorId,
+      createdFrom: context.actorType === "api" ? "api" : "dashboard",
       recipientName: parsed.data.recipientName,
       recipientEmail: email,
       recipientToken: crypto.randomUUID().substring(0, 16),
       createdByUserId: linkedUser?.id ?? null,
+      // Create the recipient record (one order = one recipient)
+      recipients: email ? {
+        create: {
+          email,
+          name: parsed.data.recipientName,
+          userId: linkedUser?.id ?? null,
+        },
+      } : undefined,
     },
     select: ORDER_FIELDS,
   });
@@ -118,16 +106,59 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const org = await resolveOrg(req);
-  if (!org) {
+  const context = await resolveAPIKeyContext(req);
+  if (!context) {
     return NextResponse.json(
       { error: "Unauthorized. Provide a valid API key or sign in as an organizer." },
       { status: 401 }
     );
   }
 
+  // For API key users, the key is scoped to a specific YSWS
+  if (context.actorType === "api") {
+    if (!context.yswsId) {
+      return NextResponse.json(
+        { error: "No YSWS associated with this API key" },
+        { status: 400 }
+      );
+    }
+    const orders = await prisma.passportOrder.findMany({
+      where: { yswsId: context.yswsId },
+      orderBy: { createdAt: "desc" },
+      select: ORDER_FIELDS,
+    });
+    return NextResponse.json({ orders });
+  }
+
+  // For session users, they can see all orders for their org
+  // but we should filter by accessible YSWSes if they specify one
+  const user = await getCurrentUserWithRole();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // If user is admin, they can see all org orders
+  if (hasRole(user.role, "ADMIN")) {
+    const orders = await prisma.passportOrder.findMany({
+      where: { orgId: context.orgId },
+      orderBy: { createdAt: "desc" },
+      select: ORDER_FIELDS,
+    });
+    return NextResponse.json({ orders });
+  }
+
+  // For organizers, only show orders from YSWSes they have access to
+  const accessibleYSWSes = await prisma.organizerYSWSMembership.findMany({
+    where: { userId: user.id },
+    select: { yswsId: true },
+  });
+  const yswsIds = accessibleYSWSes.map((m) => m.yswsId);
+
   const orders = await prisma.passportOrder.findMany({
-    where: { orgId: org.orgId },
+    where: {
+      orgId: context.orgId,
+      yswsId: { in: yswsIds },
+    },
     orderBy: { createdAt: "desc" },
     select: ORDER_FIELDS,
   });

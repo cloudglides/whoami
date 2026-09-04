@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateApiKey, getCurrentUserWithRole, hasRole, canAccessYSWS } from "@/lib/org";
+import { generateApiKey, getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { verifyYSWSAccess } from "@/lib/ysws-context";
 import type { Role } from "../../generated/prisma/client";
 
 const addOrganizerSchema = z.object({
@@ -175,10 +176,10 @@ export async function issuePassportAdminAction(
   });
   if (!org) return { error: "That org does not exist." };
 
-  // Check actor has access to this org
-  const actorCanAccess = await canAccessYSWS(actor.id, org.id);
+  // Check actor has access to this org using unified context
+  const access = await verifyYSWSAccess(actor.id, org.id);
   // Admin has broader access, but still verify
-  if (!actorCanAccess && actor.role !== "SUPERADMIN") {
+  if (!access && actor.role !== "SUPERADMIN") {
     return { error: "You do not have access to this org." };
   }
 
@@ -205,6 +206,14 @@ export async function issuePassportAdminAction(
       recipientName: parsed.data.recipientName.trim(),
       recipientEmail: email,
       recipientToken: crypto.randomUUID().substring(0, 16),
+      // Create the recipient record (one order = one recipient)
+      recipients: {
+        create: {
+          email,
+          name: parsed.data.recipientName.trim(),
+          userId: linkedUser?.id ?? null,
+        },
+      },
     },
   });
 

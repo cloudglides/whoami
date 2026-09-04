@@ -25,12 +25,12 @@ export default function AdminSidebar({ role }: { role: string }) {
     item.match ? item.match(pathname) : pathname.startsWith(item.href);
 
   return (
-    <aside className="hidden lg:block w-56 shrink-0">
+    <aside className="hidden lg:block">
       <nav className="sticky top-16" aria-label="Admin navigation">
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-govuk-grey-4">
+        <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-govuk-grey-4">
           Administration
         </h2>
-        <ul className="space-y-0" role="list">
+        <ul className="space-y-0.5" role="list">
           {items.map((item) => {
             const active = isActive(item);
             return (
@@ -38,7 +38,7 @@ export default function AdminSidebar({ role }: { role: string }) {
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`block border-l-4 px-3 py-2 text-sm transition-colors ${
+                  className={`block border-l-4 px-3 py-1.5 text-sm transition-colors ${
                     active
                       ? "border-govuk-blue bg-transparent font-semibold text-govuk-black"
                       : "border-transparent text-govuk-grey-4 hover:border-govuk-grey-2 hover:text-govuk-black"
@@ -50,12 +50,6 @@ export default function AdminSidebar({ role }: { role: string }) {
             );
           })}
         </ul>
-
-        <div className="mt-6 pt-4 border-t border-govuk-grey-2">
-          <p className="text-xs text-govuk-grey-4">
-            Signed in as <span className="font-medium capitalize">{role.toLowerCase()}</span>
-          </p>
-        </div>
       </nav>
     </aside>
   );

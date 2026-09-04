@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import type { Role, OrgRole } from "../generated/prisma/client";
 
+export type { Role, OrgRole };
+
 export const ROLE_RANK: Record<Role, number> = {
   PARTICIPANT: 0,
   ORGANIZER: 1,

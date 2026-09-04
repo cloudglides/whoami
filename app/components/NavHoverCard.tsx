@@ -123,7 +123,7 @@ export default function NavHoverCard() {
       </ul>
 
       <div
-        className="absolute top-full z-50 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-hidden rounded-lg shadow-xl transition-all duration-300 ease-out nav-card-stripes"
+        className="absolute top-full z-[100] mt-2 w-[min(340px,calc(100vw-2rem))] overflow-hidden rounded-lg shadow-xl transition-all duration-300 ease-out nav-card-stripes"
         style={{
           left: cardLeft,
           opacity: active !== null ? 1 : 0,

@@ -3,7 +3,6 @@ import Breadcrumb from "../components/Breadcrumb";
 import FadeIn from "../components/FadeIn";
 import { getCurrentUserWithRole, hasRole, ROLE_LABEL } from "@/lib/org";
 import AdminSidebar from "./AdminSidebar";
-import PageHeader from "../components/PageHeader";
 
 export default async function AdminLayout({
   children,
@@ -15,10 +14,14 @@ export default async function AdminLayout({
   if (!user) {
     return (
       <FadeIn className="mx-auto max-w-2xl px-6 pb-12 pt-10">
-        <PageHeader
-          title="Admin"
-          description="Sign in with Hack Club to manage organizers and YSWSes."
-        />
+        <div className="mb-8">
+          <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            Admin
+          </h1>
+          <p className="mb-4 max-w-2xl text-lg leading-relaxed text-govuk-grey-4">
+            Sign in with Hack Club to manage organizers and YSWSes.
+          </p>
+        </div>
         <Link href="/api/auth/signin?callbackUrl=/admin" className="govuk-button">
           Sign in with Hack Club
         </Link>
@@ -29,27 +32,26 @@ export default async function AdminLayout({
   if (!hasRole(user.role, "ADMIN")) {
     return (
       <FadeIn className="mx-auto max-w-2xl px-6 pb-12 pt-10">
-        <PageHeader
-          title="Admin"
-          description="You need admin access to manage organizers. Contact a superadmin."
-        />
+        <div className="mb-8">
+          <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            Admin
+          </h1>
+          <p className="mb-4 max-w-2xl text-lg leading-relaxed text-govuk-grey-4">
+            You need admin access to manage organizers. Contact a superadmin.
+          </p>
+        </div>
       </FadeIn>
     );
   }
 
   return (
-    <FadeIn className="mx-auto w-full px-6 pb-12 pt-8">
+    <FadeIn className="mx-auto w-full px-6 pb-8 pt-2">
       <Breadcrumb
         items={[{ label: "whoami", href: "/" }, { label: "Admin" }]}
       />
-      <PageHeader
-        title="Admin"
-        description={`Signed in as a ${ROLE_LABEL[user.role].toLowerCase()}`}
-      />
-
-      <div className="grid gap-8 lg:grid-cols-4">
-        <main className="lg:col-span-3">{children}</main>
-        <aside className="lg:col-span-1">
+      <div className="grid gap-6 lg:grid-cols-12">
+        <main className="lg:col-span-8">{children}</main>
+        <aside className="lg:col-span-4">
           <AdminSidebar role={ROLE_LABEL[user.role]} />
         </aside>
       </div>
