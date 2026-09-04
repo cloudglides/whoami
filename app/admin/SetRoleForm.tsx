@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { setRoleAction } from "../actions/admin";
+import { setRoleAction } from "@/app/actions/admin";
 
 export default function SetRoleForm() {
   const [state, formAction, pending] = useActionState(setRoleAction, undefined);

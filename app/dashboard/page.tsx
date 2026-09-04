@@ -1,44 +1,22 @@
 import Link from "next/link";
 import Breadcrumb from "../components/Breadcrumb";
 import FadeIn from "../components/FadeIn";
-import { getCurrentUserWithRole, hasRole, ROLE_LABEL, type Role } from "@/lib/org";
+import PageHeader from "../components/PageHeader";
+import { getCurrentUserWithRole, hasRole, ROLE_LABEL } from "@/lib/org";
 import { getYSWSContext } from "@/lib/ysws-context";
 import { prisma } from "@/lib/prisma";
 import CreateOrderForm from "./CreateOrderForm";
 import ApiIntegrationPanel from "./ApiIntegrationPanel";
 import YSWSSelector from "./YSWSSelector";
-import Section from "../components/Section";
 import DataTable from "../components/DataTable";
+import StatusBadge, { mapOrderStateToVariant } from "../components/StatusBadge";
 
-function dateLabel(d: Date) {
+function dateLabel(d: string) {
   return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
-  }).format(d);
-}
-
-function statusColor(state: string): "govuk-tag--grey" | "govuk-tag--blue" | "govuk-tag--green" | "govuk-tag--red" | "govuk-tag--yellow" {
-  switch (state) {
-    case "AWAITING_RECIPIENT_DETAILS":
-      return "govuk-tag--yellow";
-    case "RECIPIENT_DETAILS_RECEIVED":
-    case "DRAFTING":
-    case "DRAFT_READY":
-      return "govuk-tag--blue";
-    case "SENT_TO_HQ":
-    case "RECEIVED_FROM_HQ":
-      return "govuk-tag--grey";
-    case "SHIPPING":
-      return "govuk-tag--blue";
-    case "DELIVERED":
-      return "govuk-tag--green";
-    case "CANCELLED":
-    case "ERROR":
-      return "govuk-tag--red";
-    default:
-      return "govuk-tag--grey";
-  }
+  }).format(new Date(d));
 }
 
 export default async function DashboardPage({
@@ -55,9 +33,7 @@ export default async function DashboardPage({
 
   return (
     <FadeIn className="mx-auto w-full px-6 pb-12 pt-8">
-      <Breadcrumb
-        items={[{ label: "whoami", href: "/" }, { label: "Dashboard" }]}
-      />
+      <Breadcrumb items={[{ label: "whoami", href: "/" }, { label: "Dashboard" }]} />
 
       {!user ? (
         <UnsignedDashboard />
@@ -78,15 +54,15 @@ export default async function DashboardPage({
 function UnsignedDashboard() {
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-        Organizer dashboard
-      </h1>
-      <p className="mb-6 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-        Sign in with Hack Club to manage your YSWS and create passport orders.
-      </p>
-      <Link href="/api/auth/signin?callbackUrl=/dashboard" className="govuk-button">
-        Sign in with Hack Club
-      </Link>
+      <PageHeader
+        title="Organizer dashboard"
+        description="Sign in with Hack Club to manage your YSWS and create passport orders."
+        actions={
+          <Link href="/api/auth/signin?callbackUrl=/dashboard" className="govuk-button">
+            Sign in with Hack Club
+          </Link>
+        }
+      />
     </div>
   );
 }
@@ -94,16 +70,15 @@ function UnsignedDashboard() {
 function NotOrganizer() {
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-        Dashboard
-      </h1>
-      <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-        You are signed in as a participant. If you run a YSWS and want to order
-        passports, ask an admin to register you as an organizer.
-      </p>
-      <Link href="/" className="govuk-button govuk-button--secondary">
-        Back home
-      </Link>
+      <PageHeader
+        title="Dashboard"
+        description="You are signed in as a participant. If you run a YSWS and want to order passports, ask an admin to register you as an organizer."
+        actions={
+          <Link href="/" className="govuk-button govuk-button--secondary">
+            Back home
+          </Link>
+        }
+      />
     </div>
   );
 }
@@ -111,16 +86,15 @@ function NotOrganizer() {
 function NoOrgAccess() {
   return (
     <div className="max-w-2xl">
-      <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-        Dashboard
-      </h1>
-      <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-        You are signed in as an organizer, but you are not linked to any YSWS
-        yet. Ask an admin to register your YSWS and add you to it.
-      </p>
-      <Link href="/" className="govuk-button govuk-button--secondary">
-        Back home
-      </Link>
+      <PageHeader
+        title="Dashboard"
+        description="You are signed in as an organizer, but you are not linked to any YSWS yet. Ask an admin to register your YSWS and add you to it."
+        actions={
+          <Link href="/" className="govuk-button govuk-button--secondary">
+            Back home
+          </Link>
+        }
+      />
     </div>
   );
 }
@@ -144,12 +118,10 @@ async function OrganizerDashboard({
   if (!activeYSWS) {
     return (
       <div className="max-w-2xl">
-        <h1 className="mb-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          {context.accessibleYSWSes[0]?.orgName ?? "Dashboard"}
-        </h1>
-        <p className="mb-4 max-w-xl text-lg leading-relaxed text-govuk-grey-4">
-          No active YSWS selected. Please choose a YSWS from the switcher below.
-        </p>
+        <PageHeader
+          title={context.accessibleYSWSes[0]?.orgName ?? "Dashboard"}
+          description="No active YSWS selected. Please choose a YSWS from the switcher below."
+        />
       </div>
     );
   }
@@ -178,121 +150,193 @@ async function OrganizerDashboard({
 
   const recentOrders = orderList.slice(0, 20);
 
+  const orderRows = orderList.map((o) => ({
+    id: o.id,
+    recipientName: o.recipientName,
+    recipientEmail: o.recipientEmail,
+    currentState: o.currentState,
+    createdAt: o.createdAt.toISOString(),
+    note: o.note,
+  }));
+
   return (
-    <div className="grid gap-8 lg:grid-cols-12">
-      <main className="lg:col-span-8 space-y-8">
-        {/* Header with YSWS switcher */}
-        <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-4 border-b border-govuk-grey-2">
-          <div>
-            <h1 className="mb-1 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-              {activeYSWS.orgName}
-            </h1>
-            <div className="flex flex-wrap items-center gap-3 text-sm text-govuk-grey-4">
+    <div className="min-h-screen bg-govuk-white">
+      <header className="border-b border-govuk-grey-2 bg-govuk-white sticky top-0 z-10">
+        <div className="mx-auto max-w-full px-6 py-4">
+          <nav className="flex items-center justify-between" aria-label="Global">
+            <Link href="/" className="text-xl font-bold text-hc-red">whoami</Link>
+            <div className="flex items-center gap-4 text-sm text-govuk-grey-4">
+              <span>Signed in as <strong>{activeYSWS.orgName}</strong></span>
+              <span aria-hidden="true">·</span>
               <span>YSWS: <strong>{activeYSWS.yswsName}</strong></span>
-              <span>·</span>
-              <span>You are a {ROLE_LABEL[context.role].toLowerCase()}</span>
-              {totalOrdered > 0 && (
-                <>
-                  <span>·</span>
-                  <span>Total orders: <strong>{totalOrdered}</strong></span>
-                </>
+              <span aria-hidden="true">·</span>
+              <span>Role: <strong>{ROLE_LABEL[context.role]}</strong></span>
+              {hasRole(context.role, "ADMIN") && (
+                <Link href="/admin" className="govuk-button govuk-button--secondary govuk-button--small">
+                  Admin panel
+                </Link>
               )}
             </div>
-          </div>
-          {hasRole(context.role, "ADMIN") && (
-            <Link href="/admin" className="govuk-button govuk-button--secondary govuk-button--small shrink-0">
-              Go to admin panel
-            </Link>
-          )}
-        </header>
+          </nav>
+        </div>
+      </header>
 
-        {/* YSWS Switcher - prominent if multiple */}
-        {context.accessibleYSWSes.length > 1 && (
-          <YSWSSelector 
-            yswsList={context.accessibleYSWSes} 
-            currentYswsId={activeYSWS.yswsId} 
+      <div className="mx-auto max-w-full px-6 py-6 lg:grid lg:grid-cols-[260px_1fr] lg:gap-6">
+        <aside className="lg:sticky lg:top-20 lg:self-start hidden lg:block" aria-label="Dashboard navigation">
+          <nav>
+            <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-govuk-grey-4">
+              Dashboard
+            </h2>
+            <ul className="space-y-0.5" role="list">
+              <li>
+                <Link
+                  href="/dashboard"
+                  aria-current="page"
+                  className="block border-l-4 px-3 py-1.5 text-sm border-govuk-blue bg-transparent font-semibold text-govuk-black"
+                >
+                  Overview
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard?view=orders"
+                  className="block border-l-4 px-3 py-1.5 text-sm border-transparent text-govuk-grey-4 hover:border-govuk-grey-2 hover:text-govuk-black"
+                >
+                  Orders
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard?view=api"
+                  className="block border-l-4 px-3 py-1.5 text-sm border-transparent text-govuk-grey-4 hover:border-govuk-grey-2 hover:text-govuk-black"
+                >
+                  API integration
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+        <main className="w-full lg:col-span-1">
+          {/* Page header */}
+          <PageHeader
+            title={activeYSWS.orgName}
+            description={`YSWS: ${activeYSWS.yswsName} · You are a ${ROLE_LABEL[context.role].toLowerCase()}${totalOrdered > 0 ? ` · Total orders: ${totalOrdered}` : ""}`}
+            backHref="/dashboard"
           />
-        )}
 
-        {/* Orders needing attention */}
-        {needsAttention.length > 0 && (
-          <Section
-            title={`Orders needing attention (${needsAttention.length})`}
-            description="These orders require action to move forward."
-          >
-            <DataTable
-              columns={[
-                { key: "recipient", header: "Recipient", render: (o: typeof orderList[0]) => (
-                  <>
-                    <span className="font-medium">
-                      {o.recipientName ?? "—"}
-                    </span>
-                    {o.recipientEmail && (
-                      <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>
-                    )}
-                  </>
-                ) },
-                { key: "state", header: "Status", render: (o: typeof orderList[0]) => (
-                  <span className={`govuk-tag ${statusColor(o.currentState)} text-xs`}>
-                    {o.currentState.replace(/_/g, " ")}
-                  </span>
-                ), className: "w-40" },
-                { key: "created", header: "Created", render: (o: typeof orderList[0]) => dateLabel(o.createdAt), className: "w-32" },
-              ]}
-              data={needsAttention}
-              rowKey="id"
-              emptyMessage="No orders needing attention."
-            />
-          </Section>
-        )}
-
-        {/* Create order form */}
-        <Section
-          title="Create passport order"
-          description="Each order is for one participant. Enter their details and we'll handle the rest."
-        >
-          <CreateOrderForm orgId={activeYSWS.orgId} yswsId={activeYSWS.yswsId} />
-        </Section>
-
-        {/* Recent orders */}
-        <Section
-          title="Recent orders"
-          description={`Showing latest ${recentOrders.length} of ${orderList.length} total orders for this YSWS.`}
-        >
-          {recentOrders.length === 0 ? (
-            <p className="text-govuk-grey-4">No orders yet. Create your first order above.</p>
-          ) : (
-            <DataTable
-              columns={[
-                { key: "recipient", header: "Recipient", render: (o: typeof orderList[0]) => (
-                  <>
-                    <span className="font-medium">
-                      {o.recipientName ?? "—"}
-                    </span>
-                    {o.recipientEmail && (
-                      <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>
-                    )}
-                  </>
-                ) },
-                { key: "state", header: "Status", render: (o: typeof orderList[0]) => (
-                  <span className={`govuk-tag ${statusColor(o.currentState)} text-xs`}>
-                    {o.currentState.replace(/_/g, " ")}
-                  </span>
-                ), className: "w-40" },
-                { key: "created", header: "Created", render: (o: typeof orderList[0]) => dateLabel(o.createdAt), className: "w-32" },
-                { key: "note", header: "Note", render: (o: typeof orderList[0]) => o.note ? (
-                  <span className="text-govuk-grey-4 text-sm max-w-xs block truncate">{o.note}</span>
-                ) : (
-                  <span className="text-govuk-grey-4 text-sm">—</span>
-                ) },
-              ]}
-              data={recentOrders}
-              rowKey="id"
-              emptyMessage="No orders yet."
+          {/* YSWS Switcher - prominent if multiple */}
+          {context.accessibleYSWSes.length > 1 && (
+            <YSWSSelector 
+              yswsList={context.accessibleYSWSes} 
+              currentYswsId={activeYSWS.yswsId} 
             />
           )}
-        </Section>
-      </main>
+
+          {/* Orders needing attention */}
+          {needsAttention.length > 0 && (
+            <div className="mb-6 p-4 border-2 border-govuk-yellow bg-govuk-white">
+              <h2 className="govuk-heading-m mb-3">Orders needing attention ({needsAttention.length})</h2>
+              <p className="mb-4 text-govuk-grey-4">These orders require action to move forward.</p>
+              <DataTable
+                columns={[
+                  {
+                    key: "recipient",
+                    header: "Recipient",
+                    render: (o: typeof orderRows[0]) => (
+                      <Link href={`/admin/orders/${o.id}`} className="font-medium hover:underline">
+                        {o.recipientName ?? "&mdash;"}
+                        {o.recipientEmail && <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>}
+                      </Link>
+                    ),
+                  },
+                  {
+                    key: "state",
+                    header: "Status",
+                    className: "w-40",
+                    render: (o: typeof orderRows[0]) => (
+                      <StatusBadge variant={mapOrderStateToVariant(o.currentState)} />
+                    ),
+                  },
+                  {
+                    key: "created",
+                    header: "Created",
+                    className: "w-32 whitespace-nowrap",
+                    render: (o: typeof orderRows[0]) => dateLabel(o.createdAt),
+                  },
+                ]}
+                data={orderRows.filter((o) => 
+                  ["AWAITING_RECIPIENT_DETAILS", "RECIPIENT_DETAILS_RECEIVED", "DRAFTING", "ERROR"].includes(o.currentState)
+                )}
+                rowKey="id"
+                emptyMessage="No orders needing attention."
+                showPagination={false}
+              />
+            </div>
+          )}
+
+          {/* Create order form */}
+          <section className="mb-8">
+            <h2 className="govuk-heading-m mb-2">Create passport order</h2>
+            <p className="mb-4 text-govuk-grey-4">Each order is for one participant. Enter their details and we&apos;ll handle the rest.</p>
+            <CreateOrderForm orgId={activeYSWS.orgId} yswsId={activeYSWS.yswsId} />
+          </section>
+
+          {/* Recent orders */}
+          <section>
+            <div className="flex items-end justify-between gap-4 mb-4">
+              <div>
+                <h2 className="govuk-heading-m">Recent orders</h2>
+                <p className="text-govuk-grey-4">Showing latest {recentOrders.length} of {orderList.length} total orders for this YSWS.</p>
+              </div>
+            </div>
+            {recentOrders.length === 0 ? (
+              <p className="text-govuk-grey-4">No orders yet. Create your first order above.</p>
+            ) : (
+              <DataTable
+                columns={[
+                  {
+                    key: "recipient",
+                    header: "Recipient",
+                    render: (o: typeof orderRows[0]) => (
+                      <Link href={`/admin/orders/${o.id}`} className="font-medium hover:underline">
+                        {o.recipientName ?? "&mdash;"}
+                        {o.recipientEmail && <span className="block text-xs text-govuk-grey-4">{o.recipientEmail}</span>}
+                      </Link>
+                    ),
+                  },
+                  {
+                    key: "state",
+                    header: "Status",
+                    className: "w-40",
+                    render: (o: typeof orderRows[0]) => (
+                      <StatusBadge variant={mapOrderStateToVariant(o.currentState)} />
+                    ),
+                  },
+                  {
+                    key: "created",
+                    header: "Created",
+                    className: "w-32 whitespace-nowrap",
+                    render: (o: typeof orderRows[0]) => dateLabel(o.createdAt),
+                  },
+                  {
+                    key: "note",
+                    header: "Note",
+                    render: (o: typeof orderRows[0]) => o.note ? (
+                      <span className="text-govuk-grey-4 text-sm max-w-xs block truncate">{o.note}</span>
+                    ) : (
+                      <span className="text-govuk-grey-4 text-sm">&mdash;</span>
+                    ),
+                  },
+                ]}
+                data={orderRows}
+                rowKey="id"
+                emptyMessage="No orders yet."
+                showPagination={false}
+              />
+            )}
+          </section>
+        </main>
+      </div>
 
       <aside className="lg:col-span-4 space-y-6">
         <ApiIntegrationPanel 
