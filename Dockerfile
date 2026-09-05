@@ -14,7 +14,7 @@ RUN apk add --no-cache openssl libc6-compat ca-certificates
 # Stage 2: Install dependencies
 FROM base AS deps
 COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # Stage 3: Generate Prisma client (new generator: output = generated/prisma)
 FROM base AS prisma
