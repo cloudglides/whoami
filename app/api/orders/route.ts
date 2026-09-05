@@ -95,7 +95,6 @@ export async function POST(req: Request) {
       recipientEmail: email,
       recipientToken,
       createdByUserId: linkedUser?.id ?? null,
-      // Create the recipient record (one order = one recipient)
       recipients: email ? {
         create: {
           email,

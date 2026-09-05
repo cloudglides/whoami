@@ -1,9 +1,4 @@
 #!/usr/bin/env bun
-/**
- * Database Seed Script
- * Run with: bunx tsx prisma/seed.ts
- * Or: bun prisma/seed.ts
- */
 
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -17,7 +12,6 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Starting database seed...");
 
-  // Create superadmin user
   const superadminEmail = process.env.SUPERADMIN_EMAILS?.split(",")[0]?.trim() || "admin@whoami.local";
   
   const superadmin = await prisma.user.upsert({
@@ -35,7 +29,6 @@ async function main() {
   });
   console.log(`Superadmin created/updated: ${superadmin.email}`);
 
-  // Create test organization
   const org = await prisma.org.upsert({
     where: { slug: "hackclub" },
     update: {},
@@ -47,9 +40,8 @@ async function main() {
   });
   console.log(`Organization created/updated: ${org.name}`);
 
-  // Create YSWS
-const upsertYSWS = async (prisma: any) => {
-    return await prisma.ySWS.upsert({
+  const upsertYSWS = async (prisma: PrismaClient) => {
+    return prisma.ySWS.upsert({
       where: { slug: "hackclub" },
       update: {},
       create: {
@@ -71,7 +63,6 @@ const upsertYSWS = async (prisma: any) => {
   const ysws = await upsertYSWS(prisma);
   console.log(`YSWS created/updated: ${ysws.name}`);
 
-  // Create test organizer user
   const organizerEmail = "organizer@whoami.local";
   const organizer = await prisma.user.upsert({
     where: { email: organizerEmail },
@@ -88,7 +79,6 @@ const upsertYSWS = async (prisma: any) => {
   });
   console.log(`Organizer created/updated: ${organizer.email}`);
 
-  // Link organizer to org
   await prisma.orgMember.upsert({
     where: { orgId_userId: { orgId: org.id, userId: organizer.id } },
     update: { role: "OWNER" },
@@ -100,7 +90,6 @@ const upsertYSWS = async (prisma: any) => {
   });
   console.log(`Organizer linked to org`);
 
-  // Link organizer to YSWS
   await prisma.organizerYSWSMembership.upsert({
     where: { orgId_userId_yswsId: { orgId: org.id, userId: organizer.id, yswsId: ysws.id } },
     update: { role: "OWNER" },
@@ -113,7 +102,6 @@ const upsertYSWS = async (prisma: any) => {
   });
   console.log(`Organizer linked to YSWS`);
 
-  // Create test participant user
   const participantEmail = "participant@whoami.local";
   const participant = await prisma.user.upsert({
     where: { email: participantEmail },
@@ -130,7 +118,6 @@ const upsertYSWS = async (prisma: any) => {
   });
   console.log(`Participant created/updated: ${participant.email}`);
 
-  // Create test passport order
   const order = await prisma.passportOrder.create({
     data: {
       orgId: org.id,
@@ -155,7 +142,6 @@ const upsertYSWS = async (prisma: any) => {
   });
   console.log(`Test order created: ${order.id}`);
 
-  // Create passport version
   await prisma.passportVersion.create({
     data: {
       orderId: order.id,
@@ -169,7 +155,6 @@ const upsertYSWS = async (prisma: any) => {
   });
   console.log(`Passport version created`);
 
-  // Create audit log entry
   await prisma.auditLog.create({
     data: {
       entityType: "PassportOrder",
