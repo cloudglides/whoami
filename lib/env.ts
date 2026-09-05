@@ -16,9 +16,12 @@ const envSchema = z.object({
   // Redis / Valkey (for feedback, rate limiting)
   REDIS_URL: z.string().default("redis://127.0.0.1:6379"),
 
-  // Email (Resend)
-  RESEND_API_KEY: z.string().optional(),
+  // Email (provider interface)
+  EMAIL_PROVIDER: z.enum(["mailpit", "loops"]).default("mailpit"),
+  MAILPIT_URL: z.string().url().default("http://127.0.0.1:8025"),
   EMAIL_FROM: z.string().email().optional(),
+  LOOPS_API_KEY: z.string().optional(),
+  LOOPS_TX_RECIPIENT_FORM_ID: z.string().optional(),
 
   // Sentry
   SENTRY_DSN: z.string().optional(),
