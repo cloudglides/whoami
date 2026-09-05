@@ -18,6 +18,14 @@ services:
     restart: unless-stopped
     networks:
       - whoami-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
 
   redis:
     image: redis:7-alpine
@@ -35,6 +43,14 @@ services:
     restart: unless-stopped
     networks:
       - whoami-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
 
   whoami:
     build:
@@ -70,6 +86,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 256M
 
 volumes:
   postgres-data:
