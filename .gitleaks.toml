@@ -3,14 +3,17 @@ title = "Gitleaks Config"
 [allowlist]
 description = "Allowlisted patterns for gitleaks"
 paths = [
-  "*.md",
-  "*.txt",
-  "*.json",
-  "*.yml",
-  "*.yaml",
-  ".env.example",
-  "fixies.md",
-  "todo.md",
+  ".*\\.md$",
+  ".*\\.txt$",
+  ".*\\.json$",
+  ".*\\.yml$",
+  ".*\\.yaml$",
+  "^\\.env\\.example$",
+  "^fixies\\.md$",
+  "^todo\\.md$",
+  "^flake\\.nix$",
+  "^nixos-module\\.nix$",
+  "^Dockerfile$",
 ]
 regexes = [
   "test",
