@@ -50,9 +50,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/generated ./generated
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./
 
-# Prisma CLI + runtime for `migrate deploy` (e.g. as a deploy step)
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+# Prisma CLI + all runtime deps (standalone output excludes node_modules)
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
 
