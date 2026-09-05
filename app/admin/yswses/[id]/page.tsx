@@ -107,7 +107,7 @@ export default async function AdminYSWSDetailPage({
               <div>
                 <dt className="text-sm text-govuk-grey-4">API key</dt>
                 <dd className="mt-1 font-mono text-sm break-all">
-                  {user.role === "SUPERADMIN" ? ysws.apiKey : ysws.apiKey ? "wom_" + "•".repeat(24) : "&mdash;"}
+                  {user.role === "SUPERADMIN" ? (ysws.apiKeyDisplay ? ysws.apiKeyDisplay : "••••") : ysws.apiKeyDisplay ? "wom_" + "•".repeat(24) : "&mdash;"}
                 </dd>
               </div>
             </dl>

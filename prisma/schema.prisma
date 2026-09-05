@@ -157,18 +157,25 @@ model OrganizerYSWSMembership {
 }
 
 model YSWS {
-  id       String   @id @default(cuid())
-  name     String
-  slug     String   @unique
-  apiKey   String?  @unique
-  isActive Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  apiKeyHash      String?   @unique
+  apiKeyPrefix    String?   @unique // First 8 chars for fast lookup
+  apiKeyDisplay   String?   // Last 4 chars for display only
+  apiKeyExpiresAt DateTime?
+  apiKeyScopes    String[]  @default(["orders:write"])
+  apiKeyLastUsed  DateTime?
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  org                  Org  @relation("OrgYSWS", fields: [orgId], references: [id], onDelete: Cascade)
-  orgId                String
-  organizerMemberships OrganizerYSWSMembership[]
-  orders               PassportOrder[]
+  org                     Org  @relation("OrgYSWS", fields: [orgId], references: [id], onDelete: Cascade)
+  orgId                   String
+  organizerMemberships    OrganizerYSWSMembership[]
+  orders                  PassportOrder[]
+
+  @@index([apiKeyPrefix])
 }
 
 enum OrgRole {
@@ -225,6 +232,10 @@ model PassportOrder {
   @@index([recipientEmail])
   @@index([recipientToken])
   @@index([archivedAt])
+  @@index([orgId, currentState])
+  @@index([yswsId, currentState])
+  @@index([recipientEmail, archivedAt])
+  @@index([createdAt])
 }
 
 model PassportRecipient {
@@ -303,6 +314,7 @@ model OrderEvent {
 
   @@index([orderId])
   @@index([createdAt])
+  @@index([eventType, createdAt])
 }
 
 model AuditLog {

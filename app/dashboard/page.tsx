@@ -10,6 +10,7 @@ import ApiIntegrationPanel from "./ApiIntegrationPanel";
 import YSWSSelector from "./YSWSSelector";
 import DataTable from "../components/DataTable";
 import StatusBadge, { mapOrderStateToVariant } from "../components/StatusBadge";
+import DashboardMobileSidebar from "./DashboardMobileSidebar";
 
 function dateLabel(d: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -141,7 +142,7 @@ async function OrganizerDashboard({
 
   const orderList = orders?.orders ?? [];
   const totalOrdered = orderList.reduce((sum, o) => sum + o.totalQuantity, 0);
-  const apiKey = activeYSWS.yswsApiKey;
+  const apiKey = activeYSWS.yswsApiKeyDisplay;
 
   // Orders needing attention (awaiting details, pending, etc.)
   const needsAttention = orderList.filter((o) => 
@@ -161,7 +162,7 @@ async function OrganizerDashboard({
 
   return (
     <div className="min-h-screen bg-govuk-white">
-      <header className="border-b border-govuk-grey-2 bg-govuk-white sticky top-0 z-10">
+      <header className="border-b border-govuk-grey-2 bg-govuk-white sticky top-0 z-10 min-h-[var(--dashboard-header-height)]">
         <div className="mx-auto max-w-full px-6 py-4">
           <nav className="flex items-center justify-between" aria-label="Global">
             <Link href="/" className="text-xl font-bold text-hc-red">whoami</Link>
@@ -181,8 +182,15 @@ async function OrganizerDashboard({
         </div>
       </header>
 
-      <div className="mx-auto max-w-full px-6 py-6 lg:grid lg:grid-cols-[260px_1fr] lg:gap-6">
-        <aside className="lg:sticky lg:top-20 lg:self-start hidden lg:block" aria-label="Dashboard navigation">
+      {/* Mobile sidebar toggle */}
+      <DashboardMobileSidebar 
+        activeYSWS={activeYSWS} 
+        context={context} 
+        totalOrdered={totalOrdered} 
+      />
+
+      <div className="mx-auto max-w-full px-6 py-6 md:grid md:grid-cols-[260px_1fr] md:gap-6 lg:grid-cols-[260px_1fr]">
+        <aside className="md:sticky md:top-[var(--dashboard-sidebar-sticky-offset)] md:self-start hidden md:block" aria-label="Dashboard navigation">
           <nav>
             <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-govuk-grey-4">
               Dashboard
@@ -216,7 +224,7 @@ async function OrganizerDashboard({
             </ul>
           </nav>
         </aside>
-        <main className="w-full lg:col-span-1">
+        <main className="w-full md:col-span-1 lg:col-span-1">
           {/* Page header */}
           <PageHeader
             title={activeYSWS.orgName}
@@ -342,7 +350,7 @@ async function OrganizerDashboard({
         <ApiIntegrationPanel 
           orgId={activeYSWS.orgId} 
           yswsId={activeYSWS.yswsId}
-          apiKey={apiKey} 
+          apiKeyDisplay={activeYSWS.yswsApiKeyDisplay} 
           yswsName={activeYSWS.yswsName}
         />
       </aside>

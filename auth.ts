@@ -41,6 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: "Hack Club",
       type: "oidc",
       issuer: "https://auth.hackclub.com",
+      allowDangerousEmailAccountLinking: true,
       clientId: process.env.AUTH_HCA_CLIENT_ID,
       clientSecret: process.env.AUTH_HCA_CLIENT_SECRET,
       authorization: {

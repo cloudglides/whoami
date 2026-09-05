@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import type { Role, OrgRole } from "../generated/prisma/client";
 import { auditLog } from "./audit";
+import { hash, verify } from "@node-rs/argon2";
 
 export type { Role, OrgRole };
 
@@ -27,6 +28,11 @@ const SUPERADMIN_EMAILS = (process.env.SUPERADMIN_EMAILS ?? "")
   .split(",")
   .map((s) => s.trim().toLowerCase())
   .filter(Boolean);
+
+export function isSuperadminEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  return SUPERADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
 
 export async function getCurrentUser() {
   const session = await auth();
@@ -85,7 +91,7 @@ export async function getOrgForUser(userId: string) {
             },
           },
           ysws: {
-            select: { apiKey: true, name: true, slug: true },
+            select: { apiKeyDisplay: true, name: true, slug: true },
           },
         },
       },
@@ -130,6 +136,41 @@ export function generateApiKey(): string {
     "wom_" +
     Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")
   );
+}
+
+export function generateRecipientToken(): string {
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
+}
+
+export async function generateApiKeyHash(key: string): Promise<string> {
+  return hash(key, {
+    memoryCost: 19456,
+    timeCost: 2,
+    outputLen: 32,
+    parallelism: 1,
+  });
+}
+
+export async function verifyApiKeyHash(plainKey: string, hash: string): Promise<boolean> {
+  return verify(hash, plainKey);
+}
+
+export async function generateApiKeyWithHash(): Promise<{ key: string; hash: string }> {
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  const key = "wom_" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  const hash = await generateApiKeyHash(key);
+  return { key, hash };
+}
+
+export async function generateApiKeyWithExpiry(
+  scopes: string[] = ["orders:write"],
+  expiresInDays: number = 365
+): Promise<{ key: string; hash: string; expiresAt: Date; scopes: string[] }> {
+  const { key, hash } = await generateApiKeyWithHash();
+  const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+  return { key, hash, expiresAt, scopes };
 }
 
 // Check if user can access an org's orders (org membership check)
@@ -208,7 +249,7 @@ export async function getOrganizerYSWSesWithStats(userId: string) {
     yswsId: m.yswsId,
     yswsName: m.ysws?.name,
     yswsSlug: m.ysws?.slug,
-    yswsApiKey: m.ysws?.apiKey,
+    yswsApiKeyDisplay: m.ysws?.apiKeyDisplay,
     orgName: m.ysws?.org?.name,
     role: m.role,
     orderCount: m.ysws?._count.orders ?? 0,

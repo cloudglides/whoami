@@ -21,7 +21,7 @@ export default async function AdminOrdersPage() {
     }),
   ]);
 
-  const orderRows = orders.map((o) => ({
+  const orderRows = orders.map((o: typeof orders[0]) => ({
     ...o,
     createdAt: o.createdAt.toISOString(),
     ysws: o.ysws ? { id: o.ysws.id, name: o.ysws.name } : null,

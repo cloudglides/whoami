@@ -12,9 +12,8 @@ export default async function Header() {
 
   return (
     <header
-      className="relative w-full bg-gradient-to-br from-hc-blue to-[#01bbff] rounded-t-2xl shadow-lg"
+      className="relative w-full bg-gradient-to-br from-hc-blue to-[#01bbff] rounded-t-2xl shadow-lg min-h-[var(--header-height)]"
       style={{
-        minHeight: "70px",
         borderTopLeftRadius: "0.75rem",
         borderTopRightRadius: "0.75rem",
       }}

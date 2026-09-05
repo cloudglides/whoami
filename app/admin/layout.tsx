@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCurrentUserWithRole, hasRole, ROLE_LABEL } from "@/lib/org";
 import AdminSidebar from "./AdminSidebar";
+import MobileSidebar from "./MobileSidebar";
 
 export default async function AdminLayout({
   children,
@@ -43,7 +44,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-govuk-white">
-      <header className="border-b border-govuk-grey-2 bg-govuk-white sticky top-0 z-10">
+      <header className="border-b border-govuk-grey-2 bg-govuk-white sticky top-0 z-10 min-h-[var(--admin-header-height)]">
         <div className="mx-auto max-w-full px-6 py-4">
           <nav
             className="flex items-center justify-between"
@@ -66,14 +67,17 @@ export default async function AdminLayout({
         </div>
       </header>
 
-      <div className="mx-auto max-w-full px-6 py-6 lg:grid lg:grid-cols-[260px_1fr] lg:gap-6">
+      {/* Mobile sidebar toggle */}
+      <MobileSidebar role={ROLE_LABEL[user.role]} />
+
+      <div className="mx-auto max-w-full px-6 py-6 md:grid md:grid-cols-[260px_1fr] md:gap-6 lg:grid-cols-[260px_1fr]">
         <aside
-          className="lg:sticky lg:top-20 lg:self-start hidden lg:block"
+          className="md:sticky md:top-[var(--admin-sidebar-sticky-offset)] md:self-start hidden md:block"
           aria-label="Admin navigation"
         >
           <AdminSidebar role={ROLE_LABEL[user.role]} />
         </aside>
-        <main className="w-full lg:col-span-1">{children}</main>
+        <main className="w-full md:col-span-1 lg:col-span-1">{children}</main>
       </div>
     </div>
   );

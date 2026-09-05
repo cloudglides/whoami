@@ -7,7 +7,7 @@ type YSWS = {
   yswsId: string;
   yswsName: string;
   yswsSlug: string;
-  yswsApiKey: string | null;
+  yswsApiKeyDisplay: string | null;
   orgName: string;
   orgSlug: string;
   role: string;
@@ -65,7 +65,7 @@ export default function YSWSSelector({
       </div>
       {current && (
         <p className="mt-2 text-sm text-govuk-grey-4">
-          API key: <code className="font-mono">{current.yswsApiKey ?? "&mdash;"}</code>
+          API key: <code className="font-mono">{current.yswsApiKeyDisplay ?? "&mdash;"}</code>
         </p>
       )}
     </div>

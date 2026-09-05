@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import { getRequestId, getClientInfo } from "./request-id";
 import { createLogger } from "./logger";
+import { Prisma } from "../generated/prisma/client";
 
 const auditLogger = createLogger({ component: "audit" });
 
@@ -20,21 +21,26 @@ export async function auditLog(params: {
   const { ip, userAgent } = await getClientInfo();
   const requestId = params.requestId ?? await getRequestId();
 
-  await prisma.auditLog.create({
-    data: {
-      entityType: params.entityType,
-      entityId: params.entityId,
-      action: params.action,
-      actor: params.actor,
-      actorType: params.actorType,
-      beforeValue: params.beforeValue as any,
-      afterValue: params.afterValue as any,
-      ipAddress: ip,
-      userAgent,
-      requestId,
-      description: params.description,
-    },
-  });
+  const data: Prisma.AuditLogCreateInput = {
+    entityType: params.entityType,
+    entityId: params.entityId,
+    action: params.action,
+    actor: params.actor,
+    actorType: params.actorType,
+    ipAddress: ip,
+    userAgent,
+    requestId,
+    description: params.description,
+  };
+
+  if (params.beforeValue !== undefined) {
+    data.beforeValue = params.beforeValue as Prisma.InputJsonValue;
+  }
+  if (params.afterValue !== undefined) {
+    data.afterValue = params.afterValue as Prisma.InputJsonValue;
+  }
+
+  await prisma.auditLog.create({ data });
 
   auditLogger.info(
     {

@@ -6,35 +6,38 @@ import { regenerateApiKeyAction } from "../actions/org";
 export default function ApiIntegrationPanel({ 
   orgId, 
   yswsId,
-  apiKey, 
+  apiKeyDisplay, 
   yswsName 
 }: { 
   orgId: string; 
   yswsId: string | null;
-  apiKey: string | null; 
+  apiKeyDisplay: string | null; 
   yswsName?: string | null;
 }) {
   const [revealed, setRevealed] = useState(false);
   const [state, formAction, pending] = useActionState(regenerateApiKeyAction, undefined);
 
-  const shown = apiKey ? (revealed ? apiKey : "wom_" + "•".repeat(24)) : "";
+  const [lastGeneratedKey, setLastGeneratedKey] = useState<string | null>(null);
+
+  const shown = apiKeyDisplay ? (revealed ? "wom_" + apiKeyDisplay.padStart(4, "•") : "wom_" + "•".repeat(24)) : "";
+  const fullKey = lastGeneratedKey;
 
   async function copy() {
-    if (!apiKey) return;
+    if (!fullKey) return;
     try {
-      await navigator.clipboard.writeText(apiKey);
+      await navigator.clipboard.writeText(fullKey);
     } catch {
       // Clipboard API can be unavailable in non-secure contexts.
     }
   }
 
-  const curl = apiKey 
-    ? `curl -X POST https://<your-domain>/api/orders \\\n  -H "Authorization: Bearer ${apiKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"recipientName": "Jane Doe", "recipientEmail": "jane@example.com", "note": "Spring event"}'`
+  const curl = fullKey 
+    ? `curl -X POST https://<your-domain>/api/orders \\\n  -H "Authorization: Bearer ${fullKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"recipientName": "Jane Doe", "recipientEmail": "jane@example.com", "note": "Spring event"}'`
     : "Generate an API key first.";
 
-  const script = apiKey
+  const script = fullKey
     ? `// On your YSWS shop checkout:
-const key = "${apiKey}";
+const key = "${fullKey}";
 
 const res = await fetch("https://<your-domain>/api/orders", {
   method: "POST",
@@ -77,7 +80,7 @@ console.log(json.order); // the created PASSPORT order`
         <button
           type="button"
           onClick={() => setRevealed((v) => !v)}
-          disabled={!apiKey}
+          disabled={!apiKeyDisplay}
           className="govuk-button govuk-button--secondary govuk-button--small shrink-0"
         >
           {revealed ? "Hide" : "Reveal"}
@@ -85,7 +88,7 @@ console.log(json.order); // the created PASSPORT order`
         <button
           type="button"
           onClick={copy}
-          disabled={!apiKey}
+          disabled={!fullKey}
           className="govuk-button govuk-button--secondary govuk-button--small shrink-0"
         >
           Copy
@@ -133,7 +136,7 @@ console.log(json.order); // the created PASSPORT order`
         )}
         {state?.ok && (
           <p className="mb-2 border-l-4 border-govuk-green px-2 py-1.5 font-semibold text-sm bg-govuk-grey-1">
-            API key regenerated. Your old key no longer works.
+            {state.ok}
           </p>
         )}
         <button

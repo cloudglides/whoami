@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithRole, hasRole } from "@/lib/org";
 import { redirect } from "next/navigation";
-import { ROLE_LABEL } from "@/lib/org";
+import { ROLE_LABEL, Role } from "@/lib/org";
 import Breadcrumb from "../../../components/Breadcrumb";
 import PageHeader from "../../../components/PageHeader";
 import Section from "../../../components/Section";
@@ -91,7 +91,7 @@ export default async function AdminUserDetailPage({
               <div>
                 <dt className="text-sm text-govuk-grey-4">Global role</dt>
                 <dd className="mt-1 font-medium">
-                  <StatusBadge variant={mapUserRoleToVariant(targetUser.role)} label={ROLE_LABEL[targetUser.role]} />
+                  <StatusBadge variant={mapUserRoleToVariant(targetUser.role as Role)} label={ROLE_LABEL[targetUser.role as Role]} />
                 </dd>
               </div>
               <div className="sm:col-span-2">

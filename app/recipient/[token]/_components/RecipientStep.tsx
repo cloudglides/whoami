@@ -34,19 +34,32 @@ interface RecipientStepProps {
 
 type RecipientFormState = { error?: string; ok?: boolean; nextStep?: string } | undefined;
 
+interface RecipientReviewProps {
+  token: string;
+  order: { ysws?: { name: string } | null; org: { name: string } };
+  recipient: {
+    name?: string | null;
+    email?: string | null;
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    stateProvince?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+    photoUrl?: string | null;
+    emergencyContact?: string | null;
+  } | null;
+  action: (formData: FormData) => Promise<RecipientFormState>;
+  state: { error?: string; pending?: boolean } | undefined;
+}
+
 const RecipientReview = ({
   token,
   order,
   recipient,
   action,
   state,
-}: {
-  token: string;
-  order: any;
-  recipient: any;
-  action: (formData: FormData) => Promise<any>;
-  state: any;
-}) => {
+}: RecipientReviewProps) => {
   return (
     <form
       onSubmit={(e) => {
@@ -136,7 +149,7 @@ export default function RecipientStep({ token, order, recipient, completedSteps 
     } else {
       const currentIndex = STEP_ORDER.indexOf(step);
       if (currentIndex !== -1 && currentIndex < STEP_ORDER.length - 1) {
-        setCurrentStep(STEP_ORDER[currentIndex + 1]);
+        setCurrentStep(STEP_ORDER[currentIndex + 1] as StepKey);
       }
     }
   };
@@ -223,7 +236,7 @@ export default function RecipientStep({ token, order, recipient, completedSteps 
             <input type="hidden" name="step" value="email" />
             <div>
               <h3 className="text-lg font-bold mb-1">What is your email address?</h3>
-              <p className="text-govuk-grey-4 text-sm">We'll send confirmation and updates to this email.</p>
+              <p className="text-govuk-grey-4 text-sm">We&apos;ll send confirmation and updates to this email.</p>
             </div>
             {emailError && (
               <div role="alert" className="border-l-4 border-hc-red p-4 bg-govuk-grey-1">
@@ -454,7 +467,7 @@ export default function RecipientStep({ token, order, recipient, completedSteps 
             <input type="hidden" name="step" value="emergency" />
             <div>
               <h3 className="text-lg font-bold mb-1">Emergency contact (optional)</h3>
-              <p className="text-govuk-grey-4 text-sm">Someone we can contact if there's an issue with delivery.</p>
+              <p className="text-govuk-grey-4 text-sm">Someone we can contact if there&apos;s an issue with delivery.</p>
             </div>
             {emergencyError && (
               <div role="alert" className="border-l-4 border-hc-red p-4 bg-govuk-grey-1">

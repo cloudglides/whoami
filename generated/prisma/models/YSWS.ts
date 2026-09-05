@@ -28,7 +28,11 @@ export type YSWSMinAggregateOutputType = {
   id: string | null
   name: string | null
   slug: string | null
-  apiKey: string | null
+  apiKeyHash: string | null
+  apiKeyPrefix: string | null
+  apiKeyDisplay: string | null
+  apiKeyExpiresAt: Date | null
+  apiKeyLastUsed: Date | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -39,7 +43,11 @@ export type YSWSMaxAggregateOutputType = {
   id: string | null
   name: string | null
   slug: string | null
-  apiKey: string | null
+  apiKeyHash: string | null
+  apiKeyPrefix: string | null
+  apiKeyDisplay: string | null
+  apiKeyExpiresAt: Date | null
+  apiKeyLastUsed: Date | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,7 +58,12 @@ export type YSWSCountAggregateOutputType = {
   id: number
   name: number
   slug: number
-  apiKey: number
+  apiKeyHash: number
+  apiKeyPrefix: number
+  apiKeyDisplay: number
+  apiKeyExpiresAt: number
+  apiKeyScopes: number
+  apiKeyLastUsed: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -63,7 +76,11 @@ export type YSWSMinAggregateInputType = {
   id?: true
   name?: true
   slug?: true
-  apiKey?: true
+  apiKeyHash?: true
+  apiKeyPrefix?: true
+  apiKeyDisplay?: true
+  apiKeyExpiresAt?: true
+  apiKeyLastUsed?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -74,7 +91,11 @@ export type YSWSMaxAggregateInputType = {
   id?: true
   name?: true
   slug?: true
-  apiKey?: true
+  apiKeyHash?: true
+  apiKeyPrefix?: true
+  apiKeyDisplay?: true
+  apiKeyExpiresAt?: true
+  apiKeyLastUsed?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -85,7 +106,12 @@ export type YSWSCountAggregateInputType = {
   id?: true
   name?: true
   slug?: true
-  apiKey?: true
+  apiKeyHash?: true
+  apiKeyPrefix?: true
+  apiKeyDisplay?: true
+  apiKeyExpiresAt?: true
+  apiKeyScopes?: true
+  apiKeyLastUsed?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -169,7 +195,12 @@ export type YSWSGroupByOutputType = {
   id: string
   name: string
   slug: string
-  apiKey: string | null
+  apiKeyHash: string | null
+  apiKeyPrefix: string | null
+  apiKeyDisplay: string | null
+  apiKeyExpiresAt: Date | null
+  apiKeyScopes: string[]
+  apiKeyLastUsed: Date | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -201,7 +232,12 @@ export type YSWSWhereInput = {
   id?: Prisma.StringFilter<"YSWS"> | string
   name?: Prisma.StringFilter<"YSWS"> | string
   slug?: Prisma.StringFilter<"YSWS"> | string
-  apiKey?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyHash?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyPrefix?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyDisplay?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyExpiresAt?: Prisma.DateTimeNullableFilter<"YSWS"> | Date | string | null
+  apiKeyScopes?: Prisma.StringNullableListFilter<"YSWS">
+  apiKeyLastUsed?: Prisma.DateTimeNullableFilter<"YSWS"> | Date | string | null
   isActive?: Prisma.BoolFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
@@ -215,7 +251,12 @@ export type YSWSOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyPrefix?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyDisplay?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyScopes?: Prisma.SortOrder
+  apiKeyLastUsed?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -228,11 +269,16 @@ export type YSWSOrderByWithRelationInput = {
 export type YSWSWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   slug?: string
-  apiKey?: string
+  apiKeyHash?: string
+  apiKeyPrefix?: string
   AND?: Prisma.YSWSWhereInput | Prisma.YSWSWhereInput[]
   OR?: Prisma.YSWSWhereInput[]
   NOT?: Prisma.YSWSWhereInput | Prisma.YSWSWhereInput[]
   name?: Prisma.StringFilter<"YSWS"> | string
+  apiKeyDisplay?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyExpiresAt?: Prisma.DateTimeNullableFilter<"YSWS"> | Date | string | null
+  apiKeyScopes?: Prisma.StringNullableListFilter<"YSWS">
+  apiKeyLastUsed?: Prisma.DateTimeNullableFilter<"YSWS"> | Date | string | null
   isActive?: Prisma.BoolFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
@@ -240,13 +286,18 @@ export type YSWSWhereUniqueInput = Prisma.AtLeast<{
   org?: Prisma.XOR<Prisma.OrgScalarRelationFilter, Prisma.OrgWhereInput>
   organizerMemberships?: Prisma.OrganizerYSWSMembershipListRelationFilter
   orders?: Prisma.PassportOrderListRelationFilter
-}, "id" | "slug" | "apiKey">
+}, "id" | "slug" | "apiKeyHash" | "apiKeyPrefix">
 
 export type YSWSOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyPrefix?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyDisplay?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKeyScopes?: Prisma.SortOrder
+  apiKeyLastUsed?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -263,7 +314,12 @@ export type YSWSScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"YSWS"> | string
   name?: Prisma.StringWithAggregatesFilter<"YSWS"> | string
   slug?: Prisma.StringWithAggregatesFilter<"YSWS"> | string
-  apiKey?: Prisma.StringNullableWithAggregatesFilter<"YSWS"> | string | null
+  apiKeyHash?: Prisma.StringNullableWithAggregatesFilter<"YSWS"> | string | null
+  apiKeyPrefix?: Prisma.StringNullableWithAggregatesFilter<"YSWS"> | string | null
+  apiKeyDisplay?: Prisma.StringNullableWithAggregatesFilter<"YSWS"> | string | null
+  apiKeyExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"YSWS"> | Date | string | null
+  apiKeyScopes?: Prisma.StringNullableListFilter<"YSWS">
+  apiKeyLastUsed?: Prisma.DateTimeNullableWithAggregatesFilter<"YSWS"> | Date | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"YSWS"> | Date | string
@@ -274,7 +330,12 @@ export type YSWSCreateInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -287,7 +348,12 @@ export type YSWSUncheckedCreateInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -300,7 +366,12 @@ export type YSWSUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -313,7 +384,12 @@ export type YSWSUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -326,7 +402,12 @@ export type YSWSCreateManyInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -337,7 +418,12 @@ export type YSWSUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -347,7 +433,12 @@ export type YSWSUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,11 +460,24 @@ export type YSWSScalarRelationFilter = {
   isNot?: Prisma.YSWSWhereInput
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type YSWSCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  apiKey?: Prisma.SortOrder
+  apiKeyHash?: Prisma.SortOrder
+  apiKeyPrefix?: Prisma.SortOrder
+  apiKeyDisplay?: Prisma.SortOrder
+  apiKeyExpiresAt?: Prisma.SortOrder
+  apiKeyScopes?: Prisma.SortOrder
+  apiKeyLastUsed?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -384,7 +488,11 @@ export type YSWSMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  apiKey?: Prisma.SortOrder
+  apiKeyHash?: Prisma.SortOrder
+  apiKeyPrefix?: Prisma.SortOrder
+  apiKeyDisplay?: Prisma.SortOrder
+  apiKeyExpiresAt?: Prisma.SortOrder
+  apiKeyLastUsed?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -395,7 +503,11 @@ export type YSWSMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  apiKey?: Prisma.SortOrder
+  apiKeyHash?: Prisma.SortOrder
+  apiKeyPrefix?: Prisma.SortOrder
+  apiKeyDisplay?: Prisma.SortOrder
+  apiKeyExpiresAt?: Prisma.SortOrder
+  apiKeyLastUsed?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -458,6 +570,15 @@ export type YSWSUpdateOneRequiredWithoutOrganizerMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.YSWSUpdateToOneWithWhereWithoutOrganizerMembershipsInput, Prisma.YSWSUpdateWithoutOrganizerMembershipsInput>, Prisma.YSWSUncheckedUpdateWithoutOrganizerMembershipsInput>
 }
 
+export type YSWSCreateapiKeyScopesInput = {
+  set: string[]
+}
+
+export type YSWSUpdateapiKeyScopesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
@@ -480,7 +601,12 @@ export type YSWSCreateWithoutOrgInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -492,7 +618,12 @@ export type YSWSUncheckedCreateWithoutOrgInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -533,7 +664,12 @@ export type YSWSScalarWhereInput = {
   id?: Prisma.StringFilter<"YSWS"> | string
   name?: Prisma.StringFilter<"YSWS"> | string
   slug?: Prisma.StringFilter<"YSWS"> | string
-  apiKey?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyHash?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyPrefix?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyDisplay?: Prisma.StringNullableFilter<"YSWS"> | string | null
+  apiKeyExpiresAt?: Prisma.DateTimeNullableFilter<"YSWS"> | Date | string | null
+  apiKeyScopes?: Prisma.StringNullableListFilter<"YSWS">
+  apiKeyLastUsed?: Prisma.DateTimeNullableFilter<"YSWS"> | Date | string | null
   isActive?: Prisma.BoolFilter<"YSWS"> | boolean
   createdAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"YSWS"> | Date | string
@@ -544,7 +680,12 @@ export type YSWSCreateWithoutOrganizerMembershipsInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -556,7 +697,12 @@ export type YSWSUncheckedCreateWithoutOrganizerMembershipsInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -584,7 +730,12 @@ export type YSWSUpdateWithoutOrganizerMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -596,7 +747,12 @@ export type YSWSUncheckedUpdateWithoutOrganizerMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -608,7 +764,12 @@ export type YSWSCreateWithoutOrdersInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -620,7 +781,12 @@ export type YSWSUncheckedCreateWithoutOrdersInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -648,7 +814,12 @@ export type YSWSUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -660,7 +831,12 @@ export type YSWSUncheckedUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -672,7 +848,12 @@ export type YSWSCreateManyOrgInput = {
   id?: string
   name: string
   slug: string
-  apiKey?: string | null
+  apiKeyHash?: string | null
+  apiKeyPrefix?: string | null
+  apiKeyDisplay?: string | null
+  apiKeyExpiresAt?: Date | string | null
+  apiKeyScopes?: Prisma.YSWSCreateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -682,7 +863,12 @@ export type YSWSUpdateWithoutOrgInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -694,7 +880,12 @@ export type YSWSUncheckedUpdateWithoutOrgInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -706,7 +897,12 @@ export type YSWSUncheckedUpdateManyWithoutOrgInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyPrefix?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyDisplay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKeyExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiKeyScopes?: Prisma.YSWSUpdateapiKeyScopesInput | string[]
+  apiKeyLastUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -756,7 +952,12 @@ export type YSWSSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   name?: boolean
   slug?: boolean
-  apiKey?: boolean
+  apiKeyHash?: boolean
+  apiKeyPrefix?: boolean
+  apiKeyDisplay?: boolean
+  apiKeyExpiresAt?: boolean
+  apiKeyScopes?: boolean
+  apiKeyLastUsed?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -771,7 +972,12 @@ export type YSWSSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   name?: boolean
   slug?: boolean
-  apiKey?: boolean
+  apiKeyHash?: boolean
+  apiKeyPrefix?: boolean
+  apiKeyDisplay?: boolean
+  apiKeyExpiresAt?: boolean
+  apiKeyScopes?: boolean
+  apiKeyLastUsed?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -783,7 +989,12 @@ export type YSWSSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   name?: boolean
   slug?: boolean
-  apiKey?: boolean
+  apiKeyHash?: boolean
+  apiKeyPrefix?: boolean
+  apiKeyDisplay?: boolean
+  apiKeyExpiresAt?: boolean
+  apiKeyScopes?: boolean
+  apiKeyLastUsed?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -795,14 +1006,19 @@ export type YSWSSelectScalar = {
   id?: boolean
   name?: boolean
   slug?: boolean
-  apiKey?: boolean
+  apiKeyHash?: boolean
+  apiKeyPrefix?: boolean
+  apiKeyDisplay?: boolean
+  apiKeyExpiresAt?: boolean
+  apiKeyScopes?: boolean
+  apiKeyLastUsed?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   orgId?: boolean
 }
 
-export type YSWSOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "apiKey" | "isActive" | "createdAt" | "updatedAt" | "orgId", ExtArgs["result"]["ySWS"]>
+export type YSWSOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "apiKeyHash" | "apiKeyPrefix" | "apiKeyDisplay" | "apiKeyExpiresAt" | "apiKeyScopes" | "apiKeyLastUsed" | "isActive" | "createdAt" | "updatedAt" | "orgId", ExtArgs["result"]["ySWS"]>
 export type YSWSInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   org?: boolean | Prisma.OrgDefaultArgs<ExtArgs>
   organizerMemberships?: boolean | Prisma.YSWS$organizerMembershipsArgs<ExtArgs>
@@ -827,7 +1043,12 @@ export type $YSWSPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     name: string
     slug: string
-    apiKey: string | null
+    apiKeyHash: string | null
+    apiKeyPrefix: string | null
+    apiKeyDisplay: string | null
+    apiKeyExpiresAt: Date | null
+    apiKeyScopes: string[]
+    apiKeyLastUsed: Date | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1261,7 +1482,12 @@ export interface YSWSFieldRefs {
   readonly id: Prisma.FieldRef<"YSWS", 'String'>
   readonly name: Prisma.FieldRef<"YSWS", 'String'>
   readonly slug: Prisma.FieldRef<"YSWS", 'String'>
-  readonly apiKey: Prisma.FieldRef<"YSWS", 'String'>
+  readonly apiKeyHash: Prisma.FieldRef<"YSWS", 'String'>
+  readonly apiKeyPrefix: Prisma.FieldRef<"YSWS", 'String'>
+  readonly apiKeyDisplay: Prisma.FieldRef<"YSWS", 'String'>
+  readonly apiKeyExpiresAt: Prisma.FieldRef<"YSWS", 'DateTime'>
+  readonly apiKeyScopes: Prisma.FieldRef<"YSWS", 'String[]'>
+  readonly apiKeyLastUsed: Prisma.FieldRef<"YSWS", 'DateTime'>
   readonly isActive: Prisma.FieldRef<"YSWS", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"YSWS", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"YSWS", 'DateTime'>

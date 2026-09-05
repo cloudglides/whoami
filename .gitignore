@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+/docs/
+/docs
+docs/
 
 # prisma
 /generated/
@@ -46,3 +49,5 @@ next-env.d.ts
 
 # audit/plan files
 plan.md
+fixies.md
+todo.md

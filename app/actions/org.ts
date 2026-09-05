@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateApiKey, getCurrentUser, getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { generateApiKey, generateApiKeyWithExpiry, getCurrentUser, getCurrentUserWithRole, hasRole } from "@/lib/org";
 import { verifyYSWSAccess } from "@/lib/ysws-context";
 import { auditLog } from "@/lib/audit";
 
@@ -37,14 +37,12 @@ export async function createOrderAction(
     return { error: parsed.error.issues[0]?.message ?? "Invalid order." };
   }
 
-  // Determine the YSWS ID - use provided one or fall back to org's first YSWS
   let yswsId = parsed.data.yswsId ?? undefined;
   if (!yswsId) {
     const ysws = await prisma.ySWS.findFirst({ where: { orgId: membership.orgId } });
     yswsId = ysws?.id ?? undefined;
   }
 
-  // Verify organizer has access to this YSWS
   if (yswsId) {
     const access = await verifyYSWSAccess(user.id, yswsId);
     if (!access) {
@@ -82,7 +80,6 @@ export async function createOrderAction(
       recipientEmail: email,
       recipientToken,
       createdByUserId: linkedUser?.id ?? null,
-      // Create the recipient record (one order = one recipient)
       recipients: {
         create: {
           email,
@@ -97,7 +94,7 @@ export async function createOrderAction(
   return { ok: true };
 }
 
-export type ApiKeyFormState = { error?: string; ok?: boolean } | undefined;
+export type ApiKeyFormState = { error?: string; ok?: string } | undefined;
 
 export async function regenerateApiKeyAction(
   _prev: ApiKeyFormState,
@@ -121,17 +118,16 @@ export async function regenerateApiKeyAction(
   });
   if (!membership) return { error: "You are not a member of this org." };
 
-  // Verify organizer has access to the specific YSWS
   const yswsIdStr = typeof yswsId === "string" ? yswsId : null;
   if (!yswsIdStr) {
     return { error: "Missing YSWS." };
   }
   
-  // Use unified authorization context - handles admin/org access correctly
   const access = await verifyYSWSAccess(user.id, yswsIdStr);
   if (!access) return { error: "You are not authorized for this YSWS." };
 
-  // Update the specific YSWS apiKey
+  const apiKeyData = await generateApiKeyWithExpiry();
+
   const ysws = await prisma.ySWS.findUnique({
     where: { id: yswsIdStr },
   });
@@ -139,11 +135,16 @@ export async function regenerateApiKeyAction(
 
   await prisma.ySWS.update({
     where: { id: ysws.id },
-    data: { apiKey: generateApiKey() },
+    data: { 
+      apiKeyHash: apiKeyData.hash,
+      apiKeyDisplay: apiKeyData.key.slice(-4),
+      apiKeyExpiresAt: apiKeyData.expiresAt,
+      apiKeyScopes: apiKeyData.scopes,
+    },
   });
 
   revalidatePath("/dashboard");
-  return { ok: true };
+  return { ok: apiKeyData.key };
 }
 
 export type IssuePassportState = { error?: string; ok?: string } | undefined;
@@ -186,7 +187,6 @@ export async function issuePassportAction(
   const email = parsed.data.recipientEmail.toLowerCase().trim();
   const linkedUser = await prisma.user.findUnique({ where: { email } });
 
-  // Get the YSWS for this org
   const ysws = await prisma.ySWS.findFirst({
     where: { orgId: membership.orgId },
   });
@@ -196,7 +196,6 @@ export async function issuePassportAction(
     b.toString(16).padStart(2, "0")
   ).join("");
 
-  // Create order in AWAITING_RECIPIENT_DETAILS state
   const order = await prisma.passportOrder.create({
     data: {
       orgId: membership.orgId,
@@ -210,7 +209,6 @@ export async function issuePassportAction(
       recipientName: parsed.data.recipientName,
       recipientEmail: email,
       recipientToken,
-      // Create the recipient record (one order = one recipient)
       recipients: {
         create: {
           email,
@@ -221,7 +219,6 @@ export async function issuePassportAction(
     },
   });
 
-  // Create OrderEvent for ORDER_CREATED
   await prisma.orderEvent.create({
     data: {
       orderId: order.id,
@@ -234,7 +231,6 @@ export async function issuePassportAction(
     },
   });
 
-  // Create EmailDelivery record
   await prisma.emailDelivery.create({
     data: {
       orderId: order.id,
@@ -271,7 +267,6 @@ export async function submitRecipientDetailsAction(
   const orderId = formData.get("orderId") as string;
   if (!orderId) return { error: "Missing order ID." };
 
-  // Verify organizer has access to this order's YSWS
   const order = await prisma.passportOrder.findUnique({
     where: { id: orderId },
     include: { org: true, ysws: true },
@@ -305,7 +300,6 @@ export async function submitRecipientDetailsAction(
   const email = parsed.data.recipientEmail?.toLowerCase().trim() || order.recipientEmail;
   const name = parsed.data.recipientName || order.recipientName;
 
-  // Update the order with recipient details and transition state
   await prisma.passportOrder.update({
     where: { id: orderId },
     data: {
@@ -316,7 +310,6 @@ export async function submitRecipientDetailsAction(
     },
   });
 
-  // Create OrderEvent for STATUS_CHANGED / RECIPIENT_DETAILS_SUBMITTED
   await prisma.orderEvent.create({
     data: {
       orderId: orderId,
@@ -330,7 +323,6 @@ export async function submitRecipientDetailsAction(
     },
   });
 
-  // Create EmailDelivery record if email was provided
   if (email) {
     await prisma.emailDelivery.create({
       data: {
@@ -358,7 +350,6 @@ export async function regenerateTrackingTokenAction(
   const orderId = formData.get("orderId") as string;
   if (!orderId) return { error: "Missing order ID." };
 
-  // Verify organizer has access to this order's YSWS
   const order = await prisma.passportOrder.findUnique({
     where: { id: orderId },
     include: { org: true, ysws: true },

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { generateApiKey, getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { generateApiKey, generateApiKeyWithHash, getCurrentUserWithRole, hasRole, isSuperadminEmail } from "@/lib/org";
 import { verifyYSWSAccess } from "@/lib/ysws-context";
 import type { Role } from "../../generated/prisma/client";
 
@@ -62,12 +62,15 @@ export async function addOrganizerAction(
         update: {},
       });
 
+      const apiKeyData = await generateApiKeyWithHash();
+
       await tx.ySWS.upsert({
         where: { slug: org.slug },
         create: {
           name: org.name,
           slug: org.slug,
-          apiKey: generateApiKey(),
+          apiKeyHash: apiKeyData.hash,
+          apiKeyDisplay: apiKeyData.key.slice(-4),
           isActive: true,
           orgId: org.id,
         },
@@ -81,11 +84,15 @@ export async function addOrganizerAction(
       });
       // Only upgrade global role if user is currently PARTICIPANT
       // YSWS membership and global roles are separate dimensions
+      // Don't downgrade superadmins (from env var) to organizer
       const currentUser = await tx.user.findUnique({
         where: { id: user.id },
-        select: { role: true },
+        select: { role: true, email: true },
       });
-      if (currentUser?.role === "PARTICIPANT") {
+      const isSuperadmin = currentUser?.email ? isSuperadminEmail(currentUser.email) : false;
+      const currentRole = currentUser?.role;
+      // Only upgrade if user is PARTICIPANT and not a superadmin via env var
+      if (currentRole === "PARTICIPANT" && !isSuperadmin) {
         await tx.user.update({
           where: { id: user.id },
           data: { role: "ORGANIZER" },

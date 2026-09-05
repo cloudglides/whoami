@@ -38,6 +38,7 @@ export default function Scramble({
       });
       return () => cancelAnimationFrame(raf);
     }
+    return () => {};
   }, []);
 
   useEffect(() => {

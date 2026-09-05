@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithRole, hasRole } from "@/lib/org";
 import { resolveAPIKeyContext, verifyYSWSAccess } from "@/lib/ysws-context";
+import { rateLimit, RATE_LIMITS, createRateLimitResponse } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -29,6 +30,11 @@ const ORDER_FIELDS = {
 } as const;
 
 export async function POST(req: Request) {
+  const rl = await rateLimit(req, RATE_LIMITS.orders);
+  if (!rl.allowed) {
+    return createRateLimitResponse(rl, RATE_LIMITS.orders.windowMs);
+  }
+
   const context = await resolveAPIKeyContext(req);
   if (!context) {
     return NextResponse.json(
@@ -46,7 +52,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // For API key users, the API key is scoped to a YSWS
   if (context.actorType === "api") {
     if (!context.yswsId) {
       return NextResponse.json(
@@ -54,9 +59,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    // API key already validates YSWS access in resolveAPIKeyContext
   } else {
-    // For session users, verify they have access to the YSWS
     if (!context.yswsId) {
       return NextResponse.json(
         { error: "No active YSWS found for your organization" },
@@ -108,6 +111,12 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  // Rate limiting
+  const rl = await rateLimit(req, RATE_LIMITS.orders);
+  if (!rl.allowed) {
+    return createRateLimitResponse(rl, RATE_LIMITS.orders.windowMs);
+  }
+
   const context = await resolveAPIKeyContext(req);
   if (!context) {
     return NextResponse.json(

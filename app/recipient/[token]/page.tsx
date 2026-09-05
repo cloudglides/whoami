@@ -69,16 +69,27 @@ export default async function RecipientRootPage({
     redirect(`/track/${token}`);
   }
 
-  const recipient = order.recipients[0];
-  const completedSteps = recipient
-    ? [
-        recipient.name ? "name" : null,
-        recipient.email ? "email" : null,
-        recipient.addressLine1 ? "address" : null,
-        recipient.photoUrl ? "photo" : null,
-        recipient.emergencyContact ? "emergency" : null,
-      ].filter(Boolean)
-    : [];
+  const recipient = order.recipients[0] ?? {
+    id: "",
+    name: null,
+    email: order.recipientEmail ?? "",
+    addressLine1: null,
+    addressLine2: null,
+    city: null,
+    stateProvince: null,
+    postalCode: null,
+    country: null,
+    dateOfBirth: null,
+    emergencyContact: null,
+    photoUrl: null,
+  };
+  const completedSteps = [
+    recipient.name ? "name" : null,
+    recipient.email ? "email" : null,
+    recipient.addressLine1 ? "address" : null,
+    recipient.photoUrl ? "photo" : null,
+    recipient.emergencyContact ? "emergency" : null,
+  ].filter(Boolean) as StepKey[];
 
   return (
     <RecipientLayout order={order} token={token}>

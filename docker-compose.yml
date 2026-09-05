@@ -1,16 +1,82 @@
+version: '3.8'
+
 services:
-  db:
+  postgres:
     image: postgres:16-alpine
-    container_name: whoami-db
-    restart: unless-stopped
+    container_name: whoami-postgres
     environment:
       POSTGRES_USER: whoami
-      POSTGRES_PASSWORD: whoami
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       POSTGRES_DB: whoami
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U whoami -d whoami"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - whoami-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: whoami-redis
+    command: redis-server --appendonly yes
     volumes:
-      - whoami_pgdata:/var/lib/postgresql/data
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - whoami-network
+
+  whoami:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: whoami-app
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: postgresql://whoami:${POSTGRES_PASSWORD:-changeme}@postgres:5432/whoami?schema=public
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_URL: ${AUTH_URL}
+      AUTH_HCA_CLIENT_ID: ${AUTH_HCA_CLIENT_ID}
+      AUTH_HCA_CLIENT_SECRET: ${AUTH_HCA_CLIENT_SECRET}
+      SUPERADMIN_EMAILS: ${SUPERADMIN_EMAILS:-}
+      UPSTASH_REDIS_REST_URL: http://redis:6379
+      UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-}
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - whoami-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
-  whoami_pgdata:
+  postgres_data:
+  redis_data:
+
+networks:
+  whoami-network:
+    driver: bridge

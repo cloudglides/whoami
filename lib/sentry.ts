@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const ENVIRONMENT = process.env.NODE_ENV || "development";
 
-function scrubPII(data: unknown): unknown {
+function scrubPII(data: unknown): Record<string, unknown> | string | undefined {
   if (typeof data === "string") {
     // Email addresses
     if (data.includes("@") && data.includes(".") && !data.startsWith("http")) {
@@ -50,7 +50,7 @@ function scrubPII(data: unknown): unknown {
     }
     return scrubbed;
   }
-  return data;
+  return undefined;
 }
 
 export function initSentry() {
@@ -143,10 +143,16 @@ export function addSentryBreadcrumb(
   category: string,
   data?: Record<string, unknown>
 ) {
+  const scrubbedData = data ? scrubPII(data) : undefined;
+  // Sentry breadcrumb data must be a plain object
+  const breadcrumbData = scrubbedData && typeof scrubbedData === 'object' && !Array.isArray(scrubbedData)
+    ? scrubbedData
+    : undefined;
+  
   Sentry.addBreadcrumb({
     message,
     category,
-    data: data ? scrubPII(data) as Record<string, any> : undefined,
+    data: breadcrumbData,
     level: "info",
   });
 }

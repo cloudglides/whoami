@@ -29,7 +29,7 @@ export default async function AdminPage() {
     }),
   ]);
 
-  const recentOrdersRows = recentOrders.map((o) => ({
+  const recentOrdersRows = recentOrders.map((o: typeof recentOrders[0]) => ({
     id: o.id,
     recipientName: o.recipientName,
     org: { name: o.org.name },
@@ -38,7 +38,7 @@ export default async function AdminPage() {
     createdAt: o.createdAt.toISOString(),
   }));
 
-  const recentEventsRows = recentEvents.map((e) => ({
+  const recentEventsRows = recentEvents.map((e: typeof recentEvents[0]) => ({
     id: e.id,
     createdAt: e.createdAt.toISOString(),
     eventType: e.eventType,

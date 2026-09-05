@@ -134,7 +134,8 @@ export default function DataTable<T>({
 
   return (
     <div className={className}>
-      <div className="overflow-x-auto">
+      {/* Desktop table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full border-collapse text-left" role="grid">
           <thead>
             <tr className="border-b-2 border-govuk-black">
@@ -176,6 +177,35 @@ export default function DataTable<T>({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile card layout */}
+      <div className="md:hidden space-y-4">
+        {paginatedData.map((row) => (
+          <div
+            key={(row as Record<string, unknown>)[rowKey] as string}
+            className={`border-2 border-govuk-black bg-govuk-grey-1 p-4 ${onRowClick ? "cursor-pointer hover:bg-govuk-grey-2" : ""}`}
+            onClick={() => onRowClick?.(row)}
+            tabIndex={onRowClick ? 0 : undefined}
+            onKeyDown={(e) => {
+              if (onRowClick && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                onRowClick(row);
+              }
+            }}
+          >
+            {columns.map((col) => (
+              <div key={col.key} className="flex justify-between gap-4 py-1 border-b border-govuk-grey-2 last:border-0">
+                <dt className="text-sm font-medium text-govuk-grey-4 w-1/3 truncate min-w-0">
+                  {col.header}
+                </dt>
+                <dd className="text-sm font-medium text-govuk-black w-2/3 text-right break-words min-w-0">
+                  {col.render(row)}
+                </dd>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
       {showPagination && totalPages > 1 && (

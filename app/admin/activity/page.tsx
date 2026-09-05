@@ -18,7 +18,7 @@ export default async function AdminActivityPage() {
     },
   });
 
-  const eventRows = events.map((e) => ({
+  const eventRows = events.map((e: typeof events[number]) => ({
     id: e.id,
     createdAt: e.createdAt.toISOString(),
     eventType: e.eventType,

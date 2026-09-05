@@ -53,7 +53,7 @@ export default async function AdminOrderDetailPage({
     where: { id },
     include: {
       org: { select: { name: true, slug: true, id: true } },
-      ysws: { select: { name: true, slug: true, apiKey: true, isActive: true, id: true } },
+      ysws: { select: { name: true, slug: true, apiKeyDisplay: true, isActive: true, id: true } },
       user: { select: { name: true, email: true, id: true } },
       recipient: { select: { name: true, email: true, id: true } },
       recipients: { select: { name: true, email: true, createdAt: true } },
@@ -152,7 +152,7 @@ export default async function AdminOrderDetailPage({
               {TIMELINE_STEPS.map((step, index) => {
                 const isComplete = index <= currentStateIndex;
                 const isCurrent = index === currentStateIndex;
-                const event = order.events.find((e) => e.newState === step.state);
+                const event = order.events.find((e: typeof order.events[number]) => e.newState === step.state);
                 return (
                   <div key={step.state} className="tl-step">
                     <div className="tl-dot" style={{ background: isComplete ? "#e33f54" : "#cecece", outlineColor: isComplete ? "#e33f54" : "#cecece" }} />
@@ -280,10 +280,10 @@ export default async function AdminOrderDetailPage({
           </Section>
 
           <Section title="API key" divider={false}>
-            {order.ysws?.apiKey ? (
+            {order.ysws?.apiKeyDisplay ? (
               user.role === "SUPERADMIN" ? (
                 <code className="block font-mono text-sm break-all border-2 border-govuk-black bg-govuk-white px-2 py-1.5">
-                  {order.ysws.apiKey}
+                  {order.ysws.apiKeyDisplay}
                 </code>
               ) : (
                 <code className="block font-mono text-sm break-all border-2 border-govuk-black bg-govuk-white px-2 py-1.5">

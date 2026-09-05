@@ -26,7 +26,7 @@ export default function AdminSidebar({ role }: { role: string }) {
 
   return (
     <aside className="hidden lg:block">
-      <nav className="sticky top-16" aria-label="Admin navigation">
+      <nav className="sticky top-[var(--admin-sidebar-sticky-offset)]" aria-label="Admin navigation">
         <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-govuk-grey-4">
           Administration
         </h2>

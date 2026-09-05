@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithRole, hasRole } from "@/lib/org";
+import { verifyApiKeyHash } from "@/lib/org";
 import type { Role, OrgRole } from "../generated/prisma/client";
 
 export interface YSWSContext {
@@ -18,7 +19,7 @@ export interface AccessibleYSWS {
   yswsId: string;
   yswsName: string;
   yswsSlug: string;
-  yswsApiKey: string | null;
+  yswsApiKeyDisplay: string | null;
   orgId: string;
   orgName: string;
   orgSlug: string;
@@ -70,7 +71,7 @@ export async function getYSWSContext(): Promise<YSWSContext | null> {
           yswsId: ysws.id,
           yswsName: ysws.name,
           yswsSlug: ysws.slug,
-          yswsApiKey: ysws.apiKey,
+          yswsApiKeyDisplay: ysws.apiKeyDisplay,
           orgId: org.id,
           orgName: org.name,
           orgSlug: org.slug,
@@ -111,7 +112,7 @@ export async function getYSWSContext(): Promise<YSWSContext | null> {
       yswsId: m.yswsId,
       yswsName: m.ysws!.name,
       yswsSlug: m.ysws!.slug,
-      yswsApiKey: m.ysws!.apiKey,
+      yswsApiKeyDisplay: m.ysws!.apiKeyDisplay,
       orgId: m.orgId,
       orgName: m.org!.name,
       orgSlug: m.org!.slug,
@@ -168,7 +169,7 @@ export async function verifyYSWSAccess(
       yswsId: ysws.id,
       yswsName: ysws.name,
       yswsSlug: ysws.slug,
-      yswsApiKey: ysws.apiKey,
+      yswsApiKeyDisplay: ysws.apiKeyDisplay,
       orgId: ysws.orgId,
       orgName: ysws.org!.name,
       orgSlug: ysws.org!.slug,
@@ -193,7 +194,7 @@ export async function verifyYSWSAccess(
     yswsId: membership.ysws.id,
     yswsName: membership.ysws.name,
     yswsSlug: membership.ysws.slug,
-    yswsApiKey: membership.ysws.apiKey,
+    yswsApiKeyDisplay: membership.ysws.apiKeyDisplay,
     orgId: membership.orgId,
     orgName: membership.org!.name,
     orgSlug: membership.org!.slug,
@@ -213,12 +214,24 @@ export async function resolveAPIKeyContext(req: Request): Promise<APIKeyContext 
     : req.headers.get("x-api-key")?.trim() ?? null;
 
   if (apiKey) {
-    const ysws = await prisma.ySWS.findUnique({
-      where: { apiKey },
+    // Fetch all active YSWS and verify the API key hash
+    const yswsList = await prisma.ySWS.findMany({
+      where: { isActive: true },
       include: { org: true },
     });
-    if (ysws && ysws.orgId && ysws.isActive) {
-      return { orgId: ysws.orgId, yswsId: ysws.id, actorId: "api", actorType: "api" };
+
+    for (const ysws of yswsList) {
+      if (ysws.apiKeyHash && ysws.orgId) {
+        const isValid = await verifyApiKeyHash(apiKey, ysws.apiKeyHash);
+        if (isValid) {
+          // Update last used timestamp
+          await prisma.ySWS.update({
+            where: { id: ysws.id },
+            data: { apiKeyLastUsed: new Date() },
+          });
+          return { orgId: ysws.orgId, yswsId: ysws.id, actorId: "api", actorType: "api" };
+        }
+      }
     }
     return null;
   }

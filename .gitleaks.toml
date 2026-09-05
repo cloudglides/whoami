@@ -1,0 +1,113 @@
+title = "Gitleaks Config"
+
+[allowlist]
+description = "Allowlisted patterns for gitleaks"
+paths = [
+  "*.md",
+  "*.txt",
+  "*.json",
+  "*.yml",
+  "*.yaml",
+  ".env.example",
+  "fixies.md",
+  "todo.md",
+]
+regexes = [
+  "test",
+  "example",
+  "placeholder",
+  "your-.*-here",
+  "generate-with:",
+]
+
+[[rules]]
+id = "next-auth-secret"
+description = "NextAuth secret key"
+regex = '''AUTH_SECRET\s*[=:]\s*["']?[a-zA-Z0-9+/=]{32,}["']?'''
+tags = ["secret", "nextauth"]
+entropy = 4.5
+
+[[rules]]
+id = "hackclub-oauth-secret"
+description = "Hack Club OAuth client secret"
+regex = '''AUTH_HCA_CLIENT_SECRET\s*[=:]\s*["']?[a-zA-Z0-9+/=]{20,}["']?'''
+tags = ["secret", "oauth"]
+entropy = 4.0
+
+[[rules]]
+id = "database-url"
+description = "Database connection string"
+regex = '''DATABASE_URL\s*[=:]\s*["']?postgresql://[^"'\s]+["']?'''
+tags = ["secret", "database"]
+
+[[rules]]
+id = "upstash-redis-token"
+description = "Upstash Redis REST token"
+regex = '''UPSTASH_REDIS_REST_TOKEN\s*[=:]\s*["']?[a-zA-Z0-9+/=]{20,}["']?'''
+tags = ["secret", "redis"]
+
+[[rules]]
+id = "pii-encryption-key"
+description = "PII encryption key"
+regex = '''PII_ENCRYPTION_KEY\s*[=:]\s*["']?[a-zA-Z0-9+/=]{44}["']?'''
+tags = ["secret", "encryption"]
+
+[[rules]]
+id = "api-key"
+description = "Generic API key pattern"
+regex = '''(?i)(api[_-]?key|apikey)\s*[=:]\s*["']?[a-zA-Z0-9+/=_-]{20,}["']?'''
+tags = ["secret", "api-key"]
+
+[[rules]]
+id = "private-key"
+description = "Private key"
+regex = '''-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'''
+tags = ["secret", "private-key"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''(?i)aws[_-]?access[_-]?key[_-]?id\s*[=:]\s*["']?AKIA[0-9A-Z]{16}["']?'''
+tags = ["secret", "aws"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws[_-]?secret[_-]?access[_-]?key\s*[=:]\s*["']?[a-zA-Z0-9/+=]{40}["']?'''
+tags = ["secret", "aws"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub Personal Access Token"
+regex = '''(?i)github[_-]?token\s*[=:]\s*["']?ghp_[a-zA-Z0-9]{36}["']?'''
+tags = ["secret", "github"]
+
+[[rules]]
+id = "slack-token"
+description = "Slack Bot/User Token"
+regex = '''(?i)slack[_-]?token\s*[=:]\s*["']?xox[baprs]-[a-zA-Z0-9-]{10,48}["']?'''
+tags = ["secret", "slack"]
+
+[[rules]]
+id = "stripe-key"
+description = "Stripe API Key"
+regex = '''(?i)stripe[_-]?key\s*[=:]\s*["']?sk_(live|test)_[a-zA-Z0-9]{24,}["']?'''
+tags = ["secret", "stripe"]
+
+[[rules]]
+id = "sendgrid-key"
+description = "SendGrid API Key"
+regex = '''(?i)sendgrid[_-]?key\s*[=:]\s*["']?SG\.[a-zA-Z0-9_-]{22}\.[a-zA-Z0-9_-]{43}["']?'''
+tags = ["secret", "sendgrid"]
+
+[[rules]]
+id = "postmark-key"
+description = "Postmark API Key"
+regex = '''(?i)postmark[_-]?key\s*[=:]\s*["']?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}["']?'''
+tags = ["secret", "postmark"]
+
+[[rules]]
+id = "resend-key"
+description = "Resend API Key"
+regex = '''(?i)resend[_-]?key\s*[=:]\s*["']?re_[a-zA-Z0-9]{32,}["']?'''
+tags = ["secret", "resend"]
