@@ -13,9 +13,8 @@ const envSchema = z.object({
   // Superadmin bootstrap (optional, for initial setup only)
   SUPERADMIN_EMAILS: z.string().default(""),
 
-  // Upstash Redis (for feedback, rate limiting)
-  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  // Redis / Valkey (for feedback, rate limiting)
+  REDIS_URL: z.string().default("redis://127.0.0.1:6379"),
 
   // Email (Resend)
   RESEND_API_KEY: z.string().optional(),

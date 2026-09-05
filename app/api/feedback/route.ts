@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       timestamp: Date.now(),
     };
 
-    await redis.set(key, JSON.stringify(entry), { ex: 60 * 60 * 24 * 30 });
+    await redis.set(key, JSON.stringify(entry), "EX", 60 * 60 * 24 * 30);
 
     await redis.lpush("feedback:all", JSON.stringify(entry));
     await redis.ltrim("feedback:all", 0, 999);
