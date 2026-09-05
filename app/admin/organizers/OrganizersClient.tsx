@@ -6,7 +6,8 @@ import Breadcrumb from "../../components/Breadcrumb";
 import PageHeader from "../../components/PageHeader";
 import DataTable from "../../components/DataTable";
 import FilterBar from "../../components/FilterBar";
-import StatusBadge, { mapUserRoleToVariant } from "../../components/StatusBadge";
+import StatusBadge from "../../components/StatusBadge";
+import { mapUserRoleToVariant } from "../../components/status-variant";
 
 type OrganizerRow = {
   id: string;

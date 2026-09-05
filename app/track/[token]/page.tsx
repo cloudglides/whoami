@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "../../components/Breadcrumb";
 import PageHeader from "../../components/PageHeader";
 import Section from "../../components/Section";
-import StatusBadge, { mapOrderStateToVariant } from "../../components/StatusBadge";
+import StatusBadge from "../../components/StatusBadge";
+import { mapOrderStateToVariant } from "../../components/status-variant";
 import Link from "next/link";
 
 function dateLabel(d: Date) {

@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import Breadcrumb from "../../../components/Breadcrumb";
 import PageHeader from "../../../components/PageHeader";
 import Section from "../../../components/Section";
-import StatusBadge, { mapYSWSActiveToVariant } from "../../../components/StatusBadge";
+import StatusBadge from "../../../components/StatusBadge";
+import { mapYSWSActiveToVariant } from "../../../components/status-variant";
 import DataTable from "../../../components/DataTable";
 import Link from "next/link";
 

@@ -6,7 +6,11 @@ import Breadcrumb from "../../components/Breadcrumb";
 import PageHeader from "../../components/PageHeader";
 import DataTable from "../../components/DataTable";
 import FilterBar from "../../components/FilterBar";
-import StatusBadge, { mapOrderStateToVariant, mapFulfillmentStatusToVariant } from "../../components/StatusBadge";
+import StatusBadge from "../../components/StatusBadge";
+import {
+  mapOrderStateToVariant,
+  mapFulfillmentStatusToVariant,
+} from "../../components/status-variant";
 
 type OrderRow = {
   id: string;

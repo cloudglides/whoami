@@ -63,14 +63,13 @@ services:
       PORT: 3000
       HOSTNAME: "0.0.0.0"
       DATABASE_URL: postgresql://whoami:${POSTGRES_PASSWORD:-changeme}@postgres:5432/whoami?schema=public
-      AUTH_SECRET: ${AUTH_SECRET}
-      AUTH_URL: ${AUTH_URL}
-      AUTH_HCA_CLIENT_ID: ${AUTH_HCA_CLIENT_ID}
-      AUTH_HCA_CLIENT_SECRET: ${AUTH_HCA_CLIENT_SECRET}
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in the deploy environment}
+      AUTH_URL: ${AUTH_URL:-http://localhost:3000}
+      AUTH_HCA_CLIENT_ID: ${AUTH_HCA_CLIENT_ID:?set AUTH_HCA_CLIENT_ID in the deploy environment}
+      AUTH_HCA_CLIENT_SECRET: ${AUTH_HCA_CLIENT_SECRET:?set AUTH_HCA_CLIENT_SECRET in the deploy environment}
       SUPERADMIN_EMAILS: ${SUPERADMIN_EMAILS:-}
-      UPSTASH_REDIS_REST_URL: http://redis:6379
-      UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-}
-      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY}
+      REDIS_URL: redis://redis:6379
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?set PII_ENCRYPTION_KEY in the deploy environment}
     ports:
       - "3000:3000"
     depends_on:

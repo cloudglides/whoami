@@ -9,7 +9,8 @@ import CreateOrderForm from "./CreateOrderForm";
 import ApiIntegrationPanel from "./ApiIntegrationPanel";
 import YSWSSelector from "./YSWSSelector";
 import DataTable from "../components/DataTable";
-import StatusBadge, { mapOrderStateToVariant } from "../components/StatusBadge";
+import StatusBadge from "../components/StatusBadge";
+import { mapOrderStateToVariant } from "../components/status-variant";
 import DashboardMobileSidebar from "./DashboardMobileSidebar";
 
 function dateLabel(d: string) {
